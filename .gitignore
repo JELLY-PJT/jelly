@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,windows,visualstudiocode,django,python
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,visualstudiocode,django,python
+# Created by https://www.toptal.com/developers/gitignore/api/python,django,visualstudiocode,macos,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,django,visualstudiocode,macos,windows
 
 ### Django ###
 *.log
@@ -9,6 +9,7 @@ __pycache__/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+media
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
@@ -292,6 +293,9 @@ poetry.toml
 # ruff
 .ruff_cache/
 
+# LSP config files
+pyrightconfig.json
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -337,4 +341,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,windows,visualstudiocode,django,python
+# End of https://www.toptal.com/developers/gitignore/api/python,django,visualstudiocode,macos,windows
