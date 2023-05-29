@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.views import View
 from django.contrib.auth.decorators import login_required
 from .models import Group, Post
+from .forms import GroupForm
 
 
 @login_required
@@ -11,6 +11,38 @@ def index(request):
         'groups': groups,
     }
     return render(request, 'groups/index.html', context)
+
+
+@login_required
+def group_create(request):
+    if request.method == 'POST':
+        form = GroupForm(request.POST, request.FILES)
+        if form.is_valid():
+            group = form.save()
+            group.group_users.add(request.user)
+            return redirect('groups:group_detail', group.pk)
+    else:
+        form = GroupForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'groups/group_create.html', context)
+
+
+@login_required
+def group_detail(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if request.user not in group.group_users.all():
+        return redirect('groups:index')
+    # 추후 post, vote, diary 추가 예정
+    context = {
+        'group': group,
+    }
+    return render(request, 'groups/group_detail.html', context)
+
+# class GroupDetail(LoginRequiredMixin, View):
+#     def get(self, request, group_pk):
+#         group = Group.objects.get(pk=group_pk)
 
 
 # class PostsList(APIView):
