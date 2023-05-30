@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% comment %} 그룹 정보 {% endcomment %}
+<div>
+  {{ group }}
+  {{ group.intro }}
+  <img src="{{ group.thumbnail.url }}" alt="썸네일">
+  {% for group_user in group.group_users.all %}
+    {{ group_user.username }}
+  {% endfor %}
+</div>
+
+{% comment %} 글작성 버튼 {% endcomment %}
+<a href="#">글쓰기</a>
+
+{% comment %} 공지사항 {% endcomment %}
+<div></div>
+
+{% comment %} 게시물(post, vote, diary) {% endcomment %}
+<div></div>
+
+{% comment %} 앨범 {% endcomment %}
+<div></div>
+
+{% endblock content %}
