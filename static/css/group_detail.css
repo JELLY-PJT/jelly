@@ -1,3 +1,4 @@
+
 img {
   max-width: 100%;
   min-width: 100%;
@@ -21,6 +22,8 @@ img {
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* header : 그룹 정보가 담긴 div 관련 css */
 
 .header {
   margin-bottom: 2rem;
@@ -66,11 +69,12 @@ img {
   background-color: var(--color-main-dark);
 }
 
+/* tab-list : 컨텐츠를 바꿀 수 있는 버튼 관련 css */
+
 .tab-list {
   position: sticky;
   top: 0;
   z-index: 10;
-  padding-top: 2rem;
   background-color: white;
 }
 
@@ -95,23 +99,30 @@ img {
   padding: 1rem;
   color: var(--color-gray-dark);
   font-weight: 500;
+  text-align: center;
 }
 
-.tab-btn.active {
+.tab-btn button {
+  width: 42px;
+}
+
+#post-tab[aria-selected=true], #calendar-tab[aria-selected=true], #chat-tab[aria-selected=true], #album-tab[aria-selected=true] {
   position: relative;
   color: black;
 }
 
-.tab-btn.active::before {
+#post-tab[aria-selected=true]::before, #calendar-tab[aria-selected=true]::before, #chat-tab[aria-selected=true]::before, #album-tab[aria-selected=true]::before {
   content: "";
   position: absolute;
   display: block;
-  top: 0;
-  left: 0;
+  top: -1rem;
+  left: -1rem;
   width: 75px;
   height: 0.125rem;
   background: var(--color-main)
 }
+
+/* post-list : 게시글 탭 관련 css */
 
 #accordion-collapse {
   position: relative;
@@ -124,6 +135,7 @@ img {
   align-items: center;
   top: -0.375rem;
   right: 0.125rem;
+  z-index: 15;
 }
 
 #notice-btn {
@@ -303,4 +315,26 @@ img {
 .page-navigation {
   margin-top: 3rem;
   text-align: center;
+}
+
+/* album 컨텐츠 관련 속성 */
+.album-list {
+  width: 900px;
+  margin: 2rem auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.album-img {
+  width: 18.25rem;
+  height: 18.25rem;
+}
+
+.album-img img {
+  transition: all 0.1s linear;
+}
+
+.album-img:hover img {
+  transform: scale(1.025);
 }
