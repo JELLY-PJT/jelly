@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cleanup.apps.CleanupConfig', # third party app이지만 마지막에 배치해야합니다.
 ]
 
 MIDDLEWARE = [

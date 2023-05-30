@@ -7,7 +7,7 @@
 <div>
   {% for group in groups %}
     <div>
-      <a href="{% url 'groups:group_detail' group.pk %} group.pk">
+      <a href="{% url 'groups:group_detail' group.pk %}">
         {% if group.thumbnail %}
           <img src="{{ group.thumbnail.url }}" alt="그룹 썸네일">
         {% endif %}

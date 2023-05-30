@@ -59,7 +59,8 @@ class PostImage(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     def post_image_path(instance, filename):
-        return f'groups/{instance.post.group.name}_{instance.post.group.pk}/%Y/%m/%d/{filename}'
+        now = instance.post.created_at
+        return f'groups/{instance.post.group.name}_{instance.post.group.pk}/' + now.strftime('%Y/%m/%d') + f'/{filename}'
     
     image = ProcessedImageField(upload_to=post_image_path, blank=True,
                                 processors=[ResizeToFill(500,500)],

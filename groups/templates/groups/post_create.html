@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h1>글 작성</h1>
+  <form action="{% url 'groups:post_create' group.pk %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <label for="post-images">이미지 업로드</label>
+    <input type="file" name="images" id="post-images" multiple>
+    <input type="submit" value="저장">
+  </form>
+</div>
+{% endblock content %}
