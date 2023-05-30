@@ -1,7 +1,8 @@
+{% load static %}
 
 <nav>
   <div class="row">
-    <img src="{% static 'img/JELLY_logo.png' %}" alt="" class="">
+    <img src="{% static 'img/JELLY_logo.png' %}" alt="로고" class="logo">
     {% if user.is_authenticated %}
       <div class="row nav--tab">
         <a href="{% url 'accounts:profile' user.username %}"><p>프로필</p></a>
