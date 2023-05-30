@@ -4,6 +4,7 @@ from .models import Group, Post
 from .forms import GroupForm
 
 
+# 사이트 인덱스 페이지
 @login_required
 def index(request):
     groups = request.user.user_groups.all()
@@ -13,6 +14,7 @@ def index(request):
     return render(request, 'groups/index.html', context)
 
 
+# 그룹 생성
 @login_required
 def group_create(request):
     if request.method == 'POST':
@@ -29,6 +31,7 @@ def group_create(request):
     return render(request, 'groups/group_create.html', context)
 
 
+# 그룹 페이지 조회
 @login_required
 def group_detail(request, group_pk):
     group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
