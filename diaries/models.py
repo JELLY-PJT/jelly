@@ -6,17 +6,13 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Diary(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     content = CKEditor5Field('Content', config_name='extends')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    share = models.ManyToManyField(
-        'groups.Group', verbose_name='shared diary to group', through='DiaryShare')
-    hit = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='diary_views')
-    # hit = models.ManyToManyField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+    share = models.ManyToManyField('groups.Group', verbose_name='shared diary to group', through='DiaryShare')
+    hit = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='diary_views')
 
     def __str__(self):
         return self.title
@@ -35,25 +31,21 @@ class DiaryShare(models.Model):
 
 
 class DiaryComment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     group = models.ForeignKey('groups.Group', on_delete=models.CASCADE)
     diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    like_users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='like_diarycomments')
-
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_diarycomments')
+    
     class Meta:
-        ordering = ['-created_at']
+         ordering = ['-created_at']
 
 
 class DiaryEmote(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE, related_name='emotions')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='emotions')
     diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
-    emotion = models.PositiveIntegerField()
+    emotion = models.CharField(max_length=10)
+    class Meta:
+        unique_together = [['user', 'diary']]
     # 1:👍 2:🥰 3:🤣 4:😲 5:😭 6:🥳
-
-    # class Meta:
-    #     ordering = ['-created_at']
