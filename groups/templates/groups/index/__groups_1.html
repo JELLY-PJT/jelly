@@ -1,0 +1,30 @@
+<div id="group-buttons-grid">
+    <div class="row menu">
+        {% comment %} <div> {{ groups|length }} </div> {% endcomment %}
+        <div>(+)</div>
+    </div>
+    <div class="row buttons">
+        <div class="item button">
+            <a href="#">
+                <div class="square">
+                    <div class="inner">
+                        <!-- SVG 그래픽 요소들 -->
+                        {% comment %} 라인 위치는 groups.js 에서 컨트롤 됩니다.{% endcomment %}
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% for group in groups %}
+            <div class="item button">
+                {% comment %} <a href="#"> {% endcomment %}
+                <div class="square">
+                    <div class="inner">
+                        <!-- SVG 그래픽 요소들 -->
+                        {% comment %} 라인 위치는 groups.js 에서 컨트롤 됩니다.{% endcomment %}
+                    </div>
+                </div>
+                {% comment %} </a> {% endcomment %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
