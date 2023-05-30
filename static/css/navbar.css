@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+.row { 
+  display: flex;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  width: 30%;
+  height: 7rem;
+  margin: 3rem auto 1.5rem;
+  display: block;
+}
+
+.nav--tab {
+  height: 40px;
+  top: 3%;
+  right: 5%;
+  position: absolute;
+  align-items: center;
+}
+
+.nav--tab p {
+  margin-right: 1.5rem;
+}
+
+.nav--line {
+  border: 3px solid black;
+  width: 80%;
+  margin: auto;
+  border-color: var(--color-main-light);
+}

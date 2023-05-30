@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Group, Post
-from .forms import GroupForm
+from .models import Group, Post, PostImage
+from .forms import GroupForm, PostForm, PostImageDeleteForm
 
 
+# 사이트 인덱스 페이지
 @login_required
 def index(request):
     groups = request.user.user_groups.all()
@@ -13,6 +14,7 @@ def index(request):
     return render(request, 'groups/index.html', context)
 
 
+# 그룹 생성
 @login_required
 def group_create(request):
     if request.method == 'POST':
@@ -29,10 +31,11 @@ def group_create(request):
     return render(request, 'groups/group_create.html', context)
 
 
+# 그룹 페이지 조회
 @login_required
 def group_detail(request, group_pk):
     group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
-    if request.user not in group.group_users.all():
+    if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
     # 추후 post, vote, diary 추가 예정
     context = {
@@ -40,9 +43,104 @@ def group_detail(request, group_pk):
     }
     return render(request, 'groups/group_detail.html', context)
 
-# class GroupDetail(LoginRequiredMixin, View):
-#     def get(self, request, group_pk):
-#         group = Group.objects.get(pk=group_pk)
+
+# post 생성
+@login_required
+def post_create(request, group_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        images = request.FILES.getlist('images')
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.group = group
+            post.is_notice = False
+            post.save()
+            # 다중 이미지 저장
+            for image in images:
+                PostImage.objects.create(post=post, image=image)
+            return redirect('groups:post_detail', group.pk, post.pk)
+    else:
+        form = PostForm()
+        # post_image_form = PostImageForm()
+    context = {
+        'group': group,
+        'form': form,
+    }
+    return render(request, 'groups/post_create.html', context)
+
+
+# post 조회
+@login_required
+def post_detail(request, group_pk, post_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    post = Post.objects.get(pk=post_pk)
+    # 조회수
+    if not post.hits.filter(pk=request.user.pk).exists():
+        post.hits.add(request.user)
+
+    context = {
+        'group': group,
+        'post': post,
+    }
+    return render(request, 'groups/post_detail.html', context)
+
+
+# post 수정
+@login_required
+def post_update(request, group_pk, post_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+
+    post = Post.objects.get(pk=post_pk)
+    if request.user != post.user:
+        return redirect('groups:post_detail', group.pk, post.pk)
+
+    if request.method == 'POST':
+        post_form = PostForm(request.POST, instance=post)
+        image_delete_form = PostImageDeleteForm(request.POST)
+        images = request.FILES.getlist('images')
+        if post_form.is_valid() and image_delete_form.is_valid():
+            post_form.save()
+            # 선택한 이미지 삭제(save함수는 forms.py 참고)
+            image_delete_form.save()
+            # 다중 이미지 저장
+            for image in images:
+                PostImage.objects.create(post=post, image=image)
+            return redirect('groups:post_detail', group.pk, post.pk)
+    else:
+        post_form = PostForm(instance=post)
+        image_delete_form = PostImageDeleteForm(instance=post)
+    context = {
+        'group': group,
+        'post': post,
+        'post_form': post_form,
+        'image_delete_form': image_delete_form,
+    }
+    return render(request, 'groups/post_update.html', context)
+
+
+# post 삭제
+@login_required
+def post_delete(request, group_pk, post_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    post = Post.objects.get(pk=post_pk)
+    if request.user != post.user:
+        return redirect('groups:post_detail', group.pk, post.pk)
+    
+    post.delete()
+    return redirect('groups:group_detail', group.pk)
 
 
 # class PostsList(APIView):

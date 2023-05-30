@@ -1,0 +1,26 @@
+.groups-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.group_create_button {
+  border: dashed 3px var(--color-main);
+  border-radius: 15%;
+}
+
+.square {
+  width: 50%;
+  position: relative;
+}
+
+.square:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
