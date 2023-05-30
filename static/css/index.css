@@ -22,37 +22,34 @@ html {
   flex-direction: row;
 }
 
-.index_logo_box {
+.index-logo-box {
   width: fit-content;
   margin: 2% auto 2% auto;
 }
 
-#logo_line {
+#logo-line {
   background-color: var(--color-main);
   width: 70%;
   border-radius: 3px;
   height: 4px;
   margin: 2% auto 2% auto;
 }
-#index_header {
+#index-header {
   height: 200px;
   align-content: space-between;
 }
-.index_content {
+.index-content {
   min-height: var(--content-min-height-200px);
   padding: 0 200px 0 200px;
 }
-.index_content_box {
+.index-content-box {
   flex-grow: 1;
   flex-shrink: 1;
   display: grid;
   align-content: center;
 }
-#calendar_wrapper {
+
+#calendar-wrapper {
   height: fit-content;
   width: fit-content;
-}
-#groups_wrapper {
-  display: flex;
-  flex-direction: column;
 }
