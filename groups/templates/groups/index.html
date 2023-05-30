@@ -1,13 +1,63 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock css %}
 
 {% block content %}
-<div>
-  <a href="{% url 'groups:group_create' %}">그룹 생성</a>
+
+
+<div class="container">
+
+{% comment %}
+navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성화 합니다.
+{% endcomment %}
+  <div class="container-flex-column">
+    {% comment %}
+      navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성화 합니다.
+        {% endcomment %}
+    <div class="index-floating-menu-box"></div>
+    <div id="index-header"> {# header #}
+      <div class="index-logo-box"> {# 로고 이미지 박스 #}
+        <img src="{% static 'img/index_logo.png' %}" alt="calendar_sample_image">
+      </div>
+      <hr id="logo-line"> {# 헤더 하단 구분 라인 #}
+    </div>
+    {% comment %}
+      {% include 'navbar.html' %}
+        {% endcomment %}
+
+    {% comment %} 
+      여기서 부터 본문 content  
+        {% endcomment %}
+    <div class="index-content container-flex-row">
+
+      {% comment %} calendar 표시 {% endcomment %}
+      <div class="index-content-box">
+        <div id="calendar-wrapper">
+          <img src="{% static 'img/calendar_sample.png' %}" alt="calendar_sample_image">
+        </div>
+      </div>
+
+      {% comment %} 가입한 group 표시 {% endcomment %}
+      <div class="index-content-box">
+        {% include 'groups/index_content_groups.html' with groups=groups %}
+      </div>
+    
+    </div>
+  </div>
 </div>
-<div>
+
+{% comment %}
+  <div>
+    <a href="{% url 'groups:group_create' %}">그룹 생성</a>
+  </div>
+  
   {% for group in groups %}
     <div>
-      <a href="{% url 'groups:group_detail' group.pk %} group.pk">
+      <a href="{% url 'groups:group_detail' group.pk %}">
         {% if group.thumbnail %}
           <img src="{{ group.thumbnail.url }}" alt="그룹 썸네일">
         {% endif %}
@@ -15,5 +65,5 @@
       </a>
     </div>
   {% endfor %}
-</div>
-{% endblock content %}
+{% endcomment %}
+  {% endblock content %}

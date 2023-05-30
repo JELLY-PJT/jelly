@@ -1,0 +1,46 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index_content_groups.css' %}">
+
+
+{% if user.user_groups.all.length > 0 %}
+{% comment %} 
+  그룹이 있는 사용자 
+    {% endcomment %}
+    <div class="groups-wrapper">
+      <img src="{% static 'img/calendar_sample.png' %}" alt="calendar_sample_image">
+    </div>
+  {% else %}
+  {% comment %} 
+    그룹이 없는 사용자 
+      {% endcomment %}
+    <div class="groups-wrapper">
+      <div><p>새로운 그룹을 만들어 보세요!</p></div>  
+       
+
+    {# 그룹 생성 버튼 #}
+      <!-- SVG 그래픽 요소들 -->
+
+      <div class="square group_create_button">
+        <div class="inner">
+        <svg width="auto" height="auto">
+
+          {% comment %} 라인 위치 차후 자바스크립트로 수정 {% endcomment %}
+        <line class="h-line" x1="50" y1="150" x2="350" y2="150" stroke="var(--color-main)" stroke-width="3" />
+        <line class="b-line" x1="50" y1="150" x2="350" y2="150" stroke="var(--color-main)" stroke-width="3" />
+
+        </svg>
+      </div>
+        {% comment %} <div class="inner">
+          <line class="group_create_button"></line>
+          <line></line>
+        </div>
+      </div> {% endcomment %}
+
+    </svg>
+
+  </div>
+  
+{% endif %}
+
+{% comment %} 그룹 생성 버튼 않의 + 위치를 동적으로 조절하는 스크립트 입니다. {% endcomment %}
+<script src="{% static 'js/index_content_groups.js' %}"></script>
