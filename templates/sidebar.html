@@ -1,0 +1,15 @@
+{% load static %}
+
+
+<aside class="aside">
+  <img src="{% static 'img/side_logo.png' %}" alt="로고" class="logo">
+  <img src="{{ person.image.url}}" alt="프로필">
+  <div class='bar'></div>
+  {% for group in request.user.group_set.all %}
+  <img src="{{ group.thumbnail.url }}" alt="프로필">
+  {% endfor %}
+  <div class="bar"></div>
+  {% comment %} 그룹 생성 모달 달아야함 {% endcomment %}
+  <img src="{% static 'img/side_PlusButton.png' %}" alt="">
+
+</aside>
