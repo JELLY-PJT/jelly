@@ -56,14 +56,14 @@ navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성
   </div>
   
   {% for group in groups %}
-  <div>
-    <a href="{% url 'groups:group_detail' group.pk group.pk %} ">
-      {% if group.thumbnail %}
-        <img src="{{ group.thumbnail.url }}" alt="그룹 썸네일">
-      {% endif %}
+    <div>
+      <a href="{% url 'groups:group_detail' group.pk %}">
+        {% if group.thumbnail %}
+          <img src="{{ group.thumbnail.url }}" alt="그룹 썸네일">
+        {% endif %}
         <h4>{{ group.name }}</h4>
-    </a>
-  </div>
+      </a>
+    </div>
   {% endfor %}
 {% endcomment %}
   {% endblock content %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% comment %} 게시글 {% endcomment %}
+<div>
+  {% for image in post.postimage_set.all %}
+    <img src="{{ image.image.url }}" alt="게시글 이미지">
+  {% endfor %}
+  제목 : {{ post }}
+  작성자 : {{ post.user }}
+  내용 : {{ post.content }}
+  작성일 : {{ post.created_string }}
+  조회수 : {{ post.hits.all|length }}
+</div>
+
+{% comment %} 뒤로가기, 게시글 수정, 삭제 버튼 {% endcomment %}
+<div>
+  <a href="{% url 'groups:group_detail' group.pk %}">뒤로가기</a>
+  <a href="{% url 'groups:post_update' group.pk post.pk %}">수정</a>
+  <form action="{% url 'groups:post_delete' group.pk post.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="삭제">
+  </form>
+</div>
+{% endblock content %}
