@@ -10,7 +10,7 @@ class Diary(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     share = models.ManyToManyField('groups.Group', verbose_name='shared diary to group', through='DiaryShare')
-    # hit = models.ManyToManyField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+    hit = models.ManyToManyField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
 
     def __str__(self):
         return self.title
@@ -46,6 +46,6 @@ class DiaryEmote(models.Model):
     emotion = models.PositiveIntegerField()
     # 1:👍 2:🥰 3:🤣 4:😲 5:😭 6:🥳
 
-    # class Meta:
-    #     ordering = ['-created_at']
+    class Meta:
+        ordering = ['-created_at']
 
