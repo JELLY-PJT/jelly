@@ -1,0 +1,12 @@
+{% load static %}
+
+{% if groups.length > 0 %}
+  {# 그룹이 있는 사용자 #}
+  {% include 'groups/index/__groups_1.html' with groups=groups %}
+{% else %}
+  {# 그룹이 없는 사용자 #}
+  {% include 'groups/index/__groups_0.html' %}
+{% endif %}
+
+{% comment %} 그룹 생성 버튼 내부 + 위치를 동적으로 조절하는 스크립트 입니다. {% endcomment %}
+<script src="{% static 'js/index.js' %}"></script>

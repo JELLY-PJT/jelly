@@ -22,6 +22,7 @@ html {
 }
 .index.content.item {
   flex-grow: 1;
+  flex-basis: 50%;
 }
 .wrapper {
   display: flex;
@@ -31,6 +32,7 @@ html {
   align-items: center;
   border: dotted 1px red;
 }
+
 .header--wrap {
   height: 200px;
   display: flex;

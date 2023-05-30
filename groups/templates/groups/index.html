@@ -4,10 +4,9 @@
 {% block css %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/index/__groups.css' %}">
+
 {% endblock css %}
-}
-
-
 
 {% block content %}
 
@@ -35,33 +34,16 @@ navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭�
   <div class="index content item">
     <div class="wrapper">
       <div>calendar</div>
-    </div>
       {% comment %} <img src="{% static 'img/calendar_sample.png' %}" alt="calendar_sample_image"> {% endcomment %}
+    </div>
   </div>
   {% comment %} 가입한 group 표시 {% endcomment %}
   <div class="index content item">
     <div class="wrapper">
       <div>groups</div>
+      {% include 'groups/index/__groups.html' with groups=groups %}
     </div>
     {% comment %} {% include 'groups/index_content_groups.html' with groups=groups %}  {% endcomment %}
   </div>
 </div>
-</div>
 {% endblock content %}
-{% comment %}
-  <div>
-    <a href="{% url 'groups:group_create' %}">그룹 생성</a>
-  </div>
-  
-  {% for group in groups %}
-    <div>
-      <a href="{% url 'groups:group_detail' group.pk %}">
-        {% if group.thumbnail %}
-          <img src="{{ group.thumbnail.url }}" alt="그룹 썸네일">
-        {% endif %}
-        <h4>{{ group.name }}</h4>
-      </a>
-    </div>
-  {% endfor %}
-{% endcomment %}
-  

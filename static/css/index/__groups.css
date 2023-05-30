@@ -1,0 +1,29 @@
+#group-create-button {
+  width: 70%; /* 버튼 사이즈 여기서 결정됨 */
+}
+#group-create-button * {
+  width: 70%; /* 버튼 사이즈 여기서 결정됨 */
+  background-color: transparent;
+}
+
+#group-create-button .square {
+  width: 100%;
+  padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
+  position: relative;
+}
+
+#group-create-button .inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: dashed 3px var(--color-main);
+  border-radius: 15%;
+}
+
+#group-create-button .line {
+  stroke: var(--color-main);
+  stroke-width: 3px;
+  /* top, bottom, left, right 값을 조정하여 원하는 위치로 이동시킵니다. */
+}
