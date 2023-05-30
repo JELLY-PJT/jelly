@@ -5,51 +5,49 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
 {% endblock css %}
+}
+
+
 
 {% block content %}
 
-
-<div class="container">
-
-{% comment %}
-navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성화 합니다.
-{% endcomment %}
-  <div class="container-flex-column">
-    {% comment %}
-      navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성화 합니다.
-        {% endcomment %}
-    <div class="index-floating-menu-box"></div>
-    <div id="index-header"> {# header #}
-      <div class="index-logo-box"> {# 로고 이미지 박스 #}
-        <img src="{% static 'img/index_logo.png' %}" alt="calendar_sample_image">
-      </div>
-      <hr id="logo-line"> {# 헤더 하단 구분 라인 #}
+<div class="header">
+  <div class="header--wrap">
+    <div class="index logo-box"> {# 로고 이미지 박스 #}
+      <img src="{% static 'img/index_logo.png' %}" alt="logo_image">
     </div>
-    {% comment %}
-      {% include 'navbar.html' %}
-        {% endcomment %}
-
-    {% comment %} 
-      여기서 부터 본문 content  
-        {% endcomment %}
-    <div class="index-content container-flex-row">
-
-      {% comment %} calendar 표시 {% endcomment %}
-      <div class="index-content-box">
-        <div id="calendar-wrapper">
-          <img src="{% static 'img/calendar_sample.png' %}" alt="calendar_sample_image">
-        </div>
-      </div>
-
-      {% comment %} 가입한 group 표시 {% endcomment %}
-      <div class="index-content-box">
-        {% include 'groups/index_content_groups.html' with groups=groups %}
-      </div>
-    
-    </div>
+    <hr class="index logo-line"> {# 헤더 하단 구분 라인 #}
   </div>
 </div>
 
+{% comment %}
+navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭을 활성화 합니다.
+{% endcomment %}
+
+{% comment %}
+{% include 'navbar.html' %}
+{% endcomment %}
+
+
+<div class="index container">
+<div class="index content">
+  {% comment %} calendar 표시 {% endcomment %}
+  <div class="index content item">
+    <div class="wrapper">
+      <div>calendar</div>
+    </div>
+      {% comment %} <img src="{% static 'img/calendar_sample.png' %}" alt="calendar_sample_image"> {% endcomment %}
+  </div>
+  {% comment %} 가입한 group 표시 {% endcomment %}
+  <div class="index content item">
+    <div class="wrapper">
+      <div>groups</div>
+    </div>
+    {% comment %} {% include 'groups/index_content_groups.html' with groups=groups %}  {% endcomment %}
+  </div>
+</div>
+</div>
+{% endblock content %}
 {% comment %}
   <div>
     <a href="{% url 'groups:group_create' %}">그룹 생성</a>
@@ -66,4 +64,4 @@ navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성
     </div>
   {% endfor %}
 {% endcomment %}
-  {% endblock content %}
+  
