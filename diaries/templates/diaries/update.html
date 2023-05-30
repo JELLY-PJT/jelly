@@ -1,0 +1,9 @@
+{% extends 'diaries/create.html' %}
+
+{% block title %}
+<h1>나만의 레시피 수정</h1>
+{% endblock title %}
+
+{% block url %}
+{% url 'diaries:update' diary.pk %}
+{% endblock url %}
