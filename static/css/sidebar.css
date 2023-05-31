@@ -34,3 +34,7 @@ img {
   border: 2px white solid;
   margin-top: 20px;
 }
+
+.border-color {
+  border: red;
+}
