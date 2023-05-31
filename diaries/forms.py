@@ -15,4 +15,4 @@ class DiaryForm(forms.ModelForm):
 class DiaryCommentForm(forms.ModelForm):
     class Meta:
         model = DiaryComment
-        fields = '__all__'
+        fields = ('comment',)
