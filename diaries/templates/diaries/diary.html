@@ -1,62 +1,69 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}">{% endblock css %}
+
+{% block title %}JELLY | {{ diary.title }}{% endblock title %}
+
+{% block side %}
+  {% include 'sidebar.html' %}
+{% endblock side %}
+
 {% block content %}
-<div>
-  <h1>다이어리 개인 디테일</h1>
-  <h2>{{ diary.title }}</h2>
-  {% comment %} 작성일 {% endcomment %}
-  {{ diary.created_at }}
+<div class="wrapper">  
+  <section class="header justify-between">
+    <div class="flex gap-2">
+      <a href="{% url 'diaries:index' %}" class="diary main-btn">목록</a>
+      <a href="{% url 'diaries:index' %}" class="diary main-btn">이전글</a>
+      <a href="{% url 'diaries:index' %}" class="diary main-btn">다음글</a>
+    </div>
+    
+  </section>
   
-  {% comment %} 공유하기 {% endcomment %}
-  <div>
-    <form method="POST" id="share-form">
-      {% csrf_token %}
-      <label for="group-select">공유할 그룹 선택:</label>
-      <select name="group" id="group-select">
-        <option value=""disabled selected>-- 그룹 선택 --</option>
-        {% for group in request.user.user_groups.all %}
-          <option value="{{ group.pk }}">{{ group.name }}</option>
-        {% endfor %}
-      </select>
-      <input type="submit" value="공유하기">
-    </form>
-  </div>
-
-  {% comment %} 수정 {% endcomment %}
-  <div>
-    <a href="{% url 'diaries:update' diary.pk %}">수정하기</a>
-  </div>
-
-  {% comment %} 삭제 {% endcomment %}
-  <div>
-    <form action="{% url 'diaries:delete' diary.pk %}" method="POST">
-      {% csrf_token %}
-      <input type="submit" value="삭제하기">
-    </form>
-  </div>
-
-  {% comment %} 다이어리 content(ckeditor5) {% endcomment %}
-  <div>
-    {{ diary.content|safe }}
-  </div>
+  <section class="content">
+    <div class="flex justify-between items-end px-2">
+      <div>
+        <h2 class="title">{{ diary.title }}</h2>
+        <p class="date">{{ diary.created_at }}</p>
+      </div>
+      <div class="flex gap-4">
+        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="diary" type="button">공유하기</button>
+        <div id="dropdown" class="share-form-wrapper z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-80 p-4">
+          <form method="POST" id="share-form" class="flex gap-4" data-diary-id={{ diary.pk }}>
+            {% csrf_token %}
+            <select name="group" id="group-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[var(--color-main)] focus:border-[var(--color-main)] block w-full p-2.5">
+              <option value=""disabled selected>-- 그룹 선택 --</option>
+              {% for group in request.user.user_groups.all %}
+                <option value="{{ group.pk }}">{{ group.name }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" value="공유하기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
+              </svg>
+            </button>
+          </form>
+        </div>
+        <a href="{% url 'diaries:update' diary.pk %}" class="diary">수정</a>
+        <a href="{% url 'diaries:delete' diary.pk %}" class="diary delete" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+      </div>
+           
+    </div>
+    <hr class="diary-hr">
+    <div class="ck-content diary-detail">
+      {{ diary.content|safe }}
+    </div>
+    <div class="relative">
+      <a href="#" class="top-btn">
+        <svg style="color: rgb(0, 0, 0);" xmlns="http://www.w3.org/2000/svg" width="6" height="6" fill="currentColor" class="bi bi-triangle-fill" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M7.022 1.566a1.13 1.13 0 0 1 1.96 0l6.857 11.667c.457.778-.092 1.767-.98 1.767H1.144c-.889 0-1.437-.99-.98-1.767L7.022 1.566z" fill="#000000"></path> </svg>
+        TOP
+      </a>
+    </div>
+    </section>
   {% comment %} 공유됐을 경우 감정표현, 댓글 전체조회 or 그룹별 조회 {% endcomment %}
 </div>
 {% endblock content %}
 
 {% block script %}
-{% comment %} 공유를 위한 JS {% endcomment %}
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const groupSelect = document.getElementById('group-select')
-    const shareForm = document.getElementById('share-form')
-    const diaryPk = {{ diary.pk }}
-    
-    groupSelect.addEventListener('change', function() {
-      const selectedGroupPk = groupSelect.value
-      const shareUrl = "/diaries/" + selectedGroupPk + "/" + diaryPk + "/share/"
-      shareForm.action = selectedGroupPk ? shareUrl : ''
-    })
-  })
-</script>
+<script src={% static 'js/diary.js' %}></script>
 {% endblock script %}
