@@ -11,5 +11,8 @@ urlpatterns = [
     path('<int:group_pk>/posts/<int:post_pk>/', views.post_detail, name='post_detail'),
     path('<int:group_pk>/posts/<int:post_pk>/update/', views.post_update, name='post_update'),
     path('<int:group_pk>/posts/<int:post_pk>/delete/', views.post_delete, name='post_delete'),
-    # path('posts/<int:post_pk>/', views.PostDetail.as_view()),
+    path('<int:group_pk>/posts/<int:post_pk>/emotes/<int:emotion>/', views.emote, name='emote'),
+    path('<int:group_pk>/posts/<int:post_pk>/comment/create/', views.comment_create, name='comment_create'),
+    path('<int:group_pk>/posts/<int:post_pk>/comment/<int:comment_pk>/update/', views.comment_update, name='comment_update'),
+    path('<int:group_pk>/posts/<int:post_pk>/comment/<int:comment_pk>/delete/', views.comment_delete, name='comment_delete'),
 ]
