@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  {% block title %}
+  <h1>다이어리 작성</h1>
+  {% endblock title %}
+
+  <form action="{% block url %}{% url 'diaries:create' %}{% endblock url %}" method="POST">
+    {% csrf_token %}
+    {{ form.media }}
+    {{ form.as_p }}
+    <input type="submit" value="작성">
+  </form>
+</div>
+{% endblock content %}

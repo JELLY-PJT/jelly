@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h1>공유 다이어리 디테일</h1>
+  <h2>{{ diary.title }}</h2>
+  {% comment %} 작성일 {% endcomment %}
+  {{ diary.created_at }}
+  {% comment %} 다이어리 content(ckeditor5) {% endcomment %}
+  <div>
+    {{ diary.content|safe }}
+  </div>
+</div>
+
+<div>
+  {% comment %} 감정표현 입력 {% endcomment %}
+  {% for emotion in emotions %}
+<div>
+  {% if request.user.is_authenticated %}
+  {{ emotion.queryset }}
+    <form action="{% url 'diaries:emotes' group.pk diary.pk emotion.value %}" method="POST">
+      {% csrf_token %}
+      {% if emotion.exist %}
+        <input type="submit" value="{{emotion.label}} 취소">
+      {% else %}
+        <input type="submit" value="{{emotion.label}}">
+      {% endif %}
+    </form>
+  {% else %}
+    <button disabled="disabled">{{emotion.label}}</button>
+  {% endif %}
+  <p>
+    게시글 {{emotion.label}} 수 -
+    {{ emotion.count }}
+  </p>
+</div>
+{% endfor %}
+</div>
+
+<div>
+  {% comment %} 댓글 작성 칸 {% endcomment %}
+  <form action="{% url 'diaries:comment_create' group.pk diary.pk %}">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit" value="작성">
+  </form>
+</div>
+
+{% comment %} 댓글 리스트 {% endcomment %}
+<div>
+  {% for comment in comments %}
+  {{ comment.user }} - {{ comment.comment }} - {{ comment.created_at}}
+  {% comment %} 댓글 좋아요 {% endcomment %}
+  <form action="{% url 'diaries:comment_like' group.pk diary.pk comment.pk %}">
+    {% csrf_token %}
+    {% if request.user in comment.like_users.all %}
+    <button type="submit">좋아요취소</button>
+    {% else %}
+    <button type="submit">좋아요</button>
+    {% endif %}
+    {{ comment.like_users.count }}
+  </form>
+  {% endfor %}
+</div>
+{% endblock content %}

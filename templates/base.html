@@ -8,8 +8,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}JELLY{% endblock title %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
   {% block css %}{% endblock css %}
 </head>
 <body>
@@ -59,6 +61,8 @@
 
   
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js%22%3E"></script>
 {% block script %}
 {% endblock script %}
 </html>

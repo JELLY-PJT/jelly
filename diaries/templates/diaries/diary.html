@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h1>다이어리 개인 디테일</h1>
+  <h2>{{ diary.title }}</h2>
+  {% comment %} 작성일 {% endcomment %}
+  {{ diary.created_at }}
+  {% comment %} 다이어리 content(ckeditor5) {% endcomment %}
+  <div>
+    {{ diary.content|safe }}
+  </div>
+  {% comment %} 공유됐을 경우 감정표현, 댓글 전체조회 or 그룹별 조회 {% endcomment %}
+</div>
+{% endblock content %}
