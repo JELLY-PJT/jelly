@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div>
@@ -6,6 +7,35 @@
   <h2>{{ diary.title }}</h2>
   {% comment %} 작성일 {% endcomment %}
   {{ diary.created_at }}
+  
+  {% comment %} 공유하기 {% endcomment %}
+  <div>
+    <form method="POST" id="share-form">
+      {% csrf_token %}
+      <label for="group-select">공유할 그룹 선택:</label>
+      <select name="group" id="group-select">
+        <option value=""disabled selected>-- 그룹 선택 --</option>
+        {% for group in request.user.user_groups.all %}
+          <option value="{{ group.pk }}">{{ group.name }}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="공유하기">
+    </form>
+  </div>
+
+  {% comment %} 수정 {% endcomment %}
+  <div>
+    <a href="{% url 'diaries:update' diary.pk %}">수정하기</a>
+  </div>
+
+  {% comment %} 삭제 {% endcomment %}
+  <div>
+    <form action="{% url 'diaries:delete' diary.pk %}" method="POST">
+      {% csrf_token %}
+      <input type="submit" value="삭제하기">
+    </form>
+  </div>
+
   {% comment %} 다이어리 content(ckeditor5) {% endcomment %}
   <div>
     {{ diary.content|safe }}
@@ -13,3 +43,20 @@
   {% comment %} 공유됐을 경우 감정표현, 댓글 전체조회 or 그룹별 조회 {% endcomment %}
 </div>
 {% endblock content %}
+
+{% block script %}
+{% comment %} 공유를 위한 JS {% endcomment %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const groupSelect = document.getElementById('group-select')
+    const shareForm = document.getElementById('share-form')
+    const diaryPk = {{ diary.pk }}
+    
+    groupSelect.addEventListener('change', function() {
+      const selectedGroupPk = groupSelect.value
+      const shareUrl = "/diaries/" + selectedGroupPk + "/" + diaryPk + "/share/"
+      shareForm.action = selectedGroupPk ? shareUrl : ''
+    })
+  })
+</script>
+{% endblock script %}

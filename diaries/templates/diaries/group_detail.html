@@ -6,6 +6,13 @@
   <h2>{{ diary.title }}</h2>
   {% comment %} 작성일 {% endcomment %}
   {{ diary.created_at }}
+  {% comment %} 공유취소 {% endcomment %}
+  {% if request.user == diary.user %}
+  <form action="{% url 'diaries:unshare' group.pk diary.pk %}">
+    {% csrf_token %}
+    <input type="submit" value="공유취소">
+  </form>
+  {% endif %}
   {% comment %} 다이어리 content(ckeditor5) {% endcomment %}
   <div>
     {{ diary.content|safe }}
@@ -33,13 +40,14 @@
     게시글 {{emotion.label}} 수 -
     {{ emotion.count }}
   </p>
+
 </div>
 {% endfor %}
 </div>
 
 <div>
   {% comment %} 댓글 작성 칸 {% endcomment %}
-  <form action="{% url 'diaries:comment_create' group.pk diary.pk %}">
+  <form action="{% url 'diaries:comment_create' group.pk diary.pk %}" method="POST">
     {% csrf_token %}
     {{ comment_form.as_p }}
     <input type="submit" value="작성">
@@ -51,7 +59,7 @@
   {% for comment in comments %}
   {{ comment.user }} - {{ comment.comment }} - {{ comment.created_at}}
   {% comment %} 댓글 좋아요 {% endcomment %}
-  <form action="{% url 'diaries:comment_like' group.pk diary.pk comment.pk %}">
+  <form action="{% url 'diaries:comment_like' group.pk diary.pk comment.pk %}" method="POST">
     {% csrf_token %}
     {% if request.user in comment.like_users.all %}
     <button type="submit">좋아요취소</button>
@@ -60,6 +68,17 @@
     {% endif %}
     {{ comment.like_users.count }}
   </form>
+  {% if comment.user == request.user %}
+  {% comment %} 댓글 수정 비동기 필요 {% endcomment %}
+  <form action="{% url 'diaries:comment_update' group.pk diary.pk comment.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="댓글수정">
+  </form>
+  <form action="{% url 'diaries:comment_delete' group.pk diary.pk comment.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="댓글삭제">
+  </form>
+  {% endif %}
   {% endfor %}
 </div>
 {% endblock content %}
