@@ -22,4 +22,63 @@
     <input type="submit" value="삭제">
   </form>
 </div>
+
+{% comment %} 감정표현 {% endcomment %}
+<div>
+  {% for emotion in emotions %}
+    <div>
+      <form action="{% url 'groups:emote' group.pk post.pk emotion.value %}" method="POST">
+        {% csrf_token %}
+        {% if emotion.exist %}
+          <input type="submit" value="{{ emotion.label }} {{ emotion.count }} 취소">
+        {% else %}
+          <input type="submit" value="{{ emotion.label }} {{ emotion.count }}">
+        {% endif %}
+      </form>
+    </div>
+  {% endfor %}
+</div>
+
+
+{% comment %} 댓글 {% endcomment %}
+<div>
+  {% comment %} 댓글 개수 {% endcomment %}
+  <div>댓글 {{ post.postcomment_set.all|length }}개</div>
+
+  {% comment %} 댓글 작성 form {% endcomment %}
+  <form action="{% url 'groups:comment_create' group.pk post.pk %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit" value="댓글 작성">
+  </form>
+
+  {% comment %} 댓글 조회 {% endcomment %}
+  <div>
+    {% for comment in post.postcomment_set.all %}
+      <div>
+        {{ comment.user }}
+        {{ comment.content }}
+        {{ comment.created_string }}
+
+        {% comment %} 수정, 삭제 버튼 {% endcomment %}
+        {% if request.user == comment.user %}
+          <div>
+            {% comment %} 수정 버튼 비동기 처리 필요 {% endcomment %}
+            <button type="">수정</button>
+            {% comment %} 수정 눌렀을 때 나올 form {% endcomment %}
+            <form action="{% url 'groups:comment_update' group.pk post.pk comment.pk %}" method="POST">
+              {% csrf_token %}
+              <input type="text">
+              <input type="" value="저장">
+            </form>
+            <form action="{% url 'groups:comment_delete' group.pk post.pk comment.pk %}" method="POST">
+              {% csrf_token %}
+              <input type="submit" value="삭제">
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock content %}
