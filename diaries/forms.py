@@ -5,6 +5,7 @@ class DiaryForm(forms.ModelForm):
     class Meta:
         model = Diary
         fields = '__all__'
+        exclude = ('user', 'share', 'hit', )
 
 
 class DiaryCommentForm(forms.ModelForm):
