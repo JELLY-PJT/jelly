@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+}
+
+img {
+  width: 75px;
+  height: 75px;
+  border: white 3px solid;
+  border-radius: 50%;
+  margin-top: 20px;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 130px;
+  height: 100vh;
+  background-color: var(--color-main-light);
+  align-items: center;
+}
+
+.logo {
+  width: 80%;
+  height: 35px;
+  border: 0px;
+  border-radius: 0%;
+}
+
+.bar {
+  width: 80px;
+  border: 2px white solid;
+  margin-top: 20px;
+}
+
+.border-color {
+  border: red;
+}
