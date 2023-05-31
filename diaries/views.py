@@ -27,7 +27,7 @@ def index(request):
 # 개인 다이어리 작성
 def create(request):
     if request.method == 'POST':
-        form = DiaryForm(request.POST)
+        form = DiaryForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             diary = form.save(commit=False)
             diary.user = request.user
