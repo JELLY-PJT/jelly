@@ -1,30 +1,29 @@
-<div id="group-buttons-grid">
+<div id="GroupDetail">
     <div class="row menu">
-        {% comment %} <div> {{ groups|length }} </div> {% endcomment %}
-        <div>(+)</div>
-    </div>
-    <div class="row buttons">
-        <div class="item button">
-            <a href="#">
-                <div class="square">
-                    <div class="inner">
-                        <!-- SVG 그래픽 요소들 -->
-                        {% comment %} 라인 위치는 groups.js 에서 컨트롤 됩니다.{% endcomment %}
-                    </div>
-                </div>
-            </a>
+        <div id="SearchGroup" class="item">
+          <div><o>{{ groups|length }}개의 그룹이 있다.</p></div>
         </div>
+        <button id="group-create-button" class="item">
+          <div class="square">
+              <div class="inner">
+                <div><p>+</p></div>
+              </div>
+          </div>
+        </button>
+    </div>
+    <div id="group-buttons-grid" class="row">
         {% for group in groups %}
-            <div class="item button">
+            <button class="item button">
                 {% comment %} <a href="#"> {% endcomment %}
                 <div class="square">
                     <div class="inner">
+                      <p>{{ group.name }}</p>
                         <!-- SVG 그래픽 요소들 -->
                         {% comment %} 라인 위치는 groups.js 에서 컨트롤 됩니다.{% endcomment %}
                     </div>
                 </div>
                 {% comment %} </a> {% endcomment %}
-            </div>
+            </button>
         {% endfor %}
     </div>
 </div>

@@ -2,23 +2,17 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/index/__groups.css' %}">
-
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index/__groups.css' %}" />
 {% endblock css %}
-}
-
-
-
 {% block content %}
     <div class="header">
         <div class="header--wrap">
             <div class="index logo-box">
                 {# 로고 이미지 박스 #}
-                <img src="{% static 'img/index_logo.png' %}" alt="logo_image">
+                <img src="{% static 'img/index_logo.png' %}" alt="logo_image" />
             </div>
-            <hr class="index logo-line">
+            <hr class="index logo-line" />
             {# 헤더 하단 구분 라인 #}
         </div>
     </div>
@@ -27,13 +21,12 @@ navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭�
     {% endcomment %}
     {% comment %}
 {% include 'navbar.html' %}
-    {% endcomment %}
+    {% endcomment %} 
     <div class="index container">
         <div class="index content">
             {% comment %} calendar 표시 {% endcomment %}
             <div class="index content item">
                 <div class="wrapper">
-                    <div>calendar</div>
                     {% comment %} calendar.html 차후 수정 현재는 그룹 area비교 용 임시 include {% endcomment %}
                     {% include 'groups/index/__calendar.html' with groups=groups %}
                 </div>
@@ -45,6 +38,7 @@ navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭�
             </div>
         </div>
     </div>
-        {% comment %} 그룹 생성 버튼 내부 + 위치를 동적으로 조절하는 스크립트 입니다. {% endcomment %}
-        <script src="{% static 'js/index.js' %}"></script>
-    {% endblock content %}
+    {% comment %} 그룹 생성 버튼 내부 + 위치를 동적으로 조절하는 스크립트 입니다. {% endcomment %}
+    <script src="{% static 'js/index.js' %}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock content %}

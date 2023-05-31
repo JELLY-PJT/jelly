@@ -15,22 +15,25 @@ html {
   min-height: calc(var(--content-min-height) - 200px);
   margin: auto;
 }
-.index.content {
+
+
+@media (max-width: 1000px) {
+	.index.content {
+		grid-area: content;
+		display: flex;
+		flex-direction: column;
+	}
+}
+@media (min-width: 1000px) {
+	.index.content {
   grid-area: content;
   display: flex;
   flex-direction: row;
+	}
 }
 .index.content.item {
   flex-grow: 1;
   flex-basis: 50%;
-}
-.wrapper {
-  width: 100%;
-  display:flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: plum;
 }
 
 .header--wrap {
