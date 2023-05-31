@@ -36,3 +36,9 @@ class PostImageDeleteForm(forms.ModelForm):
     def save(self, commit=True):
         for image in self.cleaned_data['delete_images']:
             image.delete()
+
+
+class PostCommentForm(forms.ModelForm):
+    class Meta:
+        model = PostComment
+        fields = ('content',)

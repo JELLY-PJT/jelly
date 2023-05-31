@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Group, Post, PostImage
-from .forms import GroupForm, PostForm, PostImageDeleteForm
+from .models import Group, Post, PostImage, PostComment, PostEmote
+from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm
+from django.http import JsonResponse
 
 
 # 사이트 인덱스 페이지
@@ -74,6 +75,15 @@ def post_create(request, group_pk):
     return render(request, 'groups/post_create.html', context)
 
 
+EMOTIONS = [
+    {'label': '좋아요', 'value': 1},
+    {'label': '최고에요', 'value': 2},
+    {'label': '웃겨요', 'value': 3},
+    {'label': '멋져요', 'value': 4},
+    {'label': '슬퍼요', 'value': 5},
+    {'label': '축하해요', 'value': 6},
+]    # 1:👍 2:🥰 3:🤣 4:😲 5:😭 6:🥳
+
 # post 조회
 @login_required
 def post_detail(request, group_pk, post_pk):
@@ -82,13 +92,31 @@ def post_detail(request, group_pk, post_pk):
         return redirect('groups:index')
     
     post = Post.objects.get(pk=post_pk)
+    comment_form = PostCommentForm()
     # 조회수
     if not post.hits.filter(pk=request.user.pk).exists():
         post.hits.add(request.user)
+    
+    emotions = []
+    for emotion in EMOTIONS:
+        label = emotion['label']
+        value = emotion['value']
+        count = PostEmote.objects.filter(post=post, emotion=value).count()
+        exist = PostEmote.objects.filter(post=post, emotion=value, user=request.user)
+        emotions.append(
+            {
+                'label': label,
+                'value': value,
+                'count': count,
+                'exist': exist,
+            }
+        )
 
     context = {
         'group': group,
         'post': post,
+        'comment_form': comment_form,
+        'emotions': emotions,
     }
     return render(request, 'groups/post_detail.html', context)
 
@@ -143,63 +171,67 @@ def post_delete(request, group_pk, post_pk):
     return redirect('groups:group_detail', group.pk)
 
 
-# class PostsList(APIView):
-#     def get_group(self, group_pk):
-#         try:
-#             return Group.objects.get(pk=group_pk)
-#         except Group.DoesNotExist:
-#             raise Http404
-
-#     def post(self, request, group_pk):
-#         group = self.get_group(group_pk)
-#         new_post = PostSerializer(data=request.data)
-#         success = True
-#         if new_post.is_valid():
-#             new_post.save(user=request.user, group=group)
-#             post = Post.objects.get(pk=new_post.data['id'])
-#             images = dict(request.data.lists())['image']
-#             arr = []
-#             for image in images:
-#                 image_serializer = PostImageSerializer(data={'image': image})
-#                 if image_serializer.is_valid():
-#                     image_serializer.save(post=post)
-#                     arr.append(image_serializer.data)
-#                 else:
-#                     success = False
-#         else:
-#             success = False
-#         if success:
-#             return Response({'post': new_post.data,
-#                             'images': arr,},
-#                             status=status.HTTP_201_CREATED)
-#         else:
-#             return Response({'post': new_post.data,
-#                             'images': arr,},
-#                             status= status.HTTP_400_BAD_REQUEST)
-
-
-# class PostDetail(APIView):
-#     def get_post(self, post_pk):
-#         try:
-#             return Post.objects.get(pk=post_pk)
-#         except Post.DoesNotExist:
-#             raise Http404
-
-#     def get(self, request, post_pk):
-#         post = self.get_post(post_pk)
-#         # 조회수
-#         if request.user not in post.hits.all():
-#             post.hits.add(request.user)
-
-#         serializer = PostReadSerializer(post)
-#         return Response(serializer.data)
+# post 감정표현
+@login_required
+def emote(request, group_pk, post_pk, emotion):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
     
-#     def delete(self, request, post_pk):
-#         post = self.get_post(post_pk)
-#         # media file에서 image file 삭제 아직--
-#         post.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+    post = Post.objects.get(pk=post_pk)
+    try:
+        post_emotion = PostEmote.objects.get(post=post, user=request.user)
+        if post_emotion.emotion != emotion:
+            post_emotion.emotion = emotion
+            post_emotion.save()
+        else:
+            post_emotion.delete()
+    except PostEmote.DoesNotExist:
+        PostEmote.objects.create(post=post, user=request.user, emotion=emotion)
+    return redirect('groups:post_detail', group.pk, post.pk)
 
-    # def put(self, request, post_pk):
-    #     post = self.get_post(post_pk)
+
+# 댓글 생성
+@login_required
+def comment_create(request, group_pk, post_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    post = Post.objects.get(pk=post_pk)
+    form = PostCommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.user = request.user
+        comment.post = post
+        comment.save()
+        return redirect('groups:post_detail', group.pk, post.pk)
+
+
+# 댓글 수정(비동기처리 가정하고 만들었습니다)
+@login_required
+def comment_update(request, group_pk, post_pk, comment_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    comment = PostComment.objects.get(pk=comment_pk)
+    if request.user == comment.user:
+        # 여기서 ajax로 데이터 받아서 저장하고 context에 담아 Jsonresponse반환?
+        context = {
+
+        }
+        return JsonResponse(context)
+
+
+# 댓글 삭제
+@login_required
+def comment_delete(request, group_pk, post_pk, comment_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    comment = PostComment.objects.get(pk=comment_pk)
+    if request.user == comment.user:
+        comment.delete()
+    return redirect('groups:post_detail', group.pk, post_pk)
