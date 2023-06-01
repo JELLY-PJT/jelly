@@ -7,7 +7,7 @@
   <img src="{% static 'img/side_logo.png' %}" alt="로고" class="side-logo">
   <img src="{{ person.image.url}}" alt="프로필">
   <div class='bar'></div>
-  {% for group in request.user.group_set.all %}
+  {% for group in request.user.user_groups.all %}
     {% comment %} {% if  %} {% endcomment %}
       <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='boder-color'>
     {% comment %} {% else %} {% endcomment %}
