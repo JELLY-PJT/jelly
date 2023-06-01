@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 
-img {
+.side-img {
   width: 75px;
   height: 75px;
   border: white 3px solid;
@@ -22,7 +22,7 @@ img {
   align-items: center;
 }
 
-.logo {
+.side-logo {
   width: 80%;
   height: 35px;
   border: 0px;
@@ -37,4 +37,10 @@ img {
 
 .border-color {
   border: red;
+}
+
+
+/* modal */
+#id_name {
+  margin-bottom: 3px;
 }
