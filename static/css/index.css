@@ -13,21 +13,20 @@ html {
   grid-template-columns: 1fr 6fr 1fr;
   grid-template-areas: ". content .";
   min-height: calc(var(--content-min-height) - 200px);
-  margin: auto;
+  margin: 5% auto 5% auto;
 }
-
+.index.content {
+  grid-area: content;
+  display: flex;
+}
 
 @media (max-width: 1000px) {
 	.index.content {
-		grid-area: content;
-		display: flex;
 		flex-direction: column;
 	}
 }
 @media (min-width: 1000px) {
 	.index.content {
-  grid-area: content;
-  display: flex;
   flex-direction: row;
 	}
 }
@@ -36,17 +35,17 @@ html {
   flex-basis: 50%;
 }
 
-.header--wrap {
+/* #index-nav .index-header-wrap {
   height: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
 }
-.index.logo-line {
+
+#index-nav .index.logo-line {
   border-color: var(--color-main-light);
   border-width: 3px;
-  border-style: dotted;
   width: 70%;
   height: 0;
-}
+} */
