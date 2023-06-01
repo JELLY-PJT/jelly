@@ -1,0 +1,128 @@
+#CreateGroup {
+  width: 100%;
+	display:flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5% 0 5% 0;
+  
+}
+
+#CreateGroup .item {
+  margin: 10% 0 0 0;
+}
+
+#group-create-button {
+  width: 70%; /* 버튼 사이즈 여기서 결정됨 */
+}
+
+#group-create-button * {
+  width: 70%; /* 버튼 사이즈 여기서 결정됨 */
+}
+
+#group-create-button .square {
+  width: 100%;
+  padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
+  position: relative;
+
+}
+
+#group-create-button .inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: dashed 3px var(--color-main);
+  border-radius: 15%;
+}
+
+#group-create-button .line {
+  stroke: var(--color-main);
+  stroke-width: 3;
+  /* top, bottom, left, right 값을 조정하여 원하는 위치로 이동시킵니다. */
+}
+
+.wrapper {
+  width: 100%;
+  height: fit-content;
+	flex-basis: 1;
+	flex-grow: 1;
+  border: dotted red 1px
+  /* background-color: plum; */
+}
+
+
+#GroupDetail {
+	width: 100%;
+	display:flex;
+	flex-direction: column;
+  justify-content: center;
+  padding: 5% 0 5% 0;
+}
+
+#GroupDetail .row {
+  margin: 10% 0 0 0;
+}
+
+
+
+#GroupDetail .row.menu {
+  flex-basis: 1;
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  grid-template-areas: "item item";
+}
+#GroupDetail .row.menu .item {
+  grid-area: "item";
+}
+
+#group-buttons-grid.row {
+  flex-basis: 4;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(
+    100px,
+    auto
+  ); /* 각 행의 최소 높이를 100px로 지정하고, 내용에 따라 높이가 자동 조정되도록 설정 */
+} 
+
+#group-buttons-grid .item.button {
+margin: 2px;
+
+}
+
+#group-buttons-grid .square {
+  width: 100%;
+  padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
+  position: relative;
+}
+
+#group-buttons-grid .inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-main);
+  border-radius: 15%;
+}
+
+#CreateGroup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: solid black 3px;
+  z-index: 9999; /* 모달이 다른 요소 위에 표시되도록 z-index 설정 */
+}
+
+.modal-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5); /* 반투명한 흰색 배경색 */
+  z-index: 9995; /* 다른 요소 위에 표시되도록 z-index 설정 */
+}

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div>
+  <h1>{{ person.nickname }} 프로필</h1>
+</div>
+
+<div>
+  {% comment %} 프로필 이미지 {% endcomment %}
+  {% if person.image %}
+    <img src="{{ person.image.url }}" alt="profile">
+  {% else %}
+    <img src="{% static 'image/index_logo.png' %}" alt="no-profile">
+  {% endif %}
+</div>
+
+<a href="{% url 'accounts:update' %}">회원정보수정</a>
+<a href="{% url 'accounts:change_password' %}">비밀번호변경</a>
+<a href="{% url 'accounts:delete' %}">회원탈퇴</a>
+
+<div>
+  {% comment %} 개인 다이어리 {% endcomment %}
+  <h5>개인 다이어리</h5>
+  {% for diary in diaries %}
+    <div onclick="window.location='{% url 'diaries:detail' diary.pk %}'">
+      {{ diary.title}} - {{ diary.created_at }}
+    </div>
+  {% endfor %}
+  {% comment %} 페이지네이터 {% endcomment %}
+  {% comment %} 일단 제가 전에 사용한 부트스트랩 클래스 넣어놨습니다 {% endcomment %}
+  <ul class="pagination justify-content-center">
+    {% if diaries.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page=1" aria-label="처음">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only"></span>
+      </a>
+    </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ diaries.previous_page_number }}">이전</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+      </li>
+    {% endif %}
+    {% for page_number in diaries.paginator.page_range %}
+      {% if page_number >=  diaries.number|add:-2 and page_number <=   diaries.number|add:2 %}
+        {% if page_number ==  diaries.number %}
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+          </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if diaries.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ diaries.next_page_number }}">다음</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ diaries.paginator.num_pages }}" aria-label="마지막">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only"></span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+      </li>
+    {% endif %}
+  </ul>
+
+  {% comment %} 공유 다이어리 {% endcomment %}
+  <h5>공유 다이어리</h5>
+  {% for shared_diary in shared_diaries %}
+    <div onclick="window.location='{% url 'diaries:group_detail' shared_diary.group.pk shared_diary.diary.pk %}'">
+      {{ shared_diary.diary.title }} - 공유한 그룹:{{ shared_diary.group.name }} - 공유일:{{ shared_diary.shared_at }}
+    </div>
+  {% endfor %}
+  {% comment %} 페이지네이터 {% endcomment %}
+  <ul class="pagination justify-content-center">
+    {% if shared_diaries.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page=1" aria-label="처음">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only"></span>
+      </a>
+    </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ shared_diaries.previous_page_number }}">이전</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+      </li>
+    {% endif %}
+    {% for page_number in shared_diaries.paginator.page_range %}
+      {% if page_number >= shared_diaries.number|add:-2 and page_number <= shared_diaries.number|add:2 %}
+        {% if page_number == shared_diaries.number %}
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+          </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if shared_diaries.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ shared_diaries.next_page_number }}">다음</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ shared_diaries.paginator.num_pages }}" aria-label="마지막">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only"></span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+  
+{% endblock content %}

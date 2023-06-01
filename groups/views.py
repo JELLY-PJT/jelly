@@ -18,17 +18,18 @@ def index(request):
 # 그룹 생성
 @login_required
 def group_create(request):
-    form = GroupForm(request.POST, request.FILES)
-    if form.is_valid():
-        group = form.save()
-        group.group_users.add(request.user)
-        prev_url = request.session.get('prev_url')
-        if prev_url:
-            del request.session['prev_url']
-            return redirect(prev_url)
-        return redirect('groups:group_detail', group.pk)
-    request.session['prev_url'] = request.META.get('HTTP_REFERER')
-    return redirect('groups:index')
+    if request.method == 'POST':
+        form = GroupForm(request.POST, request.FILES)
+        if form.is_valid():
+            group = form.save()
+            group.group_users.add(request.user)
+            return redirect('groups:group_detail', group.pk)
+    else:
+        form = GroupForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'groups/group_create.html', context)
 
 
 # 그룹 페이지 조회
