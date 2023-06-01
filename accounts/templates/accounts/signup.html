@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h1>회원가입</h1>
+  <form action="{% url 'accounts:signup' %}" method="POST" enctype = 'multipart/form-data'>
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+      <label for="{{ field.label }}">{{ field.label }}</label>
+      {{ field }}
+    </div>
+    {% endfor %}
+    <input type="submit" value="회원가입">
+  </form>
+</div>
+{% endblock content %}
