@@ -1,70 +1,50 @@
+{# djlint:on #}
 {% extends 'base.html' %}
 {% load static %}
-
 {% block css %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index/__groups.css' %}" />
 {% endblock css %}
-
 {% block content %}
-
-
-<div class="container">
-
-{% comment %}
-navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성화 합니다.
-{% endcomment %}
-  <div class="container-flex-column">
-    {% comment %}
-      navbar 업데이트 시 아래의 블록을 제거하고 navbar 블록을 활성화 합니다.
-        {% endcomment %}
-    <div class="index-floating-menu-box"></div>
-    <div id="index-header"> {# header #}
-      <div class="index-logo-box"> {# 로고 이미지 박스 #}
-        <img src="{% static 'img/index_logo.png' %}" alt="calendar_sample_image">
-      </div>
-      <hr id="logo-line"> {# 헤더 하단 구분 라인 #}
-    </div>
-    {% comment %}
-      {% include 'navbar.html' %}
-        {% endcomment %}
-
-    {% comment %} 
-      여기서 부터 본문 content  
-        {% endcomment %}
-    <div class="index-content container-flex-row">
-
-      {% comment %} calendar 표시 {% endcomment %}
-      <div class="index-content-box">
-        <div id="calendar-wrapper">
-          <img src="{% static 'img/calendar_sample.png' %}" alt="calendar_sample_image">
+    <div class="header">
+        <div class="header--wrap">
+            <div class="index logo-box">
+                {# 로고 이미지 박스 #}
+                <img src="{% static 'img/index_logo.png' %}" alt="logo_image" />
+            </div>
+            <hr class="index logo-line" />
+            {# 헤더 하단 구분 라인 #}
         </div>
-      </div>
-
-      {% comment %} 가입한 group 표시 {% endcomment %}
-      <div class="index-content-box">
-        {% include 'groups/index_content_groups.html' with groups=groups %}
-      </div>
-    
     </div>
-  </div>
-</div>
-
-{% comment %}
-  <div>
-    <a href="{% url 'groups:group_create' %}">그룹 생성</a>
-  </div>
-  
-  {% for group in groups %}
-    <div>
-      <a href="{% url 'groups:group_detail' group.pk %}">
-        {% if group.thumbnail %}
-          <img src="{{ group.thumbnail.url }}" alt="그룹 썸네일">
-        {% endif %}
-        <h4>{{ group.name }}</h4>
-      </a>
+    {% comment %}
+navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭을 활성화 합니다.
+    {% endcomment %}
+    {% comment %}
+{% include 'navbar.html' %}
+    {% endcomment %} 
+    <div class="index container">
+        <div class="index content">
+            {% comment %} calendar 표시 {% endcomment %}
+            <div class="index content item">
+                <div class="wrapper">
+                    {% comment %} calendar.html 차후 수정 현재는 그룹 area비교 용 임시 include {% endcomment %}
+                    {% include 'groups/index/__calendar.html' with groups=groups %}
+                </div>
+            </div>
+            {% comment %} 가입한 group 표시 {% endcomment %}
+            <div class="index content item">
+                <div class="wrapper">{% include "groups/index/__groups.html" with groups=groups %}</div>
+                {% comment %} {% include 'groups/index_content_groups.html' with groups=groups %}  {% endcomment %}
+            </div>
+        </div>
     </div>
+feature/modal-GroupCreate
   {% endfor %}
 {% endcomment %}
 
+
+    {% comment %} 그룹 생성 버튼 내부 + 위치를 동적으로 조절하는 스크립트 입니다. {% endcomment %}
+    <script src="{% static 'js/index.js' %}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 {% endblock content %}
+

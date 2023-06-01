@@ -1,55 +1,52 @@
 html {
   box-sizing: border-box;
-  /* border: solid lightblue; */
 }
+
 *,
 *::before,
 *::after {
-  /* border: inherit; */
   box-sizing: inherit;
 }
 
-.container {
+.index.container {
+  display: grid;
+  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-areas: ". content .";
+  min-height: calc(var(--content-min-height) - 200px);
   margin: auto;
-  min-height: var(--content-min-height);
 }
-.container-flex-column {
-  display: flex;
-  flex-direction: column;
+
+
+@media (max-width: 1000px) {
+	.index.content {
+		grid-area: content;
+		display: flex;
+		flex-direction: column;
+	}
 }
-.container-flex-row {
+@media (min-width: 1000px) {
+	.index.content {
+  grid-area: content;
   display: flex;
   flex-direction: row;
+	}
 }
-
-.index-logo-box {
-  width: fit-content;
-  margin: 2% auto 2% auto;
-}
-
-#logo-line {
-  background-color: var(--color-main);
-  width: 70%;
-  border-radius: 3px;
-  height: 4px;
-  margin: 2% auto 2% auto;
-}
-#index-header {
-  height: 200px;
-  align-content: space-between;
-}
-.index-content {
-  min-height: var(--content-min-height-200px);
-  padding: 0 200px 0 200px;
-}
-.index-content-box {
+.index.content.item {
   flex-grow: 1;
-  flex-shrink: 1;
-  display: grid;
-  align-content: center;
+  flex-basis: 50%;
 }
 
-#calendar-wrapper {
-  height: fit-content;
-  width: fit-content;
+.header--wrap {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+.index.logo-line {
+  border-color: var(--color-main-light);
+  border-width: 3px;
+  border-style: dotted;
+  width: 70%;
+  height: 0;
 }
