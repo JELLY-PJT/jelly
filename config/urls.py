@@ -23,6 +23,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+    path('accounts/', include('accounts.urls')),
     path('diaries/', include('diaries.urls')),
     path('groups/', include('groups.urls')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
