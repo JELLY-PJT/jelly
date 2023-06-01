@@ -28,10 +28,11 @@
       </div>
       <div class="flex gap-4">
         <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="diary" type="button">공유하기</button>
+        {% comment %} 공유할 그룹 선택하는 드랍다운 메뉴 {% endcomment %}
         <div id="dropdown" class="share-form-wrapper z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-80 p-4">
           <form method="POST" id="share-form" class="flex gap-4" data-diary-id={{ diary.pk }}>
             {% csrf_token %}
-            <select name="group" id="group-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[var(--color-main)] focus:border-[var(--color-main)] block w-full p-2.5">
+            <select name="group" id="group-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[var(--color-main-light)] focus:border-[var(--color-main-light)] block w-full p-2.5">
               <option value=""disabled selected>-- 그룹 선택 --</option>
               {% for group in request.user.user_groups.all %}
                 <option value="{{ group.pk }}">{{ group.name }}</option>
