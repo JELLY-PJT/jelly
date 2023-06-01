@@ -3,6 +3,17 @@ from .models import Group, Post, PostImage, PostComment, Vote, VoteSelect
 
 
 class GroupForm(forms.ModelForm):
+    name = forms.CharField(label='그룹 이름', widget=forms.TextInput(
+        attrs={'class': 'create-form',}))
+    thumbnail = ProcessedImageField(
+        required=True,
+        widget=forms.ClearableFileInput(attrs={'class': 'create-form',}),
+        label='그룹프로필 이미지',
+        label_suffix='',
+        spec_id='image_size',
+    )
+    intro = forms.CharField(label='그룹 소개', widget=forms.Textarea(
+        attrs={'class': 'create-form',}))
     class Meta:
         model = Group
         fields = ('name', 'thumbnail', 'intro',)
