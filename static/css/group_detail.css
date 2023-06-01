@@ -13,12 +13,12 @@ img {
   overflow: hidden;
 }
 
-.content-wrapper {
+/* .content-wrapper {
   padding-left: 130px;
-  padding-top: 3rem;
-}
+} */
 
 .content {
+  padding: 3rem 1rem 0 1rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -55,18 +55,6 @@ img {
 .group-name {
   font-size: 1.75rem;
   font-weight: 500;
-}
-
-.main-btn {
-  padding: 0.375rem 0.75rem;
-  background-color: var(--color-main);
-  border-radius: 0.25rem;
-  color: rgb(249 250 251);
-  font-weight: 600;
-}
-
-.main-btn:hover {
-  background-color: var(--color-main-dark);
 }
 
 /* tab-list : 컨텐츠를 바꿀 수 있는 버튼 관련 css */
