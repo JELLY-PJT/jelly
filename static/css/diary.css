@@ -1,3 +1,7 @@
+input {
+  cursor: pointer;
+}
+
 .wrapper {
   max-width: 1200px;
   margin: 0 auto;
@@ -30,11 +34,6 @@
   color: #ff5656;
 }
 
-/* .delete:hover {
-  background-color: #fff3f4;
-  border-color: #ff5656;
-} */
-
 .share-form-wrapper {
   border: 1px solid var(--color-gray-dark);
 }
@@ -43,6 +42,13 @@
   padding: 1.5rem 1.5rem 3rem;
   border: 2px solid var(--color-main);
   border-radius: 0.75rem;
+}
+
+.content.bottom {
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+  background-color: #d1d8ff50;
+  border: none;
 }
 
 .title {
@@ -60,6 +66,7 @@
 
 .diary-detail {
   padding: 0 0.5rem;
+  word-break: break-all;
 }
 
 .date {
@@ -173,4 +180,120 @@
   padding: 5px 0;
   font-size: 13px;
   /* box-shadow: 0 0 18px #1a1a1a26 */
+}
+
+
+/* diary - group_detail */
+.reaction {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.reaction-count {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.emotion-group {
+  display: flex;
+  padding: 0.75rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(55 65 81);
+}
+
+.emotion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem 0;
+  cursor: pointer;
+}
+
+.selected-emotion {
+  color: var(--color-main);
+  font-weight: 500;
+}
+
+.emotion-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emotion-emoji {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.comment-form {
+  display: flex;
+  gap: 1rem;
+}
+
+.comment.main-btn {
+  flex-basis: 5rem;
+  background-color: var(--color-main);
+}
+
+.comment.main-btn:hover {
+  background-color: var(--color-main-dark);
+}
+
+.comment-wrapper {
+  margin: 1rem 0 0.5rem;
+}
+
+.comment-area {
+  padding: 0.75rem 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.comment-area:last-child {
+  padding-bottom: 0;
+}
+
+.comment-user {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.comment-comment {
+  font-size: 1rem;
+  word-break: break-all;
+}
+
+.comment-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.comment-bottom-item {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-bottom-item:last-child {
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.comment-like-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.comment-hr {
+  margin: 0.5rem 0;
+  border-color: var(--color-gray);
+}
+
+.comment-hr:last-child {
+  display: none;
 }

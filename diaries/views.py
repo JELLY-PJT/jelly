@@ -226,12 +226,19 @@ def comment_delete(request, group_pk, diary_pk, comment_pk):
         return redirect('diaries:index')
 
 
-# 공유된 다이어리 댓글 좋아요
+# 공유된 다이어리 댓글 좋아요(비동기처리)
 def comment_like(request, group_pk, diary_pk, comment_pk):
     group = get_object_or_404(Group, pk=group_pk)
     comment = get_object_or_404(DiaryComment, pk=comment_pk)
     if comment.like_users.filter(pk=request.user.pk).exists():
         comment.like_users.remove(request.user)
+        is_liked = False
     else:
         comment.like_users.add(request.user)
-    return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
+        is_liked = True
+
+    context = {
+        'is_liked': is_liked,
+        'comment_like_users': comment.like_users.count(),
+    }
+    return JsonResponse(context)
