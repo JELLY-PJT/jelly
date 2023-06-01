@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Group, Post, PostImage, PostComment, PostEmote
-from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm
+from .models import Group, Post, PostImage, PostComment, PostEmote, Vote, VoteSelect
+from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm, VoteForm
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 # 사이트 인덱스 페이지
@@ -38,9 +39,12 @@ def group_detail(request, group_pk):
     group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
+
     # 추후 post, vote, diary 추가 예정
+    vote_form = VoteForm()
     context = {
         'group': group,
+        'vote_form': vote_form,
     }
     return render(request, 'groups/group_detail.html', context)
 
@@ -235,3 +239,32 @@ def comment_delete(request, group_pk, post_pk, comment_pk):
     if request.user == comment.user:
         comment.delete()
     return redirect('groups:post_detail', group.pk, post_pk)
+
+
+# 투표 생성
+@login_required
+def vote_create(request, group_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    form = VoteForm(request.POST)
+    options = request.POST.getlist('options')
+    # 선택지 유효성 검사
+    option_valid = True
+    for option in options:
+        test_option = option.replace(' ', '')
+        if test_option == '':
+            option_valid = False
+    if form.is_valid() and option_valid:
+        vote = form.save(commit=False)
+        vote.user = request.user
+        vote.group = group
+        vote.is_notice = False
+        vote.save()
+
+        for option in options:
+            VoteSelect.objects.create(vote=vote, content=option)
+    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    return redirect('groups:group_detail', group.pk)
+    

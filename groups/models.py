@@ -107,7 +107,6 @@ class Vote(models.Model):
     deadline = models.DateTimeField()
     is_notice = models.BooleanField()
     is_overlap = models.BooleanField()
-    is_overlap = models.BooleanField()
     is_annony = models.BooleanField()
     is_addible = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -122,6 +121,12 @@ class Vote(models.Model):
             return '투표 마감'
         else:
             return 'D-' + str(date.days)
+    
+    def is_end(self):
+        if datetime.now(tz=timezone.utc) > self.deadline:
+            return True
+        else:
+            return False
 
     @property
     def created_string(self):
