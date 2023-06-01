@@ -2,6 +2,7 @@ from django import forms
 from .models import Group, Post, PostImage, PostComment, Vote, VoteSelect
 from imagekit.forms import ProcessedImageField
 
+
 class GroupForm(forms.ModelForm):
     name = forms.CharField(label='그룹 이름', widget=forms.TextInput(
         attrs={'class': 'create-form',}))
@@ -52,3 +53,35 @@ class PostCommentForm(forms.ModelForm):
     class Meta:
         model = PostComment
         fields = ('content',)
+
+
+class VoteForm(forms.ModelForm):
+    title = forms.CharField(
+        label='제목',
+    )
+    deadline = forms.DateTimeField(
+        label='마감 기한',
+        widget=forms.DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+            }
+        ),
+    )
+    is_overlap = forms.BooleanField(
+        label='중복 투표',
+        widget=forms.CheckboxInput(),
+        required=False,
+    )
+    is_annony = forms.BooleanField(
+        label='익명 투표',
+        widget=forms.CheckboxInput(),
+        required=False,
+    )
+    is_addible = forms.BooleanField(
+        label='멤버의 선택지 추가 권한',
+        widget=forms.CheckboxInput(),
+        required=False,
+    )
+    class Meta:
+        model = Vote
+        fields = ('title', 'deadline', 'is_overlap', 'is_annony', 'is_addible',)
