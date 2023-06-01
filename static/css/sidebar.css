@@ -2,6 +2,14 @@
   box-sizing: border-box;
 }
 
+img {
+  width: 75px;
+  height: 75px;
+  border: white 3px solid;
+  border-radius: 50%;
+  margin-top: 20px;
+}
+
 .aside {
   display: flex;
   flex-direction: column;
@@ -12,36 +20,6 @@
   height: 100vh;
   background-color: var(--color-main-light);
   align-items: center;
-  overflow-y: scroll;
-}
-
-.aside::-webkit-scrollbar {
-  width: 5px;
-}
-
-.aside::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-}
-
-.aside::-webkit-scrollbar-thumb {
-  background-color: #A8AFED;
-  border-radius: 4px;
-}
-
-.aside::-webkit-scrollbar-thumb:hover {
-  background-color: #7B83C7;
-}
-
-.side-img {
-  width: 75px;
-  height: 75px;
-  border: white 3px solid;
-  border-radius: 50%;
-  margin-bottom: 20px;
-}
-
-.side-plus {
-  margin-bottom: 200px;
 }
 
 .logo {
@@ -49,46 +27,14 @@
   height: 35px;
   border: 0px;
   border-radius: 0%;
-  margin-top: 20px;
-  margin-bottom: 20px;
 }
 
 .bar {
   width: 80px;
   border: 2px white solid;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .border-color {
   border: red;
 }
-
-
-/* modal */
-
-.GroupCreate-modal-content form p {
-  width: 350px;
-}
-
-.GroupCreate-modal-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.create-form {
-  border-radius: 10px;
-  margin-bottom: 15px; 
-  width: 350px;
-}
-
-.GroupCreate-modal-button {
-  margin-top: 10px;
-  height: 50px;
-}
-
-.GroupCreate-field {
-  /* color: #42389D; */
-  
-}
-
