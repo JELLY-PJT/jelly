@@ -11,213 +11,212 @@
 
 {% block content %}
 
-<div class="content-wrapper">
-  <div class="content">
-    <section class="header">
-      <div class="wrapper">
-        <div class="image group-img">
-          <img src={{ group.thumbnail.url }} alt="그룹 이미지">
+<div class="content">
+  <section class="header">
+    <div class="wrapper">
+      <div class="image group-img">
+        <img src={{ group.thumbnail.url }} alt="그룹 이미지">
+      </div>
+      <div class="group-info">
+        <div class="header-top">
+          <h3 class="group-name">{{ group }}</h3>
+          <button class="main-btn">초대하기</button>
         </div>
-        <div class="group-info">
-          <div class="header-top">
-            <h3 class="group-name">{{ group }}</h3>
-            <button class="main-btn">초대하기</button>
-          </div>
-          <div>
-            <p>{{ group.intro }}</p>
-          </div>
+        <div>
+          <p>{{ group.intro }}</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="tab-list">
-      <ul class="tab-content" id="groupTab" data-tabs-toggle="#groupTabContent" role="tablist">
-        <li class="tab-btn" role="presentation">
-          <button id="post-tab" data-tabs-target="#post" role="tab" aria-controls="post" aria-selected="false">게시물</button>
-        </li>
-        <li class="tab-btn" role="presentation">
-          <button id="calendar-tab" data-tabs-target="#calendar" role="tab" aria-controls="calendar" aria-selected="false">캘린더</button>
-        </li>
-        <li class="tab-btn" role="presentation">
-          <button id="chat-tab" data-tabs-target="#chat" role="tab" aria-controls="chat" aria-selected="false">채팅</button>
-        </li>
-        <li class="tab-btn" role="presentation">
-          <button id="album-tab" data-tabs-target="#album" role="tab" aria-controls="album" aria-selected="false">앨범</button>
-        </li>
-      </ul>
-    </section>
+  <section class="tab-list">
+    <ul class="tab-content" id="groupTab" data-tabs-toggle="#groupTabContent" role="tablist">
+      <li class="tab-btn" role="presentation">
+        <button id="post-tab" data-tabs-target="#post" role="tab" aria-controls="post" aria-selected="false">게시물</button>
+      </li>
+      <li class="tab-btn" role="presentation">
+        <button id="calendar-tab" data-tabs-target="#calendar" role="tab" aria-controls="calendar" aria-selected="false">캘린더</button>
+      </li>
+      <li class="tab-btn" role="presentation">
+        <button id="chat-tab" data-tabs-target="#chat" role="tab" aria-controls="chat" aria-selected="false">채팅</button>
+      </li>
+      <li class="tab-btn" role="presentation">
+        <button id="album-tab" data-tabs-target="#album" role="tab" aria-controls="album" aria-selected="false">앨범</button>
+      </li>
+    </ul>
+  </section>
 
 
-    <div id="groupTabContent">
-      <section class="post-list" id="post" role="tabpanel" aria-labelledby="post-tab">
-        <div id="accordion-collapse" data-accordion="collapse">
-          <h2 id="accordion-collapse-heading-1">
-            <button id="notice-btn" data-accordion-target="#accordion-collapse-body-1" aria-expanded="false" aria-controls="accordion-collapse-body-1">
-              <span>공지사항(3)</span>
-              <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="rgb(107 114 128)" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-            </button>
-          </h2>
-          <div id="accordion-collapse-body-1" class="hidden mb-6" aria-labelledby="accordion-collapse-heading-1">
-            <div class="notice-link-wrapper">
-              <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
-              <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
-              <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
-            </div>
-          </div>
-          <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="create main-btn">글 작성  <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
-          <!-- Dropdown menu -->
-          <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-            <ul class="py-2 text-md text-gray-700" aria-labelledby="dropdownDefaultButton">
-              <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100">후기글</a>
-              </li>
-              <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100">일반글</a>
-              </li>
-              <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100">투표</a>
-              </li>
-            </ul>
+  <div id="groupTabContent">
+    <section class="post-list" id="post" role="tabpanel" aria-labelledby="post-tab">
+      <div id="accordion-collapse" data-accordion="collapse">
+        <h2 id="accordion-collapse-heading-1">
+          <button id="notice-btn" data-accordion-target="#accordion-collapse-body-1" aria-expanded="false" aria-controls="accordion-collapse-body-1">
+            <span>공지사항(3)</span>
+            <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="rgb(107 114 128)" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+          </button>
+        </h2>
+        <div id="accordion-collapse-body-1" class="hidden mb-6" aria-labelledby="accordion-collapse-heading-1">
+          <div class="notice-link-wrapper">
+            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
+            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
+            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
           </div>
         </div>
-        <div class="post-group">
-          <article class="post">
-            <div class="user">
-              <div class="image user-img">
-                <img src="https://images.unsplash.com/photo-1629142796909-aeddffc6a3a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-              </div>
-              <p class="user-name">닉네임닉네임닉네임</p>
-            </div>
-            <a href="" class="post-link">
-              <div class="post-content">
-                <h3 class="post-title">게시글 제목 어쩌고 저쩌고</h3>
-                <div class="meeting">
-                  <p class="meeting-name">모임 이름</p>
-                  <p class="meeting-date">2023.05.29</p>
-                </div>
-                <p class="post-detail">In sed varius turpis. Phasellus vitae posuere tellus. Vivamus vel turpis at tortor laoreet dictum non sit amet nulla. Mauris posuere tellus et nunc tincidunt, non eleifend massa fringilla. Integer eget placerat mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt libero vel augue mollis efficitur. Sed eget nunc ut orci rhoncus congue eget nec risus. Donec aliquam non quam blandit cursus.</p>
-                <div class="reaction">
-                  <div class="reaction-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-                    </svg>
-                    <p>2</p>                      
-                  </div>
-                  <div class="reaction-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                    <p>2</p>                      
-                  </div>
-                </div>
-              </div>
-              <div class="image post-img">
-                <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-                <div class="more-img">
-                  <p>+2</p>
-                </div>
-              </div>
-            </a>
-          </article>
-          <article class="post vote">
-            <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
-            <button class="vote-btn">
-              <h3 class="post-title">투표 제목 어쩌고 저쩌고</h3>
-              <p class="meeting">~2023.05.30</p>
-            </button>
-          </article>
-        </div>
-        
-        <nav class="page-navigation" aria-label="Page navigation">
-          <ul class="inline-flex items-center -space-x-px">
+        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="create main-btn">글 작성  <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+        <!-- Dropdown menu -->
+        <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+          <ul class="py-2 text-md text-gray-700" aria-labelledby="dropdownDefaultButton">
             <li>
-              <a href="#" class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
-                <span class="sr-only">Previous</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">후기글</a>
             </li>
             <li>
-              <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">1</a>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">일반글</a>
             </li>
             <li>
-              <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</a>
-            </li>
-            <li>
-              <a href="#" aria-current="page" class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700">3</a>
-            </li>
-            <li>
-              <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</a>
-            </li>
-            <li>
-              <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">5</a>
-            </li>
-            <li>
-              <a href="#" class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
-                <span class="sr-only">Next</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">투표</a>
             </li>
           </ul>
-        </nav>
-
-      </section>
-
-      <section class="post-list" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
-        <p>calendar</p>
-      </section>
+        </div>
+      </div>
+      <div class="post-group">
+        <article class="post">
+          <div class="user">
+            <div class="image user-img">
+              <img src="https://images.unsplash.com/photo-1629142796909-aeddffc6a3a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
+            </div>
+            <p class="user-name">닉네임닉네임닉네임</p>
+          </div>
+          <a href="" class="post-link">
+            <div class="post-content">
+              <h3 class="post-title">게시글 제목 어쩌고 저쩌고</h3>
+              <div class="meeting">
+                <p class="meeting-name">모임 이름</p>
+                <p class="meeting-date">2023.05.29</p>
+              </div>
+              <p class="post-detail">In sed varius turpis. Phasellus vitae posuere tellus. Vivamus vel turpis at tortor laoreet dictum non sit amet nulla. Mauris posuere tellus et nunc tincidunt, non eleifend massa fringilla. Integer eget placerat mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt libero vel augue mollis efficitur. Sed eget nunc ut orci rhoncus congue eget nec risus. Donec aliquam non quam blandit cursus.</p>
+              <div class="reaction">
+                <div class="reaction-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                  </svg>
+                  <p>2</p>                      
+                </div>
+                <div class="reaction-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                  </svg>
+                  <p>2</p>                      
+                </div>
+              </div>
+            </div>
+            <div class="image post-img">
+              <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
+              <div class="more-img">
+                <p>+2</p>
+              </div>
+            </div>
+          </a>
+        </article>
+        <article class="post vote">
+          <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
+          <button class="vote-btn">
+            <h3 class="post-title">투표 제목 어쩌고 저쩌고</h3>
+            <p class="meeting">~2023.05.30</p>
+          </button>
+        </article>
+      </div>
       
-      <section class="post-list" id="chat" role="tabpanel" aria-labelledby="chat-tab">
-        <p>chat</p>
-      </section>
+      <nav class="page-navigation" aria-label="Page navigation">
+        <ul class="inline-flex items-center -space-x-px">
+          <li>
+            <a href="#" class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+              <span class="sr-only">Previous</span>
+              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">1</a>
+          </li>
+          <li>
+            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</a>
+          </li>
+          <li>
+            <a href="#" aria-current="page" class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700">3</a>
+          </li>
+          <li>
+            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</a>
+          </li>
+          <li>
+            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">5</a>
+          </li>
+          <li>
+            <a href="#" class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+              <span class="sr-only">Next</span>
+              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
 
-      <section class="album-list" id="album" role="tabpanel" aria-labelledby="album-tab">
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-      </section>
-    </div>
+    </section>
+
+    <section class="post-list" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
+      <p>calendar</p>
+    </section>
+    
+    <section class="post-list" id="chat" role="tabpanel" aria-labelledby="chat-tab">
+      <p>chat</p>
+    </section>
+
+    <section class="album-list" id="album" role="tabpanel" aria-labelledby="album-tab">
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+      <div class="imgae album-img">
+        <a href="">
+          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+        </a>
+      </div>
+    </section>
   </div>
 </div>
+
 {% endblock content %}

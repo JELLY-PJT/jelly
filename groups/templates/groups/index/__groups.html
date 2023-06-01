@@ -1,0 +1,9 @@
+{# djlint:on #}
+{% load static %}
+{% if groups %}
+  {# 그룹이 있는 사용자 #}
+  {% include 'groups/index/__groups_1.html' with groups=groups %}
+{% else %}
+  {# 그룹이 없는 사용자 #}
+  {% include 'groups/index/__groups_0.html' %}
+{% endif %}

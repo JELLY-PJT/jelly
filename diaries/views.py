@@ -83,16 +83,16 @@ def delete(request, diary_pk):
 # emotes 구현 필요
 def group_detail(request, group_pk, diary_pk):
     group = get_object_or_404(Group, pk=group_pk)
-    diary_share = get_object_or_404(DiaryShare, group=group, diary_pk=diary_pk)
-    diary = diary_share.diary
-    comments = diary.diarycomment_set.filter(group=group)
+    diary = get_object_or_404(Diary, pk=diary_pk)
+    diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
+    comments = diary_share.diarycomment_set.all()
 
     emotions = []
     for emotion in EMOTIONS:
         label = emotion['label']
         value = emotion['value']
-        count = DiaryEmote.objects.filter(diary=diary, emotion=value).count()
-        exist = DiaryEmote.objects.filter(diary=diary, emotion=value, user=request.user)
+        count = DiaryEmote.objects.filter(share=diary_share, emotion=value).count()
+        exist = DiaryEmote.objects.filter(share=diary_share, emotion=value, user=request.user)
         emotions.append(
             {
                 'label': label,
@@ -102,7 +102,7 @@ def group_detail(request, group_pk, diary_pk):
             }
         )
 
-    if group.users.filter(pk=request.user.pk).exists():
+    if group.group_users.filter(pk=request.user.pk).exists():
         comment_form = DiaryCommentForm()
         context = {
             'diary': diary,
@@ -120,7 +120,7 @@ def share(request, group_pk, diary_pk):
     group = get_object_or_404(Group, pk=group_pk)
     diary = get_object_or_404(Diary, pk=diary_pk)
 
-    if DiaryShare.objects.filter(group=group, diary=diary).exists:
+    if DiaryShare.objects.filter(group=group, diary=diary).exists():
         return redirect('diaries:detail', diary_pk)
     
     diary_share = DiaryShare.objects.create(group=group, diary=diary)
@@ -130,8 +130,8 @@ def share(request, group_pk, diary_pk):
 # 공유된 다이어리의 공유 취소
 def unshare(request, group_pk, diary_pk):
     group = get_object_or_404(Group, pk=group_pk)
-    diary_share = get_object_or_404(DiaryShare, group=group, diary_pk=diary_pk)
-    diary = diary_share.diary
+    diary = get_object_or_404(Diary, pk=diary_pk)
+    diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
     if request.user == diary.user:
         diary.share.remove(group)
         return redirect('diaries:index')
@@ -140,31 +140,32 @@ def unshare(request, group_pk, diary_pk):
 
 def emotes(request, group_pk, diary_pk, emotion):
     group = get_object_or_404(Group, pk=group_pk)
-    diary_share = get_object_or_404(DiaryShare, group=group, diary_pk=diary_pk)
-    diary = diary_share.diary
+    diary = get_object_or_404(Diary, pk=diary_pk)
+    diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
 
     try:
-        diary_emote = DiaryEmote.objects.get(diary=diary, user=request.user)
+        diary_emote = DiaryEmote.objects.get(share=diary_share, user=request.user)
         if diary_emote.emotion != emotion:
             diary_emote.emotion = emotion
             diary_emote.save()
         else:
             diary_emote.delete()
     except DiaryEmote.DoesNotExist:
-        DiaryEmote.objects.create(diary=diary, user=request.user, emotion=emotion)
+        DiaryEmote.objects.create(share=diary_share, user=request.user, emotion=emotion)
     return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
 
 
 # 공유된 다이어리에 댓글 작성
 def comment_create(request, group_pk, diary_pk):
     group = get_object_or_404(Group, pk=group_pk)
+    diary = get_object_or_404(Diary, pk=diary_pk)
 
     if group.group_users.filter(pk=request.user.pk).exists():
-        diary_share = get_object_or_404(DiaryShare, group=group, diary_pk=diary_pk)
+        diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
         form = DiaryCommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.diary = diary_share.diary
+            comment.share = diary_share
             comment.user = request.user
             comment.save()
             messages.success(request, "댓글이 작성되었습니다.")
@@ -180,6 +181,7 @@ def comment_create(request, group_pk, diary_pk):
 # 공유된 다이어리 댓글 수정
 def comment_update(request, group_pk, diary_pk, comment_pk):
     group = get_object_or_404(Group, pk=group_pk)
+    diary = get_object_or_404(Diary, pk=diary_pk)
     comment = get_object_or_404(DiaryComment, pk=comment_pk)
 
     if comment.user != request.user:
@@ -188,7 +190,8 @@ def comment_update(request, group_pk, diary_pk, comment_pk):
 
     if group.group_users.filter(pk=request.user.pk).exists():
         # 공유된 게시물인지 확인 get_object_or_404말고 다른 방법 있는지 체크
-        diary_share = get_object_or_404(DiaryShare, group=group, diary_pk=diary_pk)
+        
+        diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
         if request.method == 'POST':
             form = DiaryCommentForm(request.POST, instance=comment)
             if form.is_valid():
@@ -209,10 +212,11 @@ def comment_update(request, group_pk, diary_pk, comment_pk):
 # 공유된 다이어리 댓글 삭제
 def comment_delete(request, group_pk, diary_pk, comment_pk):
     group = get_object_or_404(Group, pk=group_pk)
+    diary = get_object_or_404(Diary, pk=diary_pk)
     comment = get_object_or_404(DiaryComment, pk=comment_pk)
     
     if group.group_users.filter(pk=request.user.pk).exists():
-        diary_share = get_object_or_404(DiaryShare, group=group, diary_pk=diary_pk)
+        diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
         if request.user == comment.user:
             comment.delete()
             messages.success(request, "댓글이 삭제되었습니다.")

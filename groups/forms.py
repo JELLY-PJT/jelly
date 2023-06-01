@@ -1,6 +1,6 @@
 from django import forms
 from .models import Group, Post, PostImage, PostComment, Vote, VoteSelect
-from imagekit.forms import ProcessedImageField
+
 
 class GroupForm(forms.ModelForm):
     name = forms.CharField(label='그룹 이름', widget=forms.TextInput(

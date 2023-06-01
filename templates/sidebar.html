@@ -4,22 +4,18 @@
 {% endblock css %}
 
 <aside class="aside">
-  <img src="{% static 'img/side_logo.png' %}" alt="로고" class="side-logo">
-  <img src="{{ person.image.url}}" alt="프로필" class='side-img'>
+  <img src="{% static 'img/side_logo.png' %}" alt="로고" class="logo">
+  <img src="{{ person.image.url}}" alt="프로필">
   <div class='bar'></div>
-  {% for group in request.user.user_groups.all %}
+  {% for group in request.user.group_set.all %}
     {% comment %} {% if  %} {% endcomment %}
-      <a href="{% url 'groups:group_detail' group.pk %}">
-        <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='side-img boder-color'>
-      </a>
+      <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='boder-color'>
     {% comment %} {% else %} {% endcomment %}
-      <a href="{% url 'groups:group_detail' group.pk %}">
-        <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='side-img'>
-      </a>
+      <img src="{{ group.thumbnail.url }}" alt="그룹이미지">
     {% comment %} {% endif %} {% endcomment %}
   {% endfor %}
   <div class="bar"></div>
-  {% comment %} 그룹 생성 모달 달아야함 {% endcomment %}
+
   <!-- Modal toggle -->
   <button data-modal-target="GroupCreate-modal" data-modal-toggle="GroupCreate-modal" class="" type="button">
     <img src="{% static 'img/side_PlusButton.png' %}" alt="그룹생성버튼" class='side-img side-plus'>
@@ -49,6 +45,5 @@
         </div>
     </div>
 </div> 
-
 
 

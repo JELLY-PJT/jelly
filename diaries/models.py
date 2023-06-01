@@ -32,8 +32,7 @@ class DiaryShare(models.Model):
 
 class DiaryComment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
-    group = models.ForeignKey('groups.Group', on_delete=models.CASCADE)
-    diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
+    share = models.ForeignKey(DiaryShare, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_diarycomments')
@@ -44,8 +43,8 @@ class DiaryComment(models.Model):
 
 class DiaryEmote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='emotions')
-    diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
-    emotion = models.CharField(max_length=10)
+    share = models.ForeignKey(DiaryShare, on_delete=models.CASCADE)
+    emotion = models.PositiveIntegerField()
     class Meta:
-        unique_together = [['user', 'diary']]
+        unique_together = [['user', 'share']]
     # 1:👍 2:🥰 3:🤣 4:😲 5:😭 6:🥳

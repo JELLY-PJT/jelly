@@ -27,5 +27,37 @@ body {
 
 main {
   min-height: var(--content-min-height);
+  padding-left: 130px;
   /* padding이나 margin 값은 사이드, 네브바 확인 후 추가해야 할 것 같습니다 */
+}
+
+.main-btn {
+  padding: 0.375rem 0.75rem;
+  background-color: var(--color-main);
+  border-radius: 0.25rem;
+  color: rgb(249 250 251);
+  font-weight: 600;
+}
+
+.main-btn:hover {
+  background-color: var(--color-main-dark);
+}
+
+.main-outline-btn {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--color-main);
+  border-radius: 0.25rem;
+  color: var(--color-main);
+  font-weight: 600;
+}
+
+.main-outline-btn:hover {
+  background-color: var(--color-main);
+  color: rgb(249 250 251);
+}
+
+.footer-wrapper {
+  margin: 0 auto;
+  width: 100%;
+  padding: 1.5rem 1rem 1.5rem 146px ;
 }
