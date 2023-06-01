@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h1>로그인</h1>
+  <form action="{% url 'accounts:login' %}" method="POST">
+    {% csrf_token %}
+    {% for field in form  %}
+    <div>
+        <label for="{{ field.label }}">{{ field.label }}</label>
+        {{ field }}
+    </div>
+    {% endfor %}
+    <input type="submit" value="로그인">
+  </form>
+  <a href="{% url 'accounts:signup' %}">회원가입</a>
+</div>
+{% endblock content %}

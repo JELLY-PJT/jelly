@@ -7,7 +7,7 @@
   <img src="{% static 'img/side_logo.png' %}" alt="로고" class="side-logo">
   <img src="{{ person.image.url}}" alt="프로필">
   <div class='bar'></div>
-  {% for group in request.user.user_groups.all %}
+  {% for group in request.user.group_set.all %}
     {% comment %} {% if  %} {% endcomment %}
       <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='boder-color'>
     {% comment %} {% else %} {% endcomment %}
@@ -15,6 +15,7 @@
     {% comment %} {% endif %} {% endcomment %}
   {% endfor %}
   <div class="bar"></div>
+
 
   <!-- Modal toggle -->
   <button data-modal-target="GroupCreate-modal" data-modal-toggle="GroupCreate-modal" class="" type="button">
@@ -46,4 +47,6 @@
     </div>
 </div> 
 
+
+</aside>
 
