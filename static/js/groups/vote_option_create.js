@@ -6,6 +6,7 @@ const optionInput = document.getElementById("options")
 plusBtn.addEventListener('click', function() {
   // input tag와 삭제버튼 div에 담아서 선택지에 추가
   const optionDiv = document.createElement('div')
+  // 위에 있는 input tag 복제
   const copyInput = optionInput.cloneNode(true)
   copyInput.value = ''
   const deleteBtn = document.createElement('button')

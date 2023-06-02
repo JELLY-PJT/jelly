@@ -295,16 +295,34 @@ def throw_vote(request, group_pk, vote_pk, option_pk):
     # 투표 취소
     if vote_option.select_users.filter(pk=request.user.pk).exists():
         vote_option.select_users.remove(request.user)
-        print(1, '투표 취소')
     # 투표 시행
     else:
-        print(2, '투표 시행')
         # 중복 투표 가능한 경우 바로 add
         if vote.is_overlap:
             vote_option.select_users.add(request.user)
-            print('2-1')
         else: # 중복 안되는 경우 기존 투표 삭제 후 add
             request.user.selections.clear()
             vote_option.select_users.add(request.user)
-            print('2-2')
+    return redirect('groups:group_detail', group.pk)
+
+
+@login_required
+def add_option(request, group_pk, vote_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    vote = Vote.objects.get(pk=vote_pk)
+    options = request.POST.getlist('options')
+    # 선택지 유효성 검사
+    option_valid = True
+    for option in options:
+        test_option = option.replace(' ', '')
+        if test_option == '':
+            option_valid = False
+    
+    if option_valid:
+        for option in options:
+            VoteSelect.objects.create(vote=vote, content=option)
+    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
     return redirect('groups:group_detail', group.pk)

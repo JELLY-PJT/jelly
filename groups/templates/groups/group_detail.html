@@ -176,6 +176,15 @@
                           <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
                         </form>
                       {% endfor %}
+                      <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                      {% if writing.is_addible %}
+                        <button type="button" id="add-member-option">+항목 추가</button>
+                        <form action="{% url 'groups:add_option' group.pk writing.pk %}" method="POST">
+                          {% csrf_token %}
+                          <div id="add-option-div"></div>
+                          <input type="submit" value="저장">
+                        </form>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
@@ -311,5 +320,6 @@
   </div>
 </div>
 
-<script src="{% static 'js/groups/vote_option_create.js' %}"></script>
+<script src="{% static 'js/groups/vote_option_create.js' %}"></script>  <!-- vote 생성 -->
+<script src="{% static 'js/groups/vote_add_member_option.js' %}"></script>  <!-- vote의 is_addible True인 경우 멤버가 선택지 추가 -->
 {% endblock content %}
