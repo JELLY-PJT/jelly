@@ -27,7 +27,7 @@ body {
 
 main {
   min-height: var(--content-min-height);
-  padding-left: 130px;
+  /* padding-left: 130px; */
   /* padding이나 margin 값은 사이드, 네브바 확인 후 추가해야 할 것 같습니다 */
 }
 

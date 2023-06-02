@@ -1,18 +1,109 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/accounts/login.css' %}"> 
+  {% comment %} <link rel="stylesheet" href="dist/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="dist/assets/owl.theme.default.min.css">
+
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="dist/assets/owl.carousel.min.js"></script>  {% endcomment %}
+{% endblock css %}
+
+
 
 {% block content %}
 <div>
-  <h1>로그인</h1>
-  <form action="{% url 'accounts:login' %}" method="POST">
-    {% csrf_token %}
-    {% for field in form  %}
-    <div>
-        <label for="{{ field.label }}">{{ field.label }}</label>
-        {{ field }}
-    </div>
-    {% endfor %}
-    <input type="submit" value="로그인">
-  </form>
-  <a href="{% url 'accounts:signup' %}">회원가입</a>
+  <div class='flex-row'>
+    <div id="default-carousel" class="relative carousel" data-carousel="slide">
+      <!-- Carousel wrapper -->
+      <div class="relative carousel-wrapper overflow-hidden rounded-lg md:h-96">
+           <!-- Item 1 -->
+          <div class="hidden duration-700 ease-in-out" data-carousel-item>
+              <img src="{% static 'img/calendar_sample.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+          </div>
+          <!-- Item 2 -->
+          <div class="hidden duration-700 ease-in-out" data-carousel-item>
+              <img src="{% static 'img/calendar_sample.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+          </div>
+          <!-- Item 3 -->
+          <div class="hidden duration-700 ease-in-out" data-carousel-item>
+              <img src="{% static 'img/calendar_sample.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+          </div>
+          <!-- Item 4 -->
+          <div class="hidden duration-700 ease-in-out" data-carousel-item>
+              <img src="{% static 'img/calendar_sample.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+          </div>
+          <!-- Item 5 -->
+          <div class="hidden duration-700 ease-in-out" data-carousel-item>
+              <img src="{% static 'img/calendar_sample.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+          </div>
+      </div>
+      <!-- Slider indicators -->
+      <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-[-10px] left-1/2">
+          <button type="button" class="w-3 h-3 rounded-full indicator-btn" style='background-color: var(--color-main)' aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+          <button type="button" class="w-3 h-3 rounded-full indicator-btn" style='background-color: var(--color-main)' aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+          <button type="button" class="w-3 h-3 rounded-full indicator-btn" style='background-color: var(--color-main)' aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+          <button type="button" class="w-3 h-3 rounded-full indicator-btn" style='background-color: var(--color-main)' aria-current="false" aria-label="Slide 4" data-carousel-slide-to="3"></button>
+          <button type="button" class="w-3 h-3 rounded-full indicator-btn" style='background-color: var(--color-main)' aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button>
+      </div>
+  </div> 
+
+  <div class='login-box'>
+    <div class='logo'><img src="{% static 'img/index_logo.png' %}" alt=""></div>
+    <form action="{% url 'accounts:login' %}" method="POST">
+      {% csrf_token %}
+      {% for field in form  %}
+      <div>
+          {{ field }}
+      </div>
+      {% endfor %}
+        <button class='login-btn'>로그인</button>
+    </form>
+    <a class='login-btn' href="{% url 'accounts:signup' %}">회원가입</a>
+    {% comment %} <div class='bar'></div> {% endcomment %}
+  </div>
+  </div>
 </div>
+
 {% endblock content %}
+
+{% block script %}
+<script>
+  const carousel = document.getElementById('default-carousel');
+  const indicatorButtons = carousel.querySelectorAll('.indicator-btn');
+
+  carousel.addEventListener('slide', (event) => {
+    const slideIndex = event.detail.index;
+
+    // Reset all indicator colors to darkgray
+    indicatorButtons.forEach((button) => {
+      button.style.backgroundColor = 'darkgray';
+    });
+
+    // Set the background color of the current slide indicator to black
+    indicatorButtons[slideIndex].style.backgroundColor = 'black';
+  });
+</script>
+{% comment %} <script type="text/javascript">
+  $(document).ready(function(){
+      var owl = $('.owl-carousel');
+      
+      owl.owlCarousel({
+          items:3,                 // 한번에 보여줄 아이템 수
+          loop:true,               // 반복여부
+          margin:35,               // 오른쪽 간격
+          autoplay:true,           // 자동재생 여부
+          autoplayTimeout:1800,    // 재생간격
+          autoplayHoverPause:true  //마우스오버시 멈출지 여부
+      });    
+      
+      $('.customNextBtn').click(function() {
+          owl.trigger('next.owl.carousel');
+      })
+      
+      $('.customPrevBtn').click(function() {
+          owl.trigger('prev.owl.carousel', [300]);
+      })
+  });
+  </script> {% endcomment %}
+{% endblock script %}
