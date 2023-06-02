@@ -326,3 +326,15 @@ def add_option(request, group_pk, vote_pk):
             VoteSelect.objects.create(vote=vote, content=option)
     # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
     return redirect('groups:group_detail', group.pk)
+
+
+@login_required
+def vote_delete(request, group_pk, vote_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    vote = Vote.objects.get(pk=vote_pk)
+    if request.user == vote.user:
+        vote.delete()
+    return redirect('groups:group_detail', group.pk)

@@ -145,6 +145,11 @@
                 <h3 class="post-title">{{ writing.title }}</h3>
                 <p class="meeting">{{ writing.d_day }}</p>
               </button>
+              <!-- 투표 삭제 -->
+              <form action="{% url 'groups:vote_delete' group.pk writing.pk %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="삭제">
+              </form>
               <!-- 투표 Modal -->
               <div id="vote-modal-{{ writing.pk }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative w-full max-w-md max-h-full">
