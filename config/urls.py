@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('diaries/', include('diaries.urls')),
     path('groups/', include('groups.urls')),
+    path('schedules/', include('schedules.urls')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
