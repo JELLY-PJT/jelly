@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Group, Post, PostImage, PostComment, PostEmote, Vote, VoteSelect
+from diaries.models import Diary, DiaryShare
 from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm, VoteForm
 from django.http import JsonResponse
 from django.contrib import messages
+from itertools import chain
+from operator import attrgetter
 
 
 # 사이트 인덱스 페이지
@@ -40,11 +43,22 @@ def group_detail(request, group_pk):
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
 
-    # 추후 post, vote, diary 추가 예정
     vote_form = VoteForm()
+
+    # diary, post, vote 조회
+    shared_diaries = DiaryShare.objects.filter(group=group)
+    shared_diary_id = [obj.pk for obj in shared_diaries]
+    diaries = Diary.objects.filter(pk__in=shared_diary_id)
+    posts = Post.objects.filter(group=group)
+    votes = Vote.objects.filter(group=group)
+    # diary, post, vote list에 담아 최신순 정렬
+    writings = list(chain(diaries, posts, votes))
+    writings.sort(key=attrgetter('created_at'), reverse=True)
+
     context = {
         'group': group,
         'vote_form': vote_form,
+        'writings': writings,
     }
     return render(request, 'groups/group_detail.html', context)
 

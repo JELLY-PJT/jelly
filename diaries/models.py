@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django_ckeditor_5.fields import CKEditor5Field
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 # Create your models here.
 
@@ -11,23 +13,56 @@ class Diary(models.Model):
     content = CKEditor5Field('Content', config_name='extends')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    share = models.ManyToManyField('groups.Group', verbose_name='shared diary to group', through='DiaryShare')
+    share = models.ManyToManyField('groups.Group', related_name='group_diaries', verbose_name='shared diary to group', through='DiaryShare')
     hit = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='diary_views')
 
     def __str__(self):
         return self.title
+    
+    def get_model_name(self):
+        return self._meta.model_name
 
     def increase_hit(self, user):
         diary_share, created = DiaryShare.objects.get_or_create(diary=self)
 
         if user not in diary_share.hit.all():
             diary_share.hit.add(user)
+    
+    @property
+    def created_string(self):
+        time = datetime.now(tz=timezone.utc) - self.created_at
+        if time < timedelta(minutes=1):
+            return '방금 전'
+        elif time < timedelta(hours=1):
+            return str(time.seconds // 60) + '분 전'
+        elif time < timedelta(days=1):
+            return str(time.seconds // 3600) + '시간 전'
+        elif time < timedelta(weeks=1):
+            time = datetime.now(tz=timezone.utc).date() - self.created_at.date()
+            return str(time.days) + '일 전'
+        else:
+            return self.created_at.strftime('%Y-%m-%d')
 
 
 class DiaryShare(models.Model):
     diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
     group = models.ForeignKey('groups.Group', on_delete=models.CASCADE)
     shared_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def shared_string(self):
+        time = datetime.now(tz=timezone.utc) - self.shared_at
+        if time < timedelta(minutes=1):
+            return '방금 전'
+        elif time < timedelta(hours=1):
+            return str(time.seconds // 60) + '분 전'
+        elif time < timedelta(days=1):
+            return str(time.seconds // 3600) + '시간 전'
+        elif time < timedelta(weeks=1):
+            time = datetime.now(tz=timezone.utc).date() - self.shared_at.date()
+            return str(time.days) + '일 전'
+        else:
+            return self.shared_at.strftime('%Y-%m-%d')
 
 
 class DiaryComment(models.Model):
