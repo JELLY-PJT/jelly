@@ -38,6 +38,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_model_name(self):
+        return self._meta.model_name
 
     @property
     def created_string(self):
@@ -114,13 +117,22 @@ class Vote(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_model_name(self):
+        return self._meta.model_name
 
     def d_day(self):
-        date = datetime.now(tz=timezone.utc).date() - self.created_at.date()
-        if date < 0:
+        time = self.deadline - datetime.now(tz=timezone.utc)
+        if time < timedelta(seconds=1):
             return '투표 마감'
+        elif time < timedelta(minutes=1):
+            return '곧 마감'
+        elif time < timedelta(hours=1):
+            return str(time.seconds // 60) + '분 후 마감'
+        elif time < timedelta(days=1):
+            return str(time.seconds // 3600) + '시간 후 마감'
         else:
-            return 'D-' + str(date.days)
+            return 'D-' + str(time.days)
     
     def is_end(self):
         if datetime.now(tz=timezone.utc) > self.deadline:
