@@ -163,8 +163,7 @@
                     <!-- Modal body -->
                     <div class="p-6 space-y-6">
                       {% for option in writing.voteselect_set.all %}
-                        <form action="#" method="POST">
-                          {% comment %} {% url 'groups:throw_vote' group.pk writing.pk option.pk %} {% endcomment %}
+                        <form action="{% url 'groups:throw_vote' group.pk writing.pk option.pk %}" method="POST">
                           {% csrf_token %}
                           <!-- 선택지 -->
                           <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
@@ -172,9 +171,9 @@
                           </p>
                           <!-- 투표한 사람 -->
                           <!-- 유저 어떤 방식으로 보여줄지 미정 -->
-                          <div>{{ option.select_users|length }}</div>
+                          <div>{{ option.select_users.all|length }}</div>
                           <!-- 투표버튼 -->
-                          <input type="submit" value="투표">
+                          <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
                         </form>
                       {% endfor %}
                     </div>
