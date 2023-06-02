@@ -8,18 +8,6 @@ html {
   box-sizing: inherit;
 }
 
-.index.container {
-  display: grid;
-  grid-template-columns: 1fr 6fr 1fr;
-  grid-template-areas: ". content .";
-  min-height: calc(var(--content-min-height) - 200px);
-  margin: 5% auto 5% auto;
-}
-.index.content {
-  grid-area: content;
-  display: flex;
-}
-
 @media (max-width: 1000px) {
 	.index.content {
 		flex-direction: column;
@@ -30,22 +18,156 @@ html {
   flex-direction: row;
 	}
 }
+
+.index.container {
+  display: grid;
+  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-areas: ". content .";
+  min-height: calc(var(--content-min-height) - 200px);
+  margin: 0 auto 0 auto;
+}
+
+.index.content {
+  grid-area: content;
+  display: flex;
+}
+
 .index.content.item {
+  margin: 5% 0 5% 0;
+  padding: 0 2% 0 2%;
   flex-grow: 1;
   flex-basis: 50%;
 }
 
-/* #index-nav .index-header-wrap {
-  height: 200px;
+.index.content .wrapper {
+  width: 100%;
+  height: fit-content;
+  /* background-color: plum; */
+}
+
+#group-area {
+	width: 100%;
+	display:flex;
+	flex-direction: column;
+  justify-content: center;
+}
+
+#group-area .row{
+  margin: 0 0 5% 0;
+}
+
+#group-area .row.menu {
+  flex-basis: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+
+#group-search-bar {
+  width: 70%;
+}
+#group-search-bar * {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
 }
 
-#index-nav .index.logo-line {
-  border-color: var(--color-main-light);
-  border-width: 3px;
+#group-search-bar input[type='search'] {
   width: 70%;
-  height: 0;
+  background-color: var(--color-main-light);
+  border-radius: 3rem;
+  border: none;
+}
+
+#group-search-bar input[type='search']:focus {
+  border-color: var(--color-main);
+  box-shadow: var(--color-main), var(--color-main), var(--color-main);
+}
+
+
+#group-create-button {
+  width: 15%;
+	display:flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5% 0 5% 0;
+}
+
+
+#group-create-button .square {
+  width: 100%;
+  padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
+  position: relative;
+
+}
+
+#group-create-button .inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: dashed 3px var(--color-main);
+  border-radius: 15%;
+  justify-content: center;
+  align-items: center;
+  display:flex;
+}
+
+#group-create-button.menu-item .inner {
+  border: none;
+}
+
+
+
+/* #group-create-button .icon g {
+  transform: scale(2);
 } */
+
+
+#group-create-button .icon {
+  width: 70%;
+  height: 70%;
+}
+
+#group-create-button.menu-item .icon {
+  width: 50%;
+  height: 50%;
+}
+
+#group-create-button .icon path {
+  fill: var(--color-main);
+}
+
+#group-buttons-grid.row {
+  flex-basis: 4;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(
+    100px,
+    auto
+  ); /* 각 행의 최소 높이를 100px로 지정하고, 내용에 따라 높이가 자동 조정되도록 설정 */
+} 
+
+#group-buttons-grid .item.button {
+margin: 2px;
+}
+
+#group-buttons-grid .square {
+  width: 100%;
+  padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
+  position: relative;
+}
+
+#group-buttons-grid .inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-main);
+  border-radius: 15%;
+}

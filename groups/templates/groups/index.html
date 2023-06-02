@@ -1,12 +1,14 @@
-{# djlint:on #}
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/index/__groups.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index/testing.css' %}" />
 {% endblock css %}
 {% block content %}
-    {% comment %} <div class="header">
+
+    {% comment %}
+    <div class="header">
         <div class="header--wrap">
             <div class="index logo-box">
                 {# 로고 이미지 박스 #}
@@ -15,14 +17,16 @@
             <hr class="index logo-line" />
             {# 헤더 하단 구분 라인 #}
         </div>
-    </div> {% endcomment %}
+    </div>
+    {% endcomment %}
+    
     {% comment %}
-navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭을 활성화 합니다.
+    navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭을 활성화 합니다.
     {% endcomment %}
 
-{% include 'navbar.html' %}
-    
-<div class="index container">
+    {% include 'navbar.html' %}
+
+    <div class="index container">
         <div class="index content">
             {% comment %} calendar 표시 {% endcomment %}
             <div class="index content item">
@@ -38,8 +42,9 @@ navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭�
             </div>
         </div>
     </div>
-    {% comment %} 그룹 생성 버튼 내부 + 위치를 동적으로 조절하는 스크립트 입니다. {% endcomment %}
-  
-    // 모달
-    {% comment %} {% include 'groups/index/__group_creae_modal.html' %} {% endcomment %}
+
+
+    {% comment %} 모달 {% endcomment %}
+    {% include 'groups/index/__group_create_modal.html' %}
+
 {% endblock content %}
