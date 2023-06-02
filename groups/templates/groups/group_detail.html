@@ -145,6 +145,11 @@
                 <h3 class="post-title">{{ writing.title }}</h3>
                 <p class="meeting">{{ writing.d_day }}</p>
               </button>
+              <!-- 투표 삭제 -->
+              <form action="{% url 'groups:vote_delete' group.pk writing.pk %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="삭제">
+              </form>
               <!-- 투표 Modal -->
               <div id="vote-modal-{{ writing.pk }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative w-full max-w-md max-h-full">
@@ -163,8 +168,7 @@
                     <!-- Modal body -->
                     <div class="p-6 space-y-6">
                       {% for option in writing.voteselect_set.all %}
-                        <form action="#" method="POST">
-                          {% comment %} {% url 'groups:throw_vote' group.pk writing.pk option.pk %} {% endcomment %}
+                        <form action="{% url 'groups:throw_vote' group.pk writing.pk option.pk %}" method="POST">
                           {% csrf_token %}
                           <!-- 선택지 -->
                           <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
@@ -172,11 +176,20 @@
                           </p>
                           <!-- 투표한 사람 -->
                           <!-- 유저 어떤 방식으로 보여줄지 미정 -->
-                          <div>{{ option.select_users|length }}</div>
+                          <div>{{ option.select_users.all|length }}</div>
                           <!-- 투표버튼 -->
-                          <input type="submit" value="투표">
+                          <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
                         </form>
                       {% endfor %}
+                      <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                      {% if writing.is_addible %}
+                        <button type="button" id="add-member-option">+항목 추가</button>
+                        <form action="{% url 'groups:add_option' group.pk writing.pk %}" method="POST">
+                          {% csrf_token %}
+                          <div id="add-option-div"></div>
+                          <input type="submit" value="저장">
+                        </form>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
@@ -312,5 +325,6 @@
   </div>
 </div>
 
-<script src="{% static 'js/groups/vote_option_create.js' %}"></script>
+<script src="{% static 'js/groups/vote_option_create.js' %}"></script>  <!-- vote 생성 -->
+<script src="{% static 'js/groups/vote_add_member_option.js' %}"></script>  <!-- vote의 is_addible True인 경우 멤버가 선택지 추가 -->
 {% endblock content %}

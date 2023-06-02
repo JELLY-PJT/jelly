@@ -16,5 +16,7 @@ urlpatterns = [
     path('<int:group_pk>/posts/<int:post_pk>/comment/<int:comment_pk>/update/', views.comment_update, name='comment_update'),
     path('<int:group_pk>/posts/<int:post_pk>/comment/<int:comment_pk>/delete/', views.comment_delete, name='comment_delete'),
     path('<int:group_pk>/votes/create/', views.vote_create, name='vote_create'),
-    # path('<int:group_pk>/votes/<int:vote_pk>/throw/<int:option_pk>/', views.throw_vote, name='throw_vote'),
+    path('<int:group_pk>/votes/<int:vote_pk>/throw/<int:option_pk>/', views.throw_vote, name='throw_vote'),
+    path('<int:group_pk>/votes/<int:vote_pk>/add_option/', views.add_option, name='add_option'),
+    path('<int:group_pk>/votes/<int:vote_pk>/delete/', views.vote_delete, name='vote_delete'),
 ]
