@@ -6,20 +6,20 @@ from django.contrib.auth import get_user_model
 
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
-        label='사용자 ID',
+        label='',
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control',
-                'id': '사용자 ID',
+                'class': 'form-control focus:ring-0 focus:border-transparent',
+                'placeholder': '사용자 ID',
             }
         )
     )
     password = forms.CharField(
-        label='비밀번호',
+        label='',
         widget=forms.PasswordInput(
             attrs={
-                'class': 'form-control',
-                'id': '비밀번호',
+                'class': 'form-control focus:ring-0 focus:border-transparent',
+                'placeholder': '비밀번호',
             }
         )
     )
@@ -30,8 +30,8 @@ class CustomUserCreationForm(UserCreationForm):
         label='사용자 ID',
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control',
-                'id': '사용자 ID',
+                'class': 'form-control focus:outline-none',
+                'placeholder': '사용자 ID',
             }
         )
     )
@@ -40,7 +40,7 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
-                'id': '비밀번호',
+                'placeholder': '비밀번호',
             }
         )
     )
@@ -49,7 +49,7 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
-                'id': '비밀번호 확인',
+                'placeholder': '비밀번호 확인',
             }
         )
     )
@@ -58,7 +58,7 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
-                'id': '닉네임',
+                'placeholder': '닉네임',
             }
         )
     )
@@ -67,7 +67,7 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.EmailInput(
             attrs={
                 'class': 'form-control',
-                'id': '이메일',
+                'placeholder': '이메일',
             }
         )
     )
@@ -75,7 +75,7 @@ class CustomUserCreationForm(UserCreationForm):
         label='프로필 이미지',
         widget=forms.ClearableFileInput(
             attrs={
-                'class': 'form-control',
+                'placeholder': 'form-control',
             },
         ),
         required=False,

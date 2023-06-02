@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/accounts/login.css' %}"> 
+{% endblock css %}
 
 {% block content %}
-<div>
-  <h1>회원가입</h1>
-  <form action="{% url 'accounts:signup' %}" method="POST" enctype = 'multipart/form-data'>
-    {% csrf_token %}
-    {% for field in form %}
-    <div>
-      <label for="{{ field.label }}">{{ field.label }}</label>
-      {{ field }}
-    </div>
-    {% endfor %}
-    <input type="submit" value="회원가입">
-  </form>
+<div class='flex-row'>
+  <div class='login-box'>
+    <div class='signup-logo'><img src="{% static 'img/index_logo.png' %}" alt=""></div>
+    <form class='signup-form' action="{% url 'accounts:signup' %}" method="POST" enctype = 'multipart/form-data'>
+      {% csrf_token %}
+      {% for field in form %}
+      <div>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <a class='login-btn' href="{% url 'accounts:signup' %}">회원가입</a>
+    </form>
+  </div>
 </div>
 {% endblock content %}
