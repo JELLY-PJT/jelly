@@ -1,0 +1,13 @@
+<button class="item button">
+    {% comment %} <a href="#"> {% endcomment %}
+        <a href="{% url 'groups:group_detail' group.pk %}">
+    <div class="square">
+        <div class="inner">
+          <p>{{ group.name }}</p>
+            <!-- SVG 그래픽 요소들 -->
+            {% comment %} 라인 위치는 groups.js 에서 컨트롤 됩니다.{% endcomment %}
+        </div>
+    </div>
+    {% comment %} </a> {% endcomment %}
+</a>
+</button>
