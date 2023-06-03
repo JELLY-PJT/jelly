@@ -46,15 +46,27 @@ img {
   padding: 0.5rem 0;
 }
 
-.header-top {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-}
-
 .group-name {
   font-size: 1.75rem;
   font-weight: 500;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-top .main-btn {
+  font-size: 0.875rem;
+}
+
+.delete.main-btn {
+  background-color: #ff5656;
+}
+
+.delete.main-btn:hover {
+  background-color: #dd4a4a;
 }
 
 /* tab-list : 컨텐츠를 바꿀 수 있는 버튼 관련 css */
@@ -91,21 +103,22 @@ img {
 }
 
 .tab-btn button {
-  width: 42px;
+  width: 60px;
 }
 
-#post-tab[aria-selected=true], #calendar-tab[aria-selected=true], #chat-tab[aria-selected=true], #album-tab[aria-selected=true] {
+#post-tab[aria-selected=true], #share-tab[aria-selected=true], #calendar-tab[aria-selected=true] {
   position: relative;
   color: black;
 }
 
-#post-tab[aria-selected=true]::before, #calendar-tab[aria-selected=true]::before, #chat-tab[aria-selected=true]::before, #album-tab[aria-selected=true]::before {
+#post-tab[aria-selected=true]::before, 
+#share-tab[aria-selected=true]::before, #calendar-tab[aria-selected=true]::before {
   content: "";
   position: absolute;
   display: block;
   top: -1rem;
   left: -1rem;
-  width: 75px;
+  width: 92px;
   height: 0.125rem;
   background: var(--color-main)
 }
