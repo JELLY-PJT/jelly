@@ -9,7 +9,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         label='',
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control focus:ring-0 focus:border-transparent',
+                'class': 'form-control',
                 'placeholder': '사용자 ID',
             }
         )
@@ -18,7 +18,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         label='',
         widget=forms.PasswordInput(
             attrs={
-                'class': 'form-control focus:ring-0 focus:border-transparent',
+                'class': 'form-control',
                 'placeholder': '비밀번호',
             }
         )

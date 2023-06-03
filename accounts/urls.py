@@ -1,3 +1,5 @@
+from django.urls import path
+from . import views
 
 app_name = 'accounts'
 urlpatterns = [
@@ -8,4 +10,7 @@ urlpatterns = [
     path('update/', views.update, name='update'),
     path('password/', views.change_password, name='change_password'),
     path('profile/<username>/', views.profile, name='profile'),
+    path('profile/<username>/post/', views.profile, name='profile_share'),
+    path('profile/<username>/share/', views.profile, name='profile_share'),
+    path('profile/<username>/calendar/', views.profile, name='profile_calendar'),
 ]

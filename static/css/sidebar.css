@@ -63,6 +63,9 @@
   border: red;
 }
 
+input:hover, select:hover, textarea:hover, button:hover {
+  border-color: var(--color-main);
+}
 
 /* modal */
 
