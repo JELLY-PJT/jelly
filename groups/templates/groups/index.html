@@ -24,19 +24,19 @@
     navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭을 활성화 합니다.
     {% endcomment %}
 
-    {% include 'navbar.html' %}
+    {% include 'groups/index/__navbar.html' %}
 
-    <div class="index container">
-        <div class="index content">
+    <div id="group-index">
+        <div class="content">
             {% comment %} calendar 표시 {% endcomment %}
-            <div class="index content item">
+            <div class="content item">
                 <div class="wrapper">
                     {% comment %} calendar.html 차후 수정 현재는 그룹 area비교 용 임시 include {% endcomment %}
                     {% include 'groups/index/__calendar.html' with groups=groups %}
                 </div>
             </div>
             {% comment %} 가입한 group 표시 {% endcomment %}
-            <div class="index content item">
+            <div class="content item">
                 <div class="wrapper">{% include "groups/index/__groups.html" with groups=groups %}</div>
                 {% comment %} {% include 'groups/index_content_groups.html' with groups=groups %}  {% endcomment %}
             </div>

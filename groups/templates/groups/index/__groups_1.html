@@ -24,6 +24,17 @@
     {% for group in groups %}
       {% include 'groups/index/__group_button.html' with group=group %}
     {% endfor %}
+    <button class="item button">
+      <a href="#">
+        <div class="square">
+          <div class="inner">
+            <div class="group-button-no-thumbnail">
+              <span>썸네일이 없는 그룹</span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </button>
   </div>
 </div>
 
