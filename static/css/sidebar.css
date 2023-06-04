@@ -12,6 +12,7 @@
   height: 100vh;
   background-color: var(--color-main-light);
   align-items: center;
+  /* justify-content: center; */
   overflow-y: scroll;
 }
 
@@ -46,12 +47,12 @@
 
 .side-logo {
   width: 85%;
-  height: 40px; 
-  /* 높이 안 먹고 있음 */
+  height: 38px; 
   border: 0px;
   border-radius: 0%;
   margin-top: 20px;
   margin-bottom: 25px;
+  margin: 20px auto 25px;
 }
 
 .bar {
