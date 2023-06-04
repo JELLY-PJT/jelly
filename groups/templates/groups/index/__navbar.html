@@ -1,0 +1,20 @@
+{% load static %}
+<nav id="index-nav">
+  <div class="row">
+    <img src="{% static 'img/main_logo.png' %}" alt="로고" class="logo">
+    {% if user.is_authenticated %}
+      <div class="row nav--tab">
+        <a href="{% url 'accounts:profile' user.username %}"><p>프로필</p></a>
+        <form action="{% url 'accounts:logout' %}" method='POST'>
+          <input type="submit" value='로그아웃'>
+        </form>
+      </div>
+    {% else %}
+    <div class="row nav--tab">
+      <a href="{% url 'accounts:signup' %}"><p>회원가입</p></a>
+      <a href="{% url 'accounts:login' %}"><p>로그인</p></a>
+    </div>      
+    {% endif %}
+  </div>
+  <div class="nav--line"></div> 
+</nav>
