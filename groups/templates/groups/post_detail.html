@@ -13,13 +13,18 @@
   조회수 : {{ post.hits.all|length }}
 </div>
 
-{% comment %} 뒤로가기, 게시글 수정, 삭제 버튼 {% endcomment %}
+{% comment %} 뒤로가기, 게시글 수정, 삭제, 공지등록 버튼 {% endcomment %}
 <div>
   <a href="{% url 'groups:group_detail' group.pk %}">뒤로가기</a>
   <a href="{% url 'groups:post_update' group.pk post.pk %}">수정</a>
   <form action="{% url 'groups:post_delete' group.pk post.pk %}" method="POST">
     {% csrf_token %}
     <input type="submit" value="삭제">
+  </form>
+  <!-- 공지 등록 버튼 -->
+  <form action="{% url 'groups:notice_post' group.pk post.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="공지 {% if post.is_notice %}취소{% else %}등록{% endif %}">
   </form>
 </div>
 

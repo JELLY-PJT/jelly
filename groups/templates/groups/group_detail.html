@@ -54,15 +54,67 @@
       <div id="accordion-collapse" data-accordion="collapse">
         <h2 id="accordion-collapse-heading-1">
           <button id="notice-btn" data-accordion-target="#accordion-collapse-body-1" aria-expanded="false" aria-controls="accordion-collapse-body-1">
-            <span>공지사항(3)</span>
+            <span>공지사항({{ notices|length }})</span>
             <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="rgb(107 114 128)" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
           </button>
         </h2>
         <div id="accordion-collapse-body-1" class="hidden mb-6" aria-labelledby="accordion-collapse-heading-1">
           <div class="notice-link-wrapper">
-            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
-            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
-            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
+            {% for notice in notices %}
+              {% if notice.get_model_name == 'post' %}
+                <!-- post인 경우 detail page로 이동 -->
+                <a href="{% url 'groups:post_detail' group.pk notice.pk %}" class="notice-link">{{ notice.title }}</a>
+              {% else %}
+                <!-- vote인 경우 모달 팝업 -->
+                <button data-modal-target="notice-vote-modal-{{ notice.pk }}" data-modal-toggle="notice-vote-modal-{{ notice.pk }}" class="notice-link">
+                  {{ notice.title }}
+                </button>
+                <!-- notice vote modal -->
+                <div id="notice-vote-modal-{{ notice.pk }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                  <div class="relative w-full max-w-md max-h-full">
+                    <!-- Modal content -->
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                      <!-- Modal header -->
+                      <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-gray-600">
+                        <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+                          {{ notice.title }}
+                        </h3>
+                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="notice-vote-modal-{{ notice.pk }}">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                      </div>
+                      <!-- Modal body -->
+                      <div class="p-6 space-y-6">
+                        {% for option in notice.voteselect_set.all %}
+                          <form action="{% url 'groups:throw_vote' group.pk notice.pk option.pk %}" method="POST">
+                            {% csrf_token %}
+                            <!-- 선택지 -->
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                              {{ option.content }}
+                            </p>
+                            <!-- 투표한 사람 -->
+                            <!-- 유저 어떤 방식으로 보여줄지 미정 -->
+                            <div>{{ option.select_users.all|length }}</div>
+                            <!-- 투표버튼 -->
+                            <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
+                          </form>
+                        {% endfor %}
+                        <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                        {% if notice.is_addible %}
+                          <button type="button" id="add-member-option">+항목 추가</button>
+                          <form action="{% url 'groups:add_option' group.pk notice.pk %}" method="POST">
+                            {% csrf_token %}
+                            <div id="add-option-div"></div>
+                            <input type="submit" value="저장">
+                          </form>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
           </div>
         </div>
         <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="create main-btn">글 작성  <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
@@ -141,10 +193,16 @@
           {% elif writing.get_model_name == 'vote' %}
             <article class="post vote">
               <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
+              <!-- 투표 수행 버튼 -->
               <button data-modal-target="vote-modal-{{ writing.pk }}" data-modal-toggle="vote-modal-{{ writing.pk }}" class="vote-btn">
                 <h3 class="post-title">{{ writing.title }}</h3>
                 <p class="meeting">{{ writing.d_day }}</p>
               </button>
+              <!-- 투표 공지 등록 버튼 -->
+              <form action="{% url 'groups:notice_vote' group.pk writing.pk %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="공지 {% if writing.is_notice %}취소{% else %}등록{% endif %}">
+              </form>
               {% if request.user == writing.user %}
                 <!-- 투표 수정 버튼 -->
                 <button class="vote-update" data-vote-id="{{ writing.pk }}" data-modal-target="vote-update-modal-{{ writing.pk }}" data-modal-toggle="vote-update-modal-{{ writing.pk }}" class="block w-full md:w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
@@ -366,6 +424,12 @@
   </div>
 </div>
 
+<!-- vote, post 공지 등록 실패 시 alert -->
+{% if messages %}
+  {% for message in messages %}
+    <script>alert('{{ message }}')</script>
+  {% endfor %}
+{% endif %}
 <script src="{% static 'js/groups/vote_option_create.js' %}"></script>  <!-- vote 생성 -->
 <script src="{% static 'js/groups/vote_add_member_option.js' %}"></script>  <!-- vote의 is_addible True인 경우 멤버가 선택지 추가 -->
 <script src="{% static 'js/groups/vote_update.js' %}"></script>  <!-- vote 수정 -->
