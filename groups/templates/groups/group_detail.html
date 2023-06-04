@@ -147,7 +147,7 @@
               </button>
               {% if request.user == writing.user %}
                 <!-- 투표 수정 버튼 -->
-                <button id="vote-update" data-vote-id="{{ writing.pk }}" data-modal-target="vote-update-modal-{{ writing.pk }}" data-modal-toggle="vote-update-modal-{{ writing.pk }}" class="block w-full md:w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                <button class="vote-update" data-vote-id="{{ writing.pk }}" data-modal-target="vote-update-modal-{{ writing.pk }}" data-modal-toggle="vote-update-modal-{{ writing.pk }}" class="block w-full md:w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                   수정
                 </button>
                 <!-- 투표 삭제 버튼 -->
@@ -211,7 +211,7 @@
                     </button>
                     <div class="px-6 py-6 lg:px-8">
                       <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">투표 수정</h3>
-                      <form class="space-y-6" action="{% url 'groups:vote_update' group.pk writing.pk %}" method="POST">
+                      <form id="vote-update-form-{{ writing.pk }}" class="space-y-6" action="{% url 'groups:vote_update' group.pk writing.pk %}" method="POST">
                         {% csrf_token %}
                         {% for field in vote_form %}
                           <div>
@@ -221,9 +221,13 @@
                         {% endfor %}
                         <div>
                           <label for="update-option-container" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">선택지</label>
-                          <button type="button" id="new-option-button">+항목추가</button>
+                          <button type="button" class="new-option-button" data-vote-id="{{ writing.pk }}">+항목추가</button>
                           <!-- 선택지가 들어갈 div -->
-                          <div id="update-option-container"></div>
+                          <div id="update-option-container-{{ writing.pk }}">
+                            {% for option in writing.voteselect_set.all %}
+                              <input type="text" value="{{ option.content }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                            {% endfor %}
+                          </div>
                         </div>
                         <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">저장</button>
                       </form>
