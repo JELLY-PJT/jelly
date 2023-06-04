@@ -306,6 +306,7 @@ def throw_vote(request, group_pk, vote_pk, option_pk):
     return redirect('groups:group_detail', group.pk)
 
 
+# vote is_addible이 True일 경우 멤버의 선택지 추가 기능
 @login_required
 def add_option(request, group_pk, vote_pk):
     group = Group.objects.get(pk=group_pk)
@@ -328,6 +329,54 @@ def add_option(request, group_pk, vote_pk):
     return redirect('groups:group_detail', group.pk)
 
 
+# vote 수정 form에 기존 정보 입력을 위해 JsonResponse로 js file로 데이터 넘겨주는 함수
+@login_required
+def get_vote(request, vote_pk):
+    vote = Vote.objects.get(pk=vote_pk)
+    options = [vote_option.content for vote_option in vote.voteselect_set.all()]
+    context = {
+        'id': vote.pk,
+        'title': vote.title,
+        'deadline': vote.deadline,
+        'is_overlap': vote.is_overlap,
+        'is_annony': vote.is_annony,
+        'is_addible': vote.is_addible,
+        'options': options,
+    }
+    return JsonResponse(context)
+
+
+# 투표 수정
+@login_required
+def vote_update(request, group_pk, vote_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+
+    vote = Vote.objects.get(pk=vote_pk)
+    form = VoteForm(request.POST, instance=vote)
+    options = request.POST.getlist('options')
+    # 선택지 유효성 검사
+    option_valid = True
+    for option in options:
+        test_option = option.replace(' ', '')
+        if test_option == '':
+            option_valid = False
+    
+    if form.is_valid() and option_valid:
+        form.save()
+
+        # 기존 선택지 삭제
+        for option in vote.voteselect_set.all():
+            option.delete()
+        # input 받은 선택지로 다시 저장
+        for option in options:
+            VoteSelect.objects.create(vote=vote, content=option)
+    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    return redirect('groups:group_detail', group.pk)
+
+
+# 투표 삭제
 @login_required
 def vote_delete(request, group_pk, vote_pk):
     group = Group.objects.get(pk=group_pk)
