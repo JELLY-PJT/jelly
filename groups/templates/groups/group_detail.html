@@ -225,7 +225,7 @@
                           <!-- 선택지가 들어갈 div -->
                           <div id="update-option-container-{{ writing.pk }}">
                             {% for option in writing.voteselect_set.all %}
-                              <input type="text" value="{{ option.content }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                              <input type="text" value="{{ option.content }}" name="options" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                             {% endfor %}
                           </div>
                         </div>
