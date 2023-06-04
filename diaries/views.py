@@ -106,6 +106,7 @@ def group_detail(request, group_pk, diary_pk):
         comment_form = DiaryCommentForm()
         context = {
             'diary': diary,
+            'diary_share': diary_share,
             'emotions': emotions,
             'group': group,
             'comment_form': comment_form,
