@@ -42,6 +42,12 @@ def group_detail(request, group_pk):
     group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
+    
+    # 공지로 등록된 post, vote 조회
+    noticed_post = Post.objects.filter(is_notice=True)
+    noticed_vote = Vote.objects.filter(is_notice=True)
+    notices = list(chain(noticed_post, noticed_vote))
+    notices.sort(key=attrgetter('created_at'), reverse=True)
 
     vote_form = VoteForm()
 
@@ -57,6 +63,7 @@ def group_detail(request, group_pk):
 
     context = {
         'group': group,
+        'notices': notices,
         'vote_form': vote_form,
         'writings': writings,
     }
@@ -187,6 +194,24 @@ def post_delete(request, group_pk, post_pk):
     
     post.delete()
     return redirect('groups:group_detail', group.pk)
+
+
+# post 공지사항 등록/취소
+@login_required
+def notice_post(request, group_pk, post_pk):
+    post = Post.objects.get(pk=post_pk)
+    if post.is_notice:
+        post.is_notice = False
+        post.save()
+    else:
+        notice_cnt = len(Post.objects.filter(is_notice=True))
+        notice_cnt += len(Vote.objects.filter(is_notice=True))
+        if notice_cnt < 3:
+            post.is_notice = True
+            post.save()
+        else:
+            messages.info(request, '공지사항은 3개까지 등록 가능합니다. 기존의 공지를 삭제하고 다시 등록해주세요.')
+    return redirect('groups:group_detail', group_pk)
 
 
 # post 감정표현
@@ -387,3 +412,21 @@ def vote_delete(request, group_pk, vote_pk):
     if request.user == vote.user:
         vote.delete()
     return redirect('groups:group_detail', group.pk)
+
+
+# vote 공지사항 등록/취소
+@login_required
+def notice_vote(request, group_pk, vote_pk):
+    vote = Vote.objects.get(pk=vote_pk)
+    if vote.is_notice:
+        vote.is_notice = False
+        vote.save()
+    else:
+        notice_cnt = len(Post.objects.filter(is_notice=True))
+        notice_cnt += len(Vote.objects.filter(is_notice=True))
+        if notice_cnt < 3:
+            vote.is_notice = True
+            vote.save()
+        else:
+            messages.info(request, '공지사항은 3개까지 등록 가능합니다. 기존의 공지를 삭제하고 다시 등록해주세요.')
+    return redirect('groups:group_detail', group_pk)
