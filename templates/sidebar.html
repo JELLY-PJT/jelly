@@ -5,7 +5,11 @@
 
 <aside class="aside">
   <img src="{% static 'img/side_logo.png' %}" alt="로고" class="side-logo">
-  <img src="{{ person.image.url}}" alt="프로필" class='side-img'>
+  {% if user.imgage %}
+    <img src="{{ user.image.url}}" alt="프로필" class='side-img'>
+  {% else %}
+    <img src="{% static 'img/blank_profile_img.png' %}" alt="기본 프로필 이미지" class='side-img'>
+  {% endif %}
   <div class='bar'></div>
   {% for group in request.user.user_groups.all %}
     {% comment %} {% if  %} {% endcomment %}
@@ -21,7 +25,7 @@
   <div class="bar"></div>
   {% comment %} 그룹 생성 모달 달아야함 {% endcomment %}
   <!-- Modal toggle -->
-  <button data-modal-target="GroupCreate-modal" data-modal-toggle="GroupCreate-modal" class="" type="button">
+  <button data-modal-target="GroupCreate-modal" data-modal-toggle="GroupCreate-modal" class="GroupCreate-modal-button" type="button">
     <img src="{% static 'img/side_PlusButton.png' %}" alt="그룹생성버튼" class='side-img side-plus'>
   </button>
 </aside>
@@ -36,14 +40,16 @@
           <span class="sr-only">Close modal</span>
         </button>
         <div class="px-6 py-6 lg:px-8">
-          <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">그룹을 만들어보세요</h3>
+          <h3 class="mb-4 text-xl font-medium GroupCreate-txt dark:text-white">그룹을 만들어보세요</h3>
           <form action="{% url 'groups:group_create' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            {% for field in group_form %}
-            <p class='GroupCreate-field'>{{ field.label }}</p>
-            <p class='GroupCreate-field'>{{ field }}</p>
-          {% endfor %}
-          <button type="submit" class="GroupCreate-modal-button text-white w-full bg-indigo-400 hover:bg-indigo-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">그룹생성</button>
+            <p class='Group-label'>{{ group_form.name.label }}</p>
+            <p>{{ group_form.name }}</p>
+            <p class='Group-label'>{{ group_form.intro.label }}</p>
+            <p>{{ group_form.intro }}</p>
+            <p class='Group-label'>{{ group_form.thumbnail.label }}</p>
+            <p>{{ group_form.thumbnail}}</p>
+          <button class='GroupCreate-btn'>그룹생성</button>
         </form>
     </div>
 </div>
