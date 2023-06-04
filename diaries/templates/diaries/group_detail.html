@@ -13,7 +13,7 @@
 <div class="wrapper">  
   <section class="header justify-between">
     <div class="flex gap-2">
-      <a href="{% url 'diaries:index' %}" class="diary main-btn">목록</a>
+      <a href="{% url 'accounts:profile' user %}" class="diary main-btn">목록</a>
       <a href="{% url 'diaries:index' %}" class="diary main-btn">이전글</a>
       <a href="{% url 'diaries:index' %}" class="diary main-btn">다음글</a>
     </div>
@@ -56,7 +56,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="#FACA1590" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
             </svg>            
-            <p>{{ diary_share.diaryemote_set.all|length }}</p>
+            <p class="emotion-total-count">{{ diary_share.diaryemote_set.all|length }}</p>
           </button>
           {% comment %} 감정표현 드랍다운 메뉴 {% endcomment %}
           <div id="dropdownRight" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow">
@@ -65,7 +65,7 @@
                 <li class="emotion {% if emotion.exist %}selected-emotion{% endif %}">
                   {% if request.user.is_authenticated %}
                     {{ emotion.queryset }}
-                    <form action="{% url 'diaries:emotes' group.pk diary.pk emotion.value %}" method="POST">
+                    <form class="emotion-form" data-group-id="{{ group.pk }}" data-diary-id="{{ diary.pk }}" data-emotion="{{ emotion.value }}">
                       {% csrf_token %}
                       <button class="emotion-btn">
                         {% if emotion.value == 1 %}
@@ -82,11 +82,11 @@
                           <span class="emotion-emoji">🥳</span>
                         {% endif %}
                         <span>{{emotion.label}}</span>
+                        <p class="emotion-count">{{ emotion.count }}</p>
                       </button>
                     </form>
                   {% else %}
                   {% endif %}
-                  <p>{{ emotion.count }}</p>
                 </li>
               {% endfor %}
             </ul>
@@ -110,21 +110,26 @@
         {% comment %} 댓글 리스트 {% endcomment %}
         <div class="comment-wrapper">
           {% for comment in comments %}
-            <div class="comment-area">
+            <div class="comment-area" data-comment-id="{{ comment.pk }}" data-group-id="{{ group.pk }}" data-diary-id="{{ diary.pk }}">
               <div class="user-img image">
                 {% comment %} <img src="" alt=""> {% endcomment %}
               </div>
               <div class="comment-content">
                 <p class="comment-user">{{ comment.user }}</p>
                 <p class="comment-comment">{{ comment.comment }}</p>
+                <form id="comment-update-form" class="hidden comment-form">
+                  {% csrf_token %}
+                  {{ comment_form }}
+                  <input type="submit" value="수정" class="comment main-btn">
+                </form>
                 <div class="date comment-bottom">
                   <div class="comment-bottom-item">
                     <p>{{ comment.created_at }}</p>
                     {% comment %} 댓글 좋아요 {% endcomment %}
                     {% comment %} <form class="comment-like-forms" action="{% url 'diaries:comment_like' group.pk diary.pk comment.pk %}" method="POST" data-comment-id="{{ comment.pk }}" data-group-id="{{ group.pk }}" data-diary-id="{{ diary.pk }}"> {% endcomment %}
-                    <form class="comment-like-forms" data-comment-id="{{ comment.pk }}" data-group-id="{{ group.pk }}" data-diary-id="{{ diary.pk }}">
+                    <form class="comment-like-form">
                       {% csrf_token %}
-                      <button type="submit" class="comment-like-btn" id="comment-like-btn-{{ comment.pk }}">
+                      <button type="submit" class="comment-like-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="{% if request.user in comment.like_users.all %}#E02424{% else %}none{% endif %}" viewBox="0 0 24 24" stroke-width="1.5" stroke="#E02424" class="w-4 h-4">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                         </svg>
@@ -134,14 +139,10 @@
                   </div>
                   <div class="comment-bottom-item">
                     {% if comment.user == request.user %}
-                      {% comment %} 댓글 수정 비동기 필요 {% endcomment %}
-                      <form action="{% url 'diaries:comment_update' group.pk diary.pk comment.pk %}" method="POST">
-                        {% csrf_token %}
-                        <input type="submit" value="댓글수정">
-                      </form>
+                      <button class="comment-update-btn">댓글 수정</button>
                       <form action="{% url 'diaries:comment_delete' group.pk diary.pk comment.pk %}" method="POST">
                         {% csrf_token %}
-                        <input type="submit" value="댓글삭제" class="delete">
+                        <input type="submit" value="댓글삭제" class="delete" onclick="return confirm('댓글을 삭제하시겠습니까?')">
                       </form>
                     {% endif %}
                   </div>
