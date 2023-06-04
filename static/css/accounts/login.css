@@ -3,13 +3,14 @@
 }
 
 
-[type=text]:focus {
-  outline: none
-}
-
 /* 마우스 hover 시 var(--color-main) 색상 적용 */
 input:hover, select:hover, textarea:hover, button:hover {
   border-color: var(--color-main);
+}
+
+button:hover {
+  background-color:#7B83C7;
+  border: #7B83C7
 }
 
 /* 캐루셀 */
@@ -57,15 +58,17 @@ input:hover, select:hover, textarea:hover, button:hover {
   margin: 1rem 0rem 1.5rem 0rem;
 }
 
-.form-control {
+.login-form-control {
   border: 1px solid darkgray;
   border-radius: 5px;
   margin-bottom: 0.5rem;
-  /* outline: none; */
   appearance: none;
 }
 
 .login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: solid var(--color-main);
   background-color: var(--color-main);
   width: 14.75rem;
@@ -76,6 +79,11 @@ input:hover, select:hover, textarea:hover, button:hover {
   text-align: center;
 }
 
+.login-btn:hover {
+  background-color:#7B83C7;
+  border: #7B83C7
+}
+
 .bar {
   border: solid 0.1px rgb(210, 206, 206);
   width: 18rem;
@@ -84,10 +92,21 @@ input:hover, select:hover, textarea:hover, button:hover {
 
 /* signup.html */
 
+.signup-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid var(--color-main);
+  border-radius: 8px;
+  width: 25rem;
+  margin: 2rem;
+  padding: 2rem;
+}
+
 .signup-logo {
   width: 14rem;
   height: auto;
-  margin: 1rem 0rem 1.5rem 0rem;
+  margin: 1rem 0rem 2rem 0rem;
 }
 
 .signup-form {
@@ -96,6 +115,64 @@ input:hover, select:hover, textarea:hover, button:hover {
   align-items: center;
 }
 
-.indicator-btn[aria-current=true]  {
-  background-color: black;
+.signup-form-control {
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  width: 18rem;
+  margin-bottom: 0.5rem;
+  appearance: none;
+}
+
+.signup-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid var(--color-main);
+  background-color: var(--color-main);
+  width: 18rem;
+  height: 2.5rem;
+  border-radius: 5px;
+  color: white;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.signup-btn:hover {
+  background-color:#7B83C7;
+  border: #7B83C7
+}
+
+/* 회원정보 수정 */
+
+.update-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid var(--color-main);
+  background-color: var(--color-main);
+  width: 18rem;
+  height: 2.5rem;
+  border-radius: 5px;
+  color: white;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.change-password-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid var(--color-main);
+  background-color: var(--color-main);
+  width: 18rem;
+  height: 3rem;
+  border-radius: 5px;
+  color: white;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.change-password-btn:hover {
+  background-color:#7B83C7;
+  border: #7B83C7
 }
