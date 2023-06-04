@@ -199,6 +199,10 @@ def post_delete(request, group_pk, post_pk):
 # post 공지사항 등록/취소
 @login_required
 def notice_post(request, group_pk, post_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
     post = Post.objects.get(pk=post_pk)
     if post.is_notice:
         post.is_notice = False
@@ -417,6 +421,10 @@ def vote_delete(request, group_pk, vote_pk):
 # vote 공지사항 등록/취소
 @login_required
 def notice_vote(request, group_pk, vote_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
     vote = Vote.objects.get(pk=vote_pk)
     if vote.is_notice:
         vote.is_notice = False
