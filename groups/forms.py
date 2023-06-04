@@ -8,7 +8,7 @@ class GroupForm(forms.ModelForm):
         attrs={'class': 'create-form',}))
     thumbnail = ProcessedImageField(
         required=True, widget=forms.ClearableFileInput(attrs={'class': 'create-form',}),
-        label='그룹프로필 이미지',
+        label='그룹 프로필 이미지',
         label_suffix='',
         spec_id='image_size',
     )
