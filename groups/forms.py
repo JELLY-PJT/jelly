@@ -57,29 +57,47 @@ class PostCommentForm(forms.ModelForm):
 
 class VoteForm(forms.ModelForm):
     title = forms.CharField(
-        label='제목',
+        label='투표 제목',
+        widget=forms.TextInput(
+            attrs={
+                'class': 'vote-form',
+            }
+        )
     )
     deadline = forms.DateTimeField(
         label='마감 기한',
         widget=forms.DateTimeInput(
             attrs={
                 'type': 'datetime-local',
+                'class': 'vote-form',
             }
         ),
     )
     is_overlap = forms.BooleanField(
         label='중복 투표',
-        widget=forms.CheckboxInput(),
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'vote-checkform',
+            }
+        ),
         required=False,
     )
     is_annony = forms.BooleanField(
         label='익명 투표',
-        widget=forms.CheckboxInput(),
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'vote-checkform',
+            }
+        ),
         required=False,
     )
     is_addible = forms.BooleanField(
         label='멤버의 선택지 추가 권한',
-        widget=forms.CheckboxInput(),
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'vote-checkform',
+            }
+        ),
         required=False,
     )
     class Meta:
