@@ -18,15 +18,17 @@
     {% endif %}
   <div class='bar'></div>
   {% for group in request.user.user_groups.all %}
-    {% comment %} {% if  %} {% endcomment %}
-      <a href="{% url 'groups:group_detail' group.pk %}">
-        <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='side-img boder-color'>
-      </a>
-    {% comment %} {% else %} {% endcomment %}
-      <a href="{% url 'groups:group_detail' group.pk %}">
-        <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='side-img'>
-      </a>
-    {% comment %} {% endif %} {% endcomment %}
+    {% if group == current_group %}
+    {# 현재 접속 중인 그룹 - 클래스 수정 해 주세요 #}
+    <a href="{% url 'groups:group_detail' group.pk %}">
+      <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='side-img-border-color'>
+    </a>
+    {% else %}
+    {# 나머지 그룹 #}
+    <a href="{% url 'groups:group_detail' group.pk %}">
+      <img src="{{ group.thumbnail.url }}" alt="그룹이미지" class='side-img'>
+    </a>
+    {% endif %}
   {% endfor %}
   <div class="bar"></div>
   {% comment %} 그룹 생성 모달 달아야함 {% endcomment %}

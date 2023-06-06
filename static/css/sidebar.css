@@ -41,6 +41,14 @@
   margin-bottom: 20px;
 }
 
+.side-img-border-color{
+  width: 4.7rem;
+  height: 4.7rem;
+  border: red 3px solid;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
 .side-plus {
   margin-bottom: 200px;
 }
@@ -59,10 +67,6 @@
   width: 80px;
   border: 2px white solid;
   margin-bottom: 20px;
-}
-
-.border-color {
-  border: red;
 }
 
 
