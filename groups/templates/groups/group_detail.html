@@ -26,6 +26,12 @@
           <p>{{ group.intro }}</p>
         </div>
       </div>
+      <!-- 방장만 접근 가능한 그룹 설정 페이지 버튼 -->
+      {% if request.user == group.chief %}
+        <div>
+          <a href="{% url 'groups:group_setting' group.pk %}">설정</a>
+        </div>
+      {% endif %}
     </div>
   </section>
 

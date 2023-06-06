@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from .models import Group, Post, PostImage, PostComment, PostEmote, Vote, VoteSelect
 from diaries.models import Diary, DiaryShare
 from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm, VoteForm
@@ -25,7 +26,9 @@ def group_create(request):
     if request.method == 'POST':
         form = GroupForm(request.POST, request.FILES)
         if form.is_valid():
-            group = form.save()
+            group = form.save(commit=False)
+            group.chief = request.user
+            group.save()
             group.group_users.add(request.user)
             return redirect('groups:group_detail', group.pk)
     else:
@@ -68,6 +71,89 @@ def group_detail(request, group_pk):
         'writings': writings,
     }
     return render(request, 'groups/group_detail.html', context)
+
+
+# 그룹 설정 페이지
+@login_required
+def group_setting(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    form = GroupForm(instance=group)
+    context = {
+        'group': group,
+        'form': form,
+    }
+    return render(request, 'groups/group_setting.html', context)
+
+
+# 그룹 정보 수정
+@login_required
+def group_update(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    form = GroupForm(request.POST, instance=group)
+    if form.is_valid():
+        form.save()
+        return redirect('groups:group_detail', group.pk)
+    else:
+        context = {
+            'form': form,
+        }
+        return render(request, 'groups/group_setting.html', context)
+
+
+# 그룹 삭제
+@login_required
+def group_delete(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    group.delete()
+    return redirect('groups:index')
+
+
+# 멤버 삭제
+@login_required
+def member_delete(request, group_pk, username):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    member = get_user_model().objects.get(username=username)
+    group.group_users.remove(member)
+    return # redirect group 설정 페이지
+
+
+# 방장 위임
+@login_required
+def chief_change(request, group_pk, username):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    member = get_user_model().objects.get(username=username)
+    group.chief = member
+    return redirect('groups:group_detail', group.pk)
 
 
 # post 생성
