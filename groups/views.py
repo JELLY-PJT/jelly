@@ -138,7 +138,7 @@ def member_delete(request, group_pk, username):
     
     member = get_user_model().objects.get(username=username)
     group.group_users.remove(member)
-    return # redirect group 설정 페이지
+    return redirect('groups:group_setting', group.pk)
 
 
 # 방장 위임
