@@ -47,8 +47,8 @@ def group_detail(request, group_pk):
         return redirect('groups:index')
     
     # 공지로 등록된 post, vote 조회
-    noticed_post = Post.objects.filter(is_notice=True)
-    noticed_vote = Vote.objects.filter(is_notice=True)
+    noticed_post = Post.objects.filter(group=group, is_notice=True)
+    noticed_vote = Vote.objects.filter(group=group, is_notice=True)
     notices = list(chain(noticed_post, noticed_vote))
     notices.sort(key=attrgetter('created_at'), reverse=True)
 
@@ -294,8 +294,8 @@ def notice_post(request, group_pk, post_pk):
         post.is_notice = False
         post.save()
     else:
-        notice_cnt = len(Post.objects.filter(is_notice=True))
-        notice_cnt += len(Vote.objects.filter(is_notice=True))
+        notice_cnt = len(Post.objects.filter(group=group, is_notice=True))
+        notice_cnt += len(Vote.objects.filter(group=group, is_notice=True))
         if notice_cnt < 3:
             post.is_notice = True
             post.save()
@@ -516,8 +516,8 @@ def notice_vote(request, group_pk, vote_pk):
         vote.is_notice = False
         vote.save()
     else:
-        notice_cnt = len(Post.objects.filter(is_notice=True))
-        notice_cnt += len(Vote.objects.filter(is_notice=True))
+        notice_cnt = len(Post.objects.filter(group=group, is_notice=True))
+        notice_cnt += len(Vote.objects.filter(group=group, is_notice=True))
         if notice_cnt < 3:
             vote.is_notice = True
             vote.save()
