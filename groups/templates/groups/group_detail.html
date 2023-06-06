@@ -9,7 +9,7 @@
 {% endblock css %}
 
 {% block side %}
-  {% include 'sidebar.html'%}
+  {% include 'sidebar.html' with current_group=group %}
 {% endblock side %} 
 
 {% block content %}
