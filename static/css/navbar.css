@@ -1,20 +1,20 @@
-#index-nav .row { 
+nav .row { 
   display: flex;
 }
 
-#index-nav .column {
+nav .column {
   display: flex;
   flex-direction: column;
 }
 
-#index-nav .logo {
+nav .logo {
   width: 20rem;
   height: auto;
   margin: 3rem auto 1.5rem;
   display: block;
 }
 
-#index-nav .nav--tab {
+nav .nav--tab {
   height: 40px;
   top: 3%;
   right: 5%;
@@ -22,18 +22,18 @@
   align-items: center;
 }
 
-#index-nav .nav--tab p {
+nav .nav--tab p {
   margin-right: 1.5rem;
 }
 
-#index-nav .nav--line {
+nav .nav--line {
   border: 3px solid;
   width: 80%;
   margin: auto;
   border-color: var(--color-main-light);
 }
 
-/* #index-nav .index-header-wrap {
+/* nav .index-header-wrap {
   height: 200px;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@
   justify-content: space-around;
 }
 
-#index-nav .index.logo-line {
+nav .index.logo-line {
   border-color: var(--color-main-light);
   border-width: 3px;
   width: 70%;
