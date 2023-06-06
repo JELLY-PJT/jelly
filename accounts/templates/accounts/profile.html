@@ -12,17 +12,18 @@
 <div class="content">
   
   <div id="dial-btn" class="fixed hidden bottom-12 right-12 group z-50">
-    <a href="{% url 'diaries:create' %}" data-dial-toggle="speed-dial-menu-dropdown-alternative" aria-controls="speed-dial-menu-dropdown-alternative" aria-expanded="false" class="flex items-center justify-center ml-auto text-white bg-[var(--color-main)] rounded-full w-14 h-14 hover:bg-[var(--color-main-dark)]">
-      <svg aria-hidden="true" class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
-        <span class="sr-only">Open actions menu</span>
+    <a href="#" data-dial-toggle="speed-dial-menu-dropdown-alternative" aria-controls="speed-dial-menu-dropdown-alternative" aria-expanded="false" class="flex items-center justify-center ml-auto text-white bg-[var(--color-main-light)] rounded-full w-14 h-14 hover:bg-[var(--color-main-dark)]">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#fff" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+      </svg>      
     </a>
   </div>
 
   <section class="header">
     <div class="wrapper">
-      <div class="image group-img">
-        {% if person.image %}
-          <img src="{{ person.image.url }}" alt="profile">
+      <div class="img group-img">
+        {% if user.image %}
+          <img src="{{ user.image.url }}" alt="profile">
         {% else %}
           <img src="{% static 'img/index_logo.png' %}" alt="no-profile">
         {% endif %}
@@ -61,7 +62,7 @@
         {% for diary in diaries %}
           <article class="post">
             <div class="user">
-              <div class="image user-img">
+              <div class="img user-img">
                 {% if person.image %}
                   <img src="{{ person.image.url }}" alt="profile">
                 {% else %}
@@ -78,7 +79,7 @@
                   <p class="meeting-date">2023.05.29</p>
                 </div>
                 <p class="post-detail">{{ diary.content|safe }}</p>
-                <div class="reaction">
+                {% comment %} <div class="reaction">
                   <div class="reaction-item">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
@@ -91,9 +92,9 @@
                     </svg>
                     <p>2</p>                      
                   </div>
-                </div>
+                </div> {% endcomment %}
               </div>
-              <div class="image post-img">
+              <div class="img post-img">
                 <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
                 <div class="more-img">
                   <p>+2</p>
@@ -181,7 +182,7 @@
         {% for shared_diary in shared_diaries %}
           <article class="post">
             <div class="user">
-              <div class="image user-img">
+              <div class="img user-img">
                 {% if person.image %}
                   <img src="{{ person.image.url }}" alt="profile">
                 {% else %}
@@ -213,7 +214,7 @@
                   </div>
                 </div>
               </div>
-              <div class="image post-img">
+              <div class="img post-img">
                 <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
                 <div class="more-img">
                   <p>+2</p>
