@@ -1,11 +1,10 @@
-/* 
-img {
+.image img {
   max-width: 100%;
   min-width: 100%;
   max-height: 100%;
   min-height: 100%;
   object-fit: cover;
-} */
+}
 
 .image {
   flex-shrink: 0;
@@ -13,9 +12,9 @@ img {
   overflow: hidden;
 }
 
-/* .content-wrapper {
-  padding-left: 130px;
-} */
+.content-wrapper {
+  padding-left: 146px;
+}
 
 .content {
   padding: 3rem 1rem 0 1rem;
@@ -57,6 +56,23 @@ img {
   font-weight: 500;
 }
 
+.user.main-btn {
+  background-color: var(--color-gray);
+}
+
+.user.main-btn:hover {
+  background-color: #c3c3c3;
+}
+
+#popover-click {
+  z-index: 50;
+  max-width: 300px;
+}
+
+.user-list {
+  overflow-y: scroll;
+}
+
 /* tab-list : 컨텐츠를 바꿀 수 있는 버튼 관련 css */
 
 .tab-list {
@@ -64,6 +80,7 @@ img {
   top: 0;
   z-index: 10;
   background-color: white;
+  border-top: 1px solid var(--color-main-light);
 }
 
 .tab-content {
@@ -74,14 +91,14 @@ img {
   margin: 0 auto;
 }
 
-.tab-content::before {
+/* .tab-content::before {
   content: "";
   position: absolute;
   display: block;
   width: 1200px;
   height: 1px;
   background: var(--color-main-light);
-}
+} */
 
 .tab-btn {
   padding: 1rem;
@@ -103,7 +120,7 @@ img {
   content: "";
   position: absolute;
   display: block;
-  top: -1rem;
+  top: -1.05rem;
   left: -1rem;
   width: 75px;
   height: 0.125rem;
@@ -147,8 +164,9 @@ img {
 }
 
 .notice-link {
-  padding: 0.75rem 0;
+  padding: 0.75rem 0 0.75rem 0.5rem;
   border-bottom: 1px solid var(--color-gray);
+  text-align: start;
 }
 
 .notice-link:first-child {
@@ -170,6 +188,17 @@ img {
   gap: 1.5rem;
 }
 
+.no-post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 400px;
+  color: #a9a9a9;
+  font-size: 1.25rem;
+}
+
 .post {
   display: flex;
   align-items: center;
@@ -187,7 +216,11 @@ img {
   color: var(--color-main-dark);
 }
 
-.user {
+.delete {
+  color: #ff5656;
+}
+
+.post .user {
   margin: 0 3rem 0 1rem;
 }
 
@@ -208,6 +241,7 @@ img {
 
 .post-link {
   display: flex;
+  justify-content: space-between;
   width: 100%;
 }
 
@@ -257,9 +291,10 @@ img {
 }
 
 .reaction {
-  max-width: 800px;
   display: inline-flex;
   justify-content: end;
+  align-items: end;
+  flex-grow: 1;
   gap: 0.75rem;
   font-size: 0.875rem;
   color: var(--color-gray-dark);
@@ -311,7 +346,7 @@ img {
 }
 
 .vote:hover {
-  background-color: var(--color-main);
+  background-color: #c3c8ef;
 }
 
 .vote .meeting {
