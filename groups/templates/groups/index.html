@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/index/testing.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index/testing.css' %}" />  
 {% endblock css %}
 {% block content %}
 
@@ -24,8 +23,8 @@
     navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭을 활성화 합니다.
     {% endcomment %}
 
-    {% include 'groups/index/__navbar.html' %}
-
+    {% comment %} {% include 'groups/index/__navbar.html' %} {% endcomment %}
+    {% include 'navbar.html' %}
     <div id="group-index">
         <div class="content">
             {% comment %} calendar 표시 {% endcomment %}

@@ -6,7 +6,7 @@ html {
 *::before,
 *::after {
   box-sizing: inherit;
-  --thumbnail-border-radius : 15%;
+  --thumbnail-border-radius: 15%;
 }
 
 #group-index {
@@ -90,6 +90,13 @@ html {
   align-items: center;
 }
 
+#group-create-button.big-button {
+  width: 60%;
+	display:flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
 #group-create-button .square {
   width: 100%;
   padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
