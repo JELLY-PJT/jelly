@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model, update_session_auth_hash
 from .forms import CustomAuthenticationForm, CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm
 from diaries.models import Diary, DiaryShare
 from django.core.paginator import Paginator
+from schedules.models import Calendar
 
 
 def login(request):
@@ -42,7 +43,8 @@ def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            user.calendar.create() # create calendar
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)

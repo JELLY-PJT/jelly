@@ -4,6 +4,7 @@ from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.contrib.contenttypes import fields
 
 
 class Group(models.Model):
@@ -11,7 +12,7 @@ class Group(models.Model):
     group_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_groups')
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
-    
+    calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_user')
     def group_image_path(instance, filename):
         return f'groups/{instance.name}_{instance.pk}/{filename}'
     
