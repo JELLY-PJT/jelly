@@ -1,4 +1,4 @@
-// 스크롤을 올렸을 때 글작성 버튼이 아래에 나타나는 코드
+// 스크롤을 올렸을 때 top 버튼이 아래에 나타나는 코드
 const createBtn = document.getElementById('dropdownDefaultButton')
 const dialBtn = document.getElementById('dial-btn')
 
@@ -51,46 +51,75 @@ if ( nowUrl.includes('share') ) {
 
 document.querySelectorAll('.tab-btn').forEach((btn) => {
   btn.addEventListener('click', function(event) {
+    btn.setAttribute('disabled', true)
     currentTab = event.target.getAttribute('data-tab')
     const user = event.target.getAttribute('data-user')    
     
     if (currentTab == 'post') {
       if (nowUrl.includes('share')) {
-        history.pushState(null, null, nowUrl.replace('share', 'post')) 
+        const idx = nowUrl.lastIndexOf('share')
+        history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'post'))
       } else if (nowUrl.includes('calendar')) {
-        history.pushState(null, null, nowUrl.replace('calendar', 'post')) 
+        const idx = nowUrl.lastIndexOf('calendar')
+        history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'post'))
       } else {
-        history.pushState(null, null, 'post')
+        const idx = nowUrl.lastIndexOf('post')
+        console.log(idx)
+        if (idx > 0) {
+          history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'post'))
+        } else {
+          history.pushState(null, null, 'post')
+        }
       }
-    
+      location.reload()
+      
       postTabBtn.ariaSelected = true
       shareTabBtn.ariaSelected = false
       calendarTabBtn.ariaSelected = false
       postTab.classList.remove('hidden')
       shareTab.classList.add('hidden')
       calendarTab.classList.add('hidden')
+
     } else if (currentTab == 'share') {
       if (nowUrl.includes('post')) {
-        history.pushState(null, null, nowUrl.replace('post', 'share')) 
+        const idx = nowUrl.lastIndexOf('post')
+        history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'share'))
       } else if (nowUrl.includes('calendar')) {
-        history.pushState(null, null, nowUrl.replace('calendar', 'share')) 
+        const idx = nowUrl.lastIndexOf('calendar')
+        history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'share'))
       } else {
-        history.pushState(null, null, 'share')
+        const idx = nowUrl.lastIndexOf('share')
+        if (idx > 0) {
+          history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'share'))
+        } else {
+          history.pushState(null, null, 'share')
+        }
       }
+      location.reload()
+
       postTabBtn.ariaSelected = false
       shareTabBtn.ariaSelected = true
       calendarTabBtn.ariaSelected = false
       postTab.classList.add('hidden')
       shareTab.classList.remove('hidden')
       calendarTab.classList.add('hidden')
+
     } else {
       if (nowUrl.includes('share')) {
-        history.pushState(null, null, nowUrl.replace('share', 'calendar')) 
-      } else if (nowUrl.includes('calendar')) {
-        history.pushState(null, null, nowUrl.replace('post', 'calendar')) 
+        const idx = nowUrl.lastIndexOf('share')
+        history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'calendar'))
+      } else if (nowUrl.includes('post')) {
+        const idx = nowUrl.lastIndexOf('post')
+        history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'calendar'))
       } else {
-        history.pushState(null, null, 'calendar')  
+        const idx = nowUrl.lastIndexOf('calendar')
+        if (idx > 0) {
+          history.pushState(null, null, nowUrl.replace(nowUrl.slice(idx), 'calendar'))
+        } else {
+          history.pushState(null, null, 'calendar')
+        }
       }
+      location.reload()
     
       postTabBtn.ariaSelected = false
       shareTabBtn.ariaSelected = false
@@ -99,5 +128,9 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
       shareTab.classList.add('hidden')
       calendarTab.classList.remove('hidden')
     }
+
+    setTimeout(() => {
+      btn.setAttribute('disabled', false)
+    }, 1000);
   })
 })

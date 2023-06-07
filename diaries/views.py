@@ -76,7 +76,7 @@ def delete(request, diary_pk):
     diary = Diary.objects.get(pk=diary_pk)
     if request.user == diary.user:
         diary.delete()
-    return redirect('diaries:index')
+    return redirect('accounts:profile', request.user)
 
 
 # 그룹에 공유된 다이어리 디테일 / 감정, 댓글작성 가능
