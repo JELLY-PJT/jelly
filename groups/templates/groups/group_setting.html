@@ -2,63 +2,93 @@
 {% load static %}
 
 {% block title %}{{ group }}{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/group_setting.css' %}">
+{% endblock css %}
 
 {% block side %}
-  {% comment %} {% include 'sidebar.html'%} {% endcomment %}
+  {% include 'sidebar.html' with current_group=group %}
 {% endblock side %} 
 
 {% block content %}
-<div>
-  <!-- 그룹 정보 -->
-  <div>
-    <img src={{ group.thumbnail.url }} alt="그룹 이미지">
-  </div>
-  <div>
+<div class="wrapper">
+  <div class="content">
+    <!-- 그룹 정보 -->
+    <h3 class="title">그룹 정보</h3>
+    {% comment %} <div>
+      <div>
+        <h3>{{ group }}</h3>
+      </div>
+      <div>
+        <p>{{ group.intro }}</p>
+      </div>
+    </div> {% endcomment %}
+    <!-- 그룹 정보 수정, 삭제 버튼 -->
     <div>
-      <h3>{{ group }}</h3>
-    </div>
-    <div>
-      <p>{{ group.intro }}</p>
-    </div>
-  </div>
-  <!-- 그룹 정보 수정, 삭제 버튼 -->
-  <div>
-    <button data-modal-target="group-info-update-modal" data-modal-toggle="group-info-update-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-      정보 수정
-    </button>
-    <form action="{% url 'groups:group_delete' group.pk %}" method="POST">
-      {% csrf_token %}
-      <input type="submit" value="그룹 삭제">
-    </form>
-  </div>
-  <!-- 그룹 멤버 삭제, 방장 위임 -->
-  <h3>멤버 관리</h3>
-  {% for member in group.group_users.all %}
-    <div>
-      {% if member.image %}
-        <img src="{{ member.image.url }}" alt="멤버 프로필 사진">
-      {% else %}
-        <img src="{% static 'img/blank_profile_img.png' %}" alt="멤버 프로필 사진">
-      {% endif %}
-      {{ member.nickname }}
-      {% if member != request.user %}
-        <div>
-          <form action="{% url 'groups:member_delete' group.pk member.username %}" method="POST">
-            {% csrf_token %}
-            <input type="submit" value="멤버 삭제">
-          </form>
-          <form action="{% url 'groups:chief_change' group.pk member.username %}" method="POST">
-            {% csrf_token %}
-            <input type="submit" value="방장 위임">
-          </form>
+      {% comment %} <button data-modal-target="group-info-update-modal" data-modal-toggle="group-info-update-modal" class="main-btn block">정보 수정</button> {% endcomment %}
+      <form class="space-y-6" action="{% url 'groups:group_update' group.pk %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="group-update">
+          <p>{{ form.name.label }}</p>
+          <div class="update-form">
+            {{ form.name}}
+          </div>
         </div>
-      {% endif %}
+        <div class="group-update file">
+          <p>{{ form.thumbnail.label }}</p>
+          <div class="flex flex-col">
+            <div class="image group-img">
+              <img src={{ group.thumbnail.url }} alt="그룹 이미지">
+            </div>
+            <div class="update-form">
+              {{ form.thumbnail}}
+            </div>
+          </div>
+        </div>
+        <div class="group-update">
+          <p>{{ form.intro.label }}</p>
+          <div class="update-form">
+            {{ form.intro}}
+          </div>
+        </div>
+        <input type="submit" value="저장" class="main-btn bg-[var(--color-main)]">
+      </form>
     </div>
-  {% endfor %}
+    <hr class="my-6">
+    <!-- 그룹 멤버 삭제, 방장 위임 -->
+    <h3 class="title">멤버 정보</h3>
+    <ul class="user-list">
+      {% for member in group.group_users.all %}
+        <li class="user">
+          <div class="user-img image">
+            {% if member.image %}
+              <img src="{{ member.image.url }}" alt="멤버 프로필 사진">
+            {% else %}
+              <img src="{% static 'img/blank_profile_img.png' %}" alt="멤버 프로필 사진">
+            {% endif %}
+          </div>
+          <p>{{ member.nickname }}</p>
+          {% if member != request.user %}
+            <div>
+              <form action="{% url 'groups:member_delete' group.pk member.username %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="멤버 삭제">
+              </form>
+              <form action="{% url 'groups:chief_change' group.pk member.username %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="방장 위임">
+              </form>
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+    <a href="{% url 'groups:group_delete' group.pk %}" class="main-btn delete" onclick="return confirm('삭제한 그룹은 복구할 수 없습니다.\n정말 삭제하시겠습니까?')">그룹 삭제</a>
+  </div>
 </div>
 
 <!-- 그룹 정보 수정 modal -->
-<div id="group-info-update-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+{% comment %} <div id="group-info-update-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
   <div class="relative w-full max-w-md max-h-full">
     <!-- Modal content -->
     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -81,5 +111,5 @@
       </div>
     </div>
   </div>
-</div>
+</div> {% endcomment %}
 {% endblock content %}
