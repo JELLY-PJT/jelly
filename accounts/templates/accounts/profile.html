@@ -9,291 +9,309 @@
 {% endblock side %}
 
 {% block content %}
-<div class="content">
-  
-  <div id="dial-btn" class="fixed hidden bottom-12 right-12 group z-50">
-    <a href="#" data-dial-toggle="speed-dial-menu-dropdown-alternative" aria-controls="speed-dial-menu-dropdown-alternative" aria-expanded="false" class="flex items-center justify-center ml-auto text-white bg-[var(--color-main-light)] rounded-full w-14 h-14 hover:bg-[var(--color-main-dark)]">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#fff" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
-      </svg>      
-    </a>
-  </div>
+<div class="content-wrapper">
+  <div class="content">
+    
+    <div id="dial-btn" class="fixed hidden bottom-12 right-12 group z-50">
+      <a href="#" data-dial-toggle="speed-dial-menu-dropdown-alternative" aria-controls="speed-dial-menu-dropdown-alternative" aria-expanded="false" class="flex items-center justify-center ml-auto text-white bg-[var(--color-main)] rounded-full w-14 h-14 hover:bg-[var(--color-main-dark)]">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#fff" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+        </svg>      
+      </a>
+    </div>
 
-  <section class="header">
-    <div class="wrapper">
-      <div class="img group-img">
-        {% if user.image %}
-          <img src="{{ user.image.url }}" alt="profile">
-        {% else %}
-          <img src="{% static 'img/index_logo.png' %}" alt="no-profile">
-        {% endif %}
-      </div>
-      <div class="group-info">
-        <h3 class="group-name">{{ user.nickname }}</h3>
-        <div class="header-top">
-          <a href="{% url 'accounts:update' %}" class="main-btn">회원정보수정</a>
-          <a href="{% url 'accounts:delete' %}" class="delete main-btn" onclick="return confirm('탈퇴한 계정은 복구할 수 없습니다.\n정말 탈퇴하시겠습니까?')">회원탈퇴</a>
+    <section class="header">
+      <div class="wrapper">
+        <div class="image group-img">
+          {% if user.image %}
+            <img src="{{ user.image.url }}" alt="profile">
+          {% else %}
+            <img src="{% static 'img/blank_profile_img.png' %}" alt="no-profile">
+          {% endif %}
+        </div>
+        <div class="group-info">
+          <h3 class="group-name">{{ user.nickname }}</h3>
+          <div class="header-top">
+            <button class="main-btn" data-popover-target="popover-click" data-popover-trigger="click">그룹목록</button>
+            <div data-popover id="popover-click" role="tooltip" class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
+              <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
+                <h3 class="font-semibold text-gray-900">가입한 그룹</h3>
+              </div>
+              <div class="px-3 py-2 group-list space-y-4">
+                {% for group in user.user_groups.all %}
+                  <a href="{% url 'groups:group_detail' group.pk %}" class="flex items-center space-x-4">
+                    <div class="w-12 h-12 image">
+                      <img src="{{ group.thumbnail.url }}" alt="">
+                    </div>
+                    <div class="font-medium">
+                      <div class="text-base text-black">{{ group }}</div>
+                      <div class="text-sm text-gray-500 group-description">{{ group.intro }}</div>
+                    </div>
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+            <a href="{% url 'accounts:update' %}" class="update main-btn">회원정보 수정</a>
+            <a href="{% url 'accounts:delete' %}" class="delete main-btn" onclick="return confirm('탈퇴한 계정은 복구할 수 없습니다.\n정말 탈퇴하시겠습니까?')">회원탈퇴</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="tab-list">
-    <ul class="tab-content" role="tablist">
-      <li class="tab-btn" role="presentation">
-        <button id="post-tab" role="tab" data-tab="post" data-user="{{ person }}" aria-selected="false">게시물</button>
-      </li>
-      <li class="tab-btn" role="presentation">
-        <button id="share-tab" role="tab" data-tab="share" data-user="{{ person }}" aria-selected="false">공유한 글</button>
-      </li>
-      <li class="tab-btn" role="presentation">
-        <button id="calendar-tab" role="tab" data-tab="calendar" data-user="{{ person }}" aria-selected="false">캘린더</button>
-      </li>
-    </ul>
-  </section>
+    <section class="tab-list">
+      <ul class="tab-content" role="tablist">
+        <li class="tab-btn" role="presentation">
+          <button id="post-tab" role="tab" data-tab="post" data-user="{{ person }}" aria-selected="false">게시물</button>
+        </li>
+        <li class="tab-btn" role="presentation">
+          <button id="share-tab" role="tab" data-tab="share" data-user="{{ person }}" aria-selected="false">공유한 글</button>
+        </li>
+        <li class="tab-btn" role="presentation">
+          <button id="calendar-tab" role="tab" data-tab="calendar" data-user="{{ person }}" aria-selected="false">캘린더</button>
+        </li>
+      </ul>
+    </section>
 
 
-  <div>
-    <div class="relative h-6 mb-6">
-      <a href="{% url 'diaries:create' %}" class="create main-btn" id="dropdownDefaultButton">글 작성</a>
-    </div>
-    <section class="post-list" id="post" role="tabpanel" aria-labelledby="post-tab">
-      <div class="post-group">
-        {% for diary in diaries %}
-          <article class="post">
-            <div class="user">
-              <div class="img user-img">
-                {% if person.image %}
-                  <img src="{{ person.image.url }}" alt="profile">
-                {% else %}
-                  <img src="{% static 'img/index_logo.png' %}" alt="no-profile">
-                {% endif %}
-              </div>
-              <p class="user-name">{{ person.nickname }}</p>
-            </div>
-            <a href="{% url 'diaries:detail' diary.pk %}" class="post-link">
-              <div class="post-content">
-                <h3 class="post-title">{{ diary.title }}</h3>
-                <div class="meeting">
-                  <p class="meeting-name">모임 이름</p>
-                  <p class="meeting-date">2023.05.29</p>
-                </div>
-                <p class="post-detail">{{ diary.content|safe }}</p>
-                {% comment %} <div class="reaction">
-                  <div class="reaction-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-                    </svg>
-                    <p>2</p>                      
-                  </div>
-                  <div class="reaction-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                    <p>2</p>                      
-                  </div>
-                </div> {% endcomment %}
-              </div>
-              <div class="img post-img">
-                <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-                <div class="more-img">
-                  <p>+2</p>
-                </div>
-              </div>
-            </a>
-          </article>
-        {% endfor %}
-        <article class="post vote">
-          <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
-          <button class="vote-btn">
-            <h3 class="post-title">투표 제목 어쩌고 저쩌고</h3>
-            <p class="meeting">~2023.05.30</p>
-          </button>
-        </article>
+    <div>
+      <div class="relative h-6 mb-6">
+        <a href="{% url 'diaries:create' %}" class="create main-btn" id="dropdownDefaultButton">글 작성</a>
       </div>
-      
-      {% comment %} 게시물 페이지네이션 {% endcomment %}
-      <nav class="page-navigation" aria-label="Page navigation">
-        <ul class="inline-flex items-center -space-x-px">
-          {% if diaries.has_previous %}
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
-              <a href="?page=1">
-                <span class="sr-only">처음</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /></svg>                
-              </a>
-            </li>
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
-              <a href="?page={{ diaries.previous_page_number }}" >
-                <span class="sr-only">이전</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
+      <section class="post-list" id="post" role="tabpanel" aria-labelledby="post-tab">
+        <div class="post-group">
+          {% if diaries %}
+            {% for diary in diaries %}
+              <article class="post">
+                <div class="user">
+                  <div class="image user-img">
+                    {% if person.image %}
+                      <img src="{{ person.image.url }}" alt="profile">
+                    {% else %}
+                      <img src="{% static 'img/blank_profile_img.png' %}" alt="no-profile">
+                    {% endif %}
+                  </div>
+                  <p class="user-name">{{ person.nickname }}</p>
+                </div>
+                <a href="{% url 'diaries:detail' diary.pk %}" class="post-link">
+                  <div class="post-content">
+                    <h3 class="post-title">{{ diary.title }}</h3>
+                    <div class="meeting">
+                      <p class="meeting-name">모임 이름</p>
+                      <p class="meeting-date">2023.05.29</p>
+                    </div>
+                    <p class="post-detail">{{ diary.content|safe }}</p>
+                  </div>
+                  <div class="image post-img">
+                    <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
+                    <div class="more-img">
+                      <p>+2</p>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            {% endfor %}
           {% else %}
-            <li class="block px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg" tabindex="-1" disabled>
-              <a >
-                <span class="sr-only">이전</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
-          {% endif %}
-          {% for page_number in diaries.paginator.page_range %}
-            {% if page_number >=  diaries.number|add:-2 and page_number <=   diaries.number|add:2 %}
-              {% if page_number ==  diaries.number %}
-                <li class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700" aria-current="page" >
-                  <a href="?page={{ page_number }}">{{ page_number }}</a>
-                </li>
-              {% else %}
-                <li class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
-                  <a href="?page={{ page_number }}">{{ page_number }}</a>
-                </li>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-          {% if diaries.has_next %}
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
-              <a href="?page={{ diaries.next_page_number }}">
-                <span class="sr-only">다음</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
-              <a href="?page={{ diaries.next_page_number }}" >
-                <span class="sr-only">마지막</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
-                </svg>
-              </a>
-              </a>
-            </li>
-          {% else %}
-            <li class="block px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg" tabindex="-1" disabled>
-              <a >
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
-
-    </section>
-
-    <section class="post-list hidden" id="share" role="tabpanel" aria-labelledby="share-tab">
-      <div class="post-group">
-        {% for shared_diary in shared_diaries %}
-          <article class="post">
-            <div class="user">
-              <div class="img user-img">
-                {% if person.image %}
-                  <img src="{{ person.image.url }}" alt="profile">
-                {% else %}
-                  <img src="{% static 'img/index_logo.png' %}" alt="no-profile">
-                {% endif %}
-              </div>
-              <p class="user-name">{{ person }}</p>
+            <div class="no-post">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-24 h-24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+              </svg>
+              <h3>첫 게시글을 작성해보세요!</h3>
             </div>
-            <a href="{% url 'diaries:group_detail' shared_diary.group.pk shared_diary.diary.pk %}" class="post-link">
-              <div class="post-content">
-                <h3 class="post-title">{{ shared_diary.diary.title }}</h3>
-                <div class="meeting">
-                  <p class="meeting-name">{{ shared_diary.group.name }}</p>
-                  <p class="meeting-date">{{ shared_diary.shared_at }}</p>
-                </div>
-                <p class="post-detail">{{ shared_diary.diary.content|safe }}</p>
-                <div class="reaction">
-                  <div class="reaction-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-                    </svg>
-                    <p>{{ shared_diary.diarycomment_set.all|length}}</p>                      
-                  </div>
-                  <div class="reaction-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                    <p>2</p>                      
-                  </div>
-                </div>
-              </div>
-              <div class="img post-img">
-                <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-                <div class="more-img">
-                  <p>+2</p>
-                </div>
-              </div>
-            </a>
-          </article>
-        {% endfor %}
-      </div>
-      
-      {% comment %} 공유한 다이어리 페이지네이션 {% endcomment %}
-      <nav class="page-navigation" aria-label="Page navigation">
-        <ul class="inline-flex items-center -space-x-px">
-          {% if shared_diaries.has_previous %}
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
-              <a href="?page=1">
-                <span class="sr-only">처음</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /></svg>                
-              </a>
-            </li>
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
-              <a href="?page={{ diaries.previous_page_number }}" >
-                <span class="sr-only">이전</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
-          {% else %}
-            <li class="block px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg" tabindex="-1" disabled>
-              <a >
-                <span class="sr-only">이전</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
           {% endif %}
-          {% for page_number in shared_diaries.paginator.page_range %}
-            {% if page_number >= shared_diaries.number|add:-2 and page_number <= shared_diaries.number|add:2 %}
-              {% if page_number ==  diaries.number %}
-                <li class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700" aria-current="page" >
-                  <a href="?page={{ page_number }}">{{ page_number }}</a>
-                </li>
-              {% else %}
-                <li class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
-                  <a href="?page={{ page_number }}">{{ page_number }}</a>
-                </li>
-              {% endif %}
+        </div>
+        
+        {% comment %} 게시물 페이지네이션 {% endcomment %}
+        <nav class="page-navigation" aria-label="Page navigation">
+          <ul class="inline-flex items-center -space-x-px">
+            {% if diaries.has_previous %}
+              <li class="block px-3 py-2.5 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page=1">
+                  <span class="sr-only">처음</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /></svg>                
+                </a>
+              </li>
+              <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page={{ diaries.previous_page_number }}" >
+                  <span class="sr-only">이전</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% else %}
+              <li class="block px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg" tabindex="-1" disabled>
+                <a >
+                  <span class="sr-only">이전</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
             {% endif %}
-          {% endfor %}
-          {% if shared_diaries.has_next %}
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
-              <a href="?page={{ diaries.next_page_number }}">
-                <span class="sr-only">다음</span>
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
-            <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
-              <a href="?page={{ diaries.next_page_number }}" >
-                <span class="sr-only">마지막</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
-                </svg>
-              </a>
-              </a>
-            </li>
+            {% for page_number in diaries.paginator.page_range %}
+              {% if page_number >=  diaries.number|add:-2 and page_number <=   diaries.number|add:2 %}
+                {% if page_number ==  diaries.number %}
+                  <li class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700" aria-current="page" >
+                    <a href="?page={{ page_number }}">{{ page_number }}</a>
+                  </li>
+                {% else %}
+                  <li class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
+                    <a href="?page={{ page_number }}">{{ page_number }}</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {% if diaries.has_next %}
+              <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
+                <a href="?page={{ diaries.next_page_number }}">
+                  <span class="sr-only">다음</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+              <li class="block px-3 py-2.5 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page={{ diaries.next_page_number }}" >
+                  <span class="sr-only">마지막</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </a>
+                </a>
+              </li>
+            {% else %}
+              <li class="block px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg" tabindex="-1" disabled>
+                <a >
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+
+      </section>
+
+      <section class="post-list hidden" id="share" role="tabpanel" aria-labelledby="share-tab">
+        <div class="post-group">
+          {% if shared_diaries %}
+            {% for shared_diary in shared_diaries %}
+              <article class="post">
+                <div class="user">
+                  <div class="image user-img">
+                    {% if person.image %}
+                      <img src="{{ person.image.url }}" alt="profile">
+                    {% else %}
+                      <img src="{% static 'img/blank_profile_img.png' %}" alt="no-profile">
+                    {% endif %}
+                  </div>
+                  <p class="user-name">{{ person }}</p>
+                </div>
+                <a href="{% url 'diaries:group_detail' shared_diary.group.pk shared_diary.diary.pk %}" class="post-link">
+                  <div class="post-content">
+                    <h3 class="post-title">{{ shared_diary.diary.title }}</h3>
+                    <div class="meeting">
+                      <p class="meeting-name">{{ shared_diary.group.name }}</p>
+                      <p class="meeting-date">{{ shared_diary.shared_at }}</p>
+                    </div>
+                    <p class="post-detail">{{ shared_diary.diary.content|safe }}</p>
+                    <div class="reaction">
+                      <div class="reaction-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                        </svg>
+                        <p>{{ shared_diary.diarycomment_set.all|length}}</p>                      
+                      </div>
+                      <div class="reaction-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+                        <p>{{ shared_diary.diaryemote_set.all|length }}</p>                      
+                      </div>
+                    </div>
+                  </div>
+                  <div class="image post-img">
+                    <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
+                    <div class="more-img">
+                      <p>+2</p>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            {% endfor %}
           {% else %}
-            <li class="block px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg" tabindex="-1" disabled>
-              <a >
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              </a>
-            </li>
+            <div class="no-post">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-24 h-24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+              </svg>
+              <h3>게시글을 공유해보세요!</h3>
+            </div>
           {% endif %}
-        </ul>
-      </nav>
+        </div>
+        
+        {% comment %} 공유한 다이어리 페이지네이션 {% endcomment %}
+        <nav class="page-navigation" aria-label="Page navigation">
+          <ul class="inline-flex items-center -space-x-px">
+            {% if shared_diaries.has_previous %}
+              <li class="block px-3 py-2.5 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page=1">
+                  <span class="sr-only">처음</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /></svg>                
+                </a>
+              </li>
+              <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page={{ shared_diaries.previous_page_number }}" >
+                  <span class="sr-only">이전</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% else %}
+              <li class="block px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg" tabindex="-1" disabled>
+                <a >
+                  <span class="sr-only">이전</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% endif %}
+            {% for page_number in shared_diaries.paginator.page_range %}
+              {% if page_number >= shared_diaries.number|add:-2 and page_number <= shared_diaries.number|add:2 %}
+                {% if page_number ==  shared_diaries.number %}
+                  <li class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700" aria-current="page" >
+                    <a href="?page={{ page_number }}">{{ page_number }}</a>
+                  </li>
+                {% else %}
+                  <li class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
+                    <a href="?page={{ page_number }}">{{ page_number }}</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {% if shared_diaries.has_next %}
+              <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
+                <a href="?page={{ shared_diaries.next_page_number }}">
+                  <span class="sr-only">다음</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+              <li class="block px-3 py-2.5 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page={{ shared_diaries.next_page_number }}" >
+                  <span class="sr-only">마지막</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </a>
+                </a>
+              </li>
+            {% else %}
+              <li class="block px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg" tabindex="-1" disabled>
+                <a >
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
 
-    </section>
+      </section>
 
-    <section class="post-list hidden" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
-      <p>calendar</p>
-    </section>
-    
+      <section class="post-list hidden" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
+        <p>calendar</p>
+      </section>
+      
+    </div>
   </div>
 </div>
   

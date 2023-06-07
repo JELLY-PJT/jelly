@@ -42,7 +42,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 0.5rem 0;
+}
+
+.group-description {
+  word-break: break-word;
 }
 
 .header-top {
@@ -236,7 +239,7 @@
 .user-img {
   width: 4rem;
   height: 4rem;
-  margin: 0 auto 1rem auto;
+  margin: 0 auto 0.5rem auto;
 }
 
 .post-link {

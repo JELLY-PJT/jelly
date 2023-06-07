@@ -1,11 +1,10 @@
-/* 
-img {
+.image img {
   max-width: 100%;
   min-width: 100%;
   max-height: 100%;
   min-height: 100%;
   object-fit: cover;
-} */
+}
 
 .image {
   flex-shrink: 0;
@@ -13,9 +12,13 @@ img {
   overflow: hidden;
 }
 
-/* .content-wrapper {
+figure.image {
+  border-radius: 0;
+}
+
+.content-wrapper {
   padding-left: 130px;
-} */
+}
 
 .content {
   padding: 3rem 1rem 0 1rem;
@@ -61,12 +64,35 @@ img {
   font-size: 0.875rem;
 }
 
+.group-list {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.group-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.update.main-btn {
+  background-color: #9d9c9c;
+}
+
+.update.main-btn:hover {
+  background-color: #838383;
+}
+
 .delete.main-btn {
   background-color: #ff5656;
+  cursor: pointer;
 }
 
 .delete.main-btn:hover {
-  background-color: #dd4a4a;
+  background-color: #e74b4b;
 }
 
 /* tab-list : 컨텐츠를 바꿀 수 있는 버튼 관련 css */
@@ -76,6 +102,7 @@ img {
   top: 0;
   z-index: 10;
   background-color: white;
+  border-top: 1px solid var(--color-main-light);
 }
 
 .tab-content {
@@ -86,14 +113,14 @@ img {
   margin: 0 auto;
 }
 
-.tab-content::before {
+/* .tab-content::before {
   content: "";
   position: absolute;
   display: block;
   width: 1200px;
   height: 1px;
   background: var(--color-main-light);
-}
+} */
 
 .tab-btn {
   padding: 1rem;
@@ -116,7 +143,7 @@ img {
   content: "";
   position: absolute;
   display: block;
-  top: -1rem;
+  top: -1.05rem;
   left: -1rem;
   width: 92px;
   height: 0.125rem;
@@ -183,6 +210,17 @@ img {
   gap: 1.5rem;
 }
 
+.no-post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 400px;
+  color: #a9a9a9;
+  font-size: 1.25rem;
+}
+
 .post {
   display: flex;
   align-items: center;
@@ -216,11 +254,12 @@ img {
 .user-img {
   width: 4rem;
   height: 4rem;
-  margin: 0 auto 1rem auto;
+  margin: 0 auto 0.5rem auto;
 }
 
 .post-link {
   display: flex;
+  justify-content: space-between;
   width: 100%;
 }
 
@@ -228,6 +267,7 @@ img {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  max-width: 750px;
 }
 
 .post-title {
@@ -273,6 +313,8 @@ img {
   max-width: 800px;
   display: inline-flex;
   justify-content: end;
+  align-items: end;
+  flex-grow: 1;
   gap: 0.75rem;
   font-size: 0.875rem;
   color: var(--color-gray-dark);
@@ -334,29 +376,4 @@ img {
 .page-navigation {
   margin-top: 3rem;
   text-align: center;
-}
-
-/* album 컨텐츠 관련 css */
-.album-list {
-  width: 900px;
-  margin: 2rem auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.album-img {
-  width: 18.25rem;
-  height: 18.25rem;
-}
-
-.album-img img {
-  transition: all 0.1s linear;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.album-img:hover img {
-  transform: scale(1.025);
 }
