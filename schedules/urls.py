@@ -1,12 +1,13 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from schedules import views
 
-app_name = 'schedules'
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'schedules', views.ScheduleViewSet, basename="schedule")
+router.register(r'calendars', views.CalendarViewSet, basename="calendar")
+
+# The API URLs are now determined automatically by the router.
 urlpatterns = [
-    path('create/', views.create, name='create'),
-    path('today/', views.today, name='today'),
-    path('thisweek/', views.thisweek, name='thisweek'),
-    path('thismonth/', views.thismonth, name='thismonth'),
-    path('month/<int:year>/<int:month>/', views.themonth, name='themonth'),
-    path('day/<int:year>/<int:month>/<int:day>/', views.theday, name='theday'),
+    path('', include(router.urls)),
 ]

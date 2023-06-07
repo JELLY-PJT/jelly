@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'diaries',
     'chats',
     'rest_framework',
+    'django_extensions',
     'django_ckeditor_5',
     'django.contrib.admin',
     'django.contrib.auth',
