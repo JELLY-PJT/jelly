@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from itertools import chain
 from operator import attrgetter
+from django.db.models import Prefetch
 
 
 # 사이트 인덱스 페이지
@@ -60,6 +61,16 @@ def group_detail(request, group_pk):
     diaries = Diary.objects.filter(pk__in=shared_diary_id)
     posts = Post.objects.filter(group=group)
     votes = Vote.objects.filter(group=group)
+    vote_exist = {}
+    for vote in votes:
+        is_exist = False
+        for select in vote.voteselect_set.all():
+            if request.user in select.select_users.all():
+                is_exist = True
+                break
+        vote_exist[vote.title] = is_exist
+    print(vote_exist)
+
     # diary, post, vote list에 담아 최신순 정렬
     writings = list(chain(diaries, posts, votes))
     writings.sort(key=attrgetter('created_at'), reverse=True)
@@ -68,6 +79,7 @@ def group_detail(request, group_pk):
         'group': group,
         'notices': notices,
         'vote_form': vote_form,
+        'vote_exist': vote_exist,
         'writings': writings,
     }
     return render(request, 'groups/group_detail.html', context)

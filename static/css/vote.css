@@ -111,3 +111,14 @@
   width: 350px;
   text-align: left;
 }
+
+/* 투표 수행 modal*/
+.header-container {
+  display: flex;
+}
+
+.header-container p {
+  font-size: 0.9rem;
+  color: gray;
+  margin-left: 8px;
+}
