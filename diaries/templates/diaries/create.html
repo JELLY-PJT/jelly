@@ -15,20 +15,22 @@
 
 {% block content %}
 <div class="wrapper">
-  <form action="{% block url %}{% url 'diaries:create' %}{% endblock url %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.media }}
-    {% for field in form %}
-    <div>
-      {{ field.label_tag }}
-      {{ field }}
-    </div>
-    {% endfor %}
-    <div class="btns">
-      <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
-      <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
-    </div>
-  </form>
+  <div class="content">
+    <form action="{% url 'diaries:create' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.media }}
+      {% for field in form %}
+      <div>
+        {{ field.label_tag }}
+        {{ field }}
+      </div>
+      {% endfor %}
+      <div class="btns">
+        <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
+        <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock content %}
 
