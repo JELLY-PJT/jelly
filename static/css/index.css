@@ -7,102 +7,96 @@ html {
 *::after {
   box-sizing: inherit;
   --thumbnail-border-radius: 15%;
+  --index-content-height: calc(var(--content-min-height) - 160px);
+  --group-area-height: calc(var(--index-content-height) - 115px);
 }
+
+#group-index *, 
+#group-index *::before,
+#group-index *::after {
+  height: inherit;}
 
 #group-index {
   display: grid;
-  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-columns: 1fr 8fr 1fr;
   grid-template-areas: ". content .";
-  min-height: calc(var(--content-min-height) - 200px);
-  margin: 0 auto 0 auto;
+  height: var(--index-content-height);
+  margin:  0 auto 0 auto;
   font-size: 1rem;
   text-align: center;
   line-height: normal;
 }
 
-#group-index .content {
+#group-index .content-container {
   grid-area: content;
   display: flex;
   flex-direction: row;
 }
-
-@media (max-width: 600px) {
-	#group-index .content {
+/* @media (max-width: 600px) {
+	#group-index .content-container {
 		flex-direction: column;
-	}
-}
-
-#group-index .content.item {
-  padding: 0 2% 0 2%;
-  flex-grow: 1;
-  flex-basis: 50%;
-}
-
-#group-index .content .wrapper {
-  width: 100%;
-  height: fit-content;
-  /* background-color: plum; */
-}
-
-#group-area {
-	width: 100%;
+	}} */
+#group-index .content-container > .content-item {
+  flex-basis: 50%; flex-grow: 1;}
+/* #group-index .item-wrapper { */
+  /* height: inherit; */
+  /* margin: auto; */
+#group-area .item-wrapper{
+	/* width: 100%; */
 	display: flex;
 	flex-direction: column;
   justify-content: center;
-  align-items: center;
-}
+  align-items: center;}
 
-#group-area .row{
-  margin: 5% 0 0 0;
-  align-items: center;
+#group-area .row {
+  /* width: 100%; */
+  margin: 3% 0 3% 0;
+}
+#group-area .menu {
+  /* width: 100%; */
+  display: flex;
+  height: fit-content;
+  flex-direction: row;
+  justify-content: center;
+  align-items:center;
+}
+#group-search-bar {
+  flex-basis: 50%;
+  display:flex;
+  flex-direction: row;
   justify-content: center;
 }
-
-#group-area .row.menu {
-  width: 100%;
-  height: fit-content;
-  display: flex;
-  flex-direction: row;
+#group-search-bar form{
+  margin-left: auto;
 }
-
-#group-search-bar {
-  width: 50%;
-}
-
 #group-search-bar input[type='search'] {
   width: 100%;
   background-color: var(--color-main-light);
   border-radius: 3rem;
-  border: none;
+  border-color: var(--color-main-light);
 }
-
 #group-search-bar input[type='search']:focus {
-  border-color: var(--color-main);
-  box-shadow: var(--color-main), var(--color-main), var(--color-main);
+  border-color: var(--color-main-dark);
 }
-
-
+#group-area .menu button {
+  flex-basis: 10%;
+}
 #group-create-button {
-  width: 15%;
 	display:flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
 }
 
-#group-create-button.big-button {
-  width: 60%;
-	display:flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+#group-area .row.group-button{
+  height: var(--group-area-height);
+  overflow: auto;
+  overflow-x: hidden;
 }
 #group-create-button .square {
   width: 100%;
   padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
   position: relative;
 }
-
 #group-create-button .inner {
   position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
@@ -112,42 +106,50 @@ html {
   align-items: center;
   display:flex;
 }
-
 #group-create-button.menu-item .inner {
   border: none;
 }
-
 #group-create-button .icon {
   width: 70%;
   height: 70%;
 }
-
 #group-create-button.menu-item .icon {
   width: 50%;
   height: 50%;
 }
-
 #group-create-button .icon path {
   fill: var(--color-main);
 }
 
-#group-buttons-grid.row {
+#group-create-button.big-group-button {
+  width: 60%;
+  height: auto;
+  margin:auto;
+}
+
+#group-buttons-grid {
+  width: 65%;
+  height: fit-content;
+  max-height: 100%;
   display: grid;
-  width: 80%;
+  gap: 5%;
+  padding: 1% 0 1% 0;
+  margin: auto;
   grid-template-columns: repeat(2, 1fr);
 } 
 
 #group-buttons-grid .item.button {
+  width: 100%;
   color: white;
   font-size: 1.2vw;
   letter-spacing: 0.2vw; /* 글자 간격 */
 }
 
 #group-buttons-grid .square {
-  width: 90%;
-  padding-top: 90%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
+  width: 100%;
+  padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
   position: relative;
-  margin: 0 auto 25% auto;
+  margin: 0 auto 20% auto;
 }
 
 #group-buttons-grid .inner {
@@ -176,7 +178,6 @@ html {
   border-radius: inherit;
 }
 
-
 #group-buttons-grid .group-button-no-thumbnail {
   /* padding: 5% 10% 5% 10%; */
   position: absolute; top: 0; left: 0;
@@ -188,3 +189,28 @@ html {
   justify-content: center; align-items: center;
 }
 
+.row.group-button::-webkit-scrollbar {
+  width: 5px;
+}
+
+.row.group-button::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.row.group-button::-webkit-scrollbar-thumb {
+  background-color: var(--color-main);
+  border-radius: 4px;
+}
+
+.row.group-button::-webkit-scrollbar-thumb:hover {
+  background-color: #7B83C7;
+}
+
+/* .container {
+  overflow: auto;
+}
+
+.box {
+  display: grid;
+  grid-template-columns: 1fr;
+} */
