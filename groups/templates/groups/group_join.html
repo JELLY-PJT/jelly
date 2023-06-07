@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h3>그룹 가입</h3>
+  <img src="{{ group.thumbnail.url }}" alt="그룹 썸네일">
+  {{ group.name }}
+  {{ group.intro }}
+  <form action="{% url 'groups:group_join' group.pk %}" method="POST">
+    {% csrf_token %}
+    <label for="password">그룹 암호</label>
+    <input type="password" name="password" id="password" required>
+    <input type="submit" value="가입">
+  </form>
+</div>
+
+<!-- password 불일치 시 alert -->
+{% if messages %}
+  {% for message in messages %}
+    <script>alert('{{ message }}')</script>
+  {% endfor %}
+{% endif %}
+
+{% endblock content %}

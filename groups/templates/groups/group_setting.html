@@ -11,6 +11,14 @@
 {% endblock side %} 
 
 {% block content %}
+
+  <div>
+    <button data-modal-target="group-password-update-modal" data-modal-toggle="group-password-update-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+      암호 변경
+    </button>
+  </div>
+
+
 <div class="wrapper">
   <div class="content">
     <!-- 그룹 정보 -->
@@ -24,6 +32,7 @@
       </div>
     </div> {% endcomment %}
     <!-- 그룹 정보 수정, 삭제 버튼 -->
+
     <div>
       {% comment %} <button data-modal-target="group-info-update-modal" data-modal-toggle="group-info-update-modal" class="main-btn block">정보 수정</button> {% endcomment %}
       <form class="space-y-6" action="{% url 'groups:group_update' group.pk %}" method="POST" enctype="multipart/form-data">
@@ -87,29 +96,38 @@
   </div>
 </div>
 
-<!-- 그룹 정보 수정 modal -->
-{% comment %} <div id="group-info-update-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+
+<!-- 그룹 암호변경 modal -->
+<div id="group-password-update-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
   <div class="relative w-full max-w-md max-h-full">
     <!-- Modal content -->
     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-      <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="group-info-update-modal">
+      <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="group-password-update-modal">
         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
         <span class="sr-only">Close modal</span>
       </button>
       <div class="px-6 py-6 lg:px-8">
-        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">그룹 정보 수정</h3>
-        <form class="space-y-6" action="{% url 'groups:group_update' group.pk %}" method="POST" enctype="multipart/form-data">
+        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">그룹 암호 변경</h3>
+        <form class="space-y-6" action="{% url 'groups:password_update' group.pk %}" method="POST">
           {% csrf_token %}
-          {% for field in form %}
-            <div>
-              <label for="{{ field.auto_id }}">{{ field.label }}</label>
-              {{ field }}
-            </div>
-          {% endfor %}
-          <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">저장</button>
+          <label for="old-password">기존 암호</label>
+          <input type="password" id="old-password" name="old-password">
+          <label for="new-password1">새 암호</label>
+          <input type="password" id="new-password1" name="new-password1">
+          <label for="new-password2">새 암호 확인</label>
+          <input type="password" id="new-password2" name="new-password2">
+          <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">변경</button>
         </form>
       </div>
     </div>
   </div>
-</div> {% endcomment %}
+</div>
+
+<!-- password 변경 실패 시 alert -->
+{% if messages %}
+  {% for message in messages %}
+    <script>alert('{{ message }}')</script>
+  {% endfor %}
+{% endif %}
+
 {% endblock content %}

@@ -31,4 +31,11 @@
     {% comment %} 그룹 검색 결과 레이어 {% endcomment %}
     {% comment %} {% include 'groups/index/__search.html' %} {% endcomment %}
 
+<!-- 그룹 생성 실패 시 alert -->
+{% if messages %}
+{% for message in messages %}
+  <script>alert('{{ message }}')</script>
+{% endfor %}
+{% endif %}
+
 {% endblock content %}
