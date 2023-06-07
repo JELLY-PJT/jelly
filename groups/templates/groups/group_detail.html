@@ -195,8 +195,20 @@
           {% if writings %}
             {% for writing in writings %}
               <!-- 다이어리 -->
-              {% if writing.get_model_name == 'diary' %}
-              
+              {% if writing.get_model_name == 'diaryshare' %}
+                <article>
+                  <div>
+                    {{ writing.diary.user }}
+                    {% if writing.diary.user.image %}
+                      <img src="{{ writing.diary.user.image.url }}" alt="프로필 이미지">
+                    {% endif %}
+                    {{ writing.diary.title }}
+                    {{ writing.diary.content }}
+                    공유된 날짜 - {{ writing.created_string }}
+                    댓글 개수 - {{ writing.diarycomment_set.all|length }}
+                    감정표현 개수 - {{ writing.diaryemote_set.all|length }}
+                  </div>
+                </article>
               <!-- 게시글 -->
               {% elif writing.get_model_name == 'post' %}
                 <article class="post">
@@ -215,7 +227,7 @@
                       <h3 class="post-title">{{ writing.title }}</h3>
                       <div class="meeting">
                         <p class="meeting-name">모임 이름</p>
-                        <p class="meeting-date">2023.05.29</p>
+                        <p class="meeting-date">{{ writing.created_string }}</p>
                       </div>
                       <p class="post-detail">{{ writing.content }}</p>
                       <div class="reaction" {% if writing.postimage_set.all %}style="max-width: 800px;"{% endif %}>

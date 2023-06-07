@@ -17,7 +17,6 @@ def login(request):
         if form.is_valid():
             auth_login(request, form.get_user())
             next_url = request.POST.get('next')
-            print(next_url)
             if next_url:
                 return redirect(next_url)
         return redirect('groups:index')
