@@ -15,7 +15,14 @@ class DiaryForm(forms.ModelForm):
     class Meta:
         model = Diary
         fields = '__all__'
-        exclude = ('user', 'share', 'hit', )
+        exclude = ('user', 'share', 'hit',)
+        widgets = {
+            'thumbnail': forms.HiddenInput(
+                attrs={
+                    'id': 'thumbnail_input',
+                }
+            ),
+        }
 
 
 class DiaryCommentForm(forms.ModelForm):

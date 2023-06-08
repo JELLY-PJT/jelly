@@ -3,10 +3,12 @@ from django.conf import settings
 from django_ckeditor_5.fields import CKEditor5Field
 from datetime import datetime, timedelta
 from django.utils import timezone
+from imagekit.models import ProcessedImageField
+from imagekit.processors import Thumbnail
+from urllib.parse import urljoin
+
 
 # Create your models here.
-
-
 class Diary(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -15,6 +17,7 @@ class Diary(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     share = models.ManyToManyField('groups.Group', related_name='group_diaries', verbose_name='shared diary to group', through='DiaryShare')
     hit = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='diary_views')
+    thumbnail =  models.CharField(max_length=500, blank=True)
 
     def __str__(self):
         return self.title
@@ -27,7 +30,7 @@ class Diary(models.Model):
 
         if user not in diary_share.hit.all():
             diary_share.hit.add(user)
-    
+
     @property
     def created_string(self):
         time = datetime.now(tz=timezone.utc) - self.created_at

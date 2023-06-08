@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+import custom_ckeditor.views
 
 
 urlpatterns = [
@@ -27,6 +28,7 @@ urlpatterns = [
     path('diaries/', include('diaries.urls')),
     path('groups/', include('groups.urls')),
     path('schedules/', include('schedules.urls')),
+    path("ckeditor5/image_upload/", custom_ckeditor.views.upload_file, name="ck_editor_5_upload_file"),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
