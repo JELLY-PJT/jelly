@@ -327,29 +327,36 @@
                           </button>
                         </div>
                         <!-- Modal body -->
-                        {% if vote_exist.writing %}
-                        <!-- 투표 읽기 모달 -->
-                        <p>읽기</p>
-                        {% else %}
-                        <!-- 투표 수행 모달 -->
-                        <p>exist: {{ vote_exist }}</p>
-                        <p>exist: {{ vote_exist.writing }}</p>
-                        <div class="p-6 space-y-6">
+                        <!-- 투표 읽기 모달(이전에 투표한 경우) -->
+                        <div id="for-read-vote-{{ writing.pk }}" {% if writing not in joined_vote %}hidden{% endif %}>
+                          <p>읽기</p>
                           {% for option in writing.voteselect_set.all %}
-                            <form action="{% url 'groups:throw_vote' group.pk writing.pk option.pk %}" method="POST">
-                              {% csrf_token %}
-                              <!-- 선택지 -->
-                              <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                            선택지 - {{ option.content }}
+                            투표한 사람 수 - {{ option.select_users.all|length }}
+                          {% endfor %}
+                          <button type="button" class="switch-btn" data-vote-id="{{ writing.pk }}">투표 다시하기</button>
+                        </div>
+                        <!-- 투표 수행 모달(투표하지 않은 경우) -->
+                        <div class="p-6 space-y-6" id="for-perform-vote-{{ writing.pk }}" {% if writing in joined_vote %}hidden{% endif %}>
+                          <form action="{% url 'groups:throw_vote' group.pk writing.pk %}" method="POST" class="vote-perform-form" data-vote-id="{{ writing.pk }}" data-vote-overlap="{{ writing.is_overlap }}">
+                            {% csrf_token %}
+                            <!-- 선택지 -->
+                            {% for option in writing.voteselect_set.all %}
+                              <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400 option" data-option-id="{{ option.pk }}" data-user-exist="{% if request.user in option.select_users.all %}true{% else %}false{% endif %}">
                                 {{ option.content }}
-                              </p>
+                              </div>
                               <!-- 투표한 사람 -->
                               <!-- 유저 어떤 방식으로 보여줄지 미정 -->
                               <div>{{ option.select_users.all|length }}</div>
-                              <!-- 투표버튼 -->
-                              <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
-                            </form>
-                          {% endfor %}
-                          <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                            {% endfor %}
+                            <!-- 고른 선택지 -->
+                            <input type="hidden" id="{{ writing.pk }}-options" name="selected_list">
+                            <!-- 투표버튼 -->
+                            <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
+                          </form>
+                        </div>
+                        <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                        <div>
                           {% if writing.is_addible %}
                             <button type="button" id="add-member-option">+항목 추가</button>
                             <form action="{% url 'groups:add_option' group.pk writing.pk %}" method="POST">
@@ -359,7 +366,6 @@
                             </form>
                           {% endif %}
                         </div>
-                        {% endif %}
                       </div>
                     </div>
                   </div>
@@ -609,5 +615,6 @@
 <script src="{% static 'js/groups/vote_add_member_option.js' %}"></script>  <!-- vote의 is_addible True인 경우 멤버가 선택지 추가 -->
 <script src="{% static 'js/groups/vote_update.js' %}"></script>  <!-- vote 수정 -->
 <script src="{% static 'js/groups/group_detail.js' %}"></script>  <!-- vote 수정 -->
+<script src="{% static 'js/groups/vote_perform.js' %}"></script>  <!-- 투표 수행 -->
 <script src="{% static 'js/groups/group_invite.js' %}"></script>  <!-- 그룹 초대링크 -->
 {% endblock content %}

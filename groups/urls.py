@@ -29,7 +29,7 @@ urlpatterns = [
     # 투표
     path('<int:group_pk>/votes/create/', views.vote_create, name='vote_create'),
     path('votes/<int:vote_pk>/', views.get_vote, name='get_vote'),
-    path('<int:group_pk>/votes/<int:vote_pk>/throw/<int:option_pk>/', views.throw_vote, name='throw_vote'),
+    path('<int:group_pk>/votes/<int:vote_pk>/throw/', views.throw_vote, name='throw_vote'),
     path('<int:group_pk>/votes/<int:vote_pk>/add_option/', views.add_option, name='add_option'),
     path('<int:group_pk>/votes/<int:vote_pk>/update/', views.vote_update, name='vote_update'),
     path('<int:group_pk>/votes/<int:vote_pk>/delete/', views.vote_delete, name='vote_delete'),
