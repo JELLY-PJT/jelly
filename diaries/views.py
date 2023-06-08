@@ -135,7 +135,7 @@ def unshare(request, group_pk, diary_pk):
     diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
     if request.user == diary.user:
         diary.share.remove(group)
-        return redirect('diaries:index')
+        return redirect('accounts:profile', request.user)
     return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
 
 

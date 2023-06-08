@@ -1,8 +1,6 @@
 {% extends 'diaries/create.html' %}
 
-{% block title %}
-<h1>다이어리 수정</h1>
-{% endblock title %}
+{% block title %}JELLY | {{ diary.title }}{% endblock title %}
 
 {% block url %}
 {% url 'diaries:update' diary.pk %}

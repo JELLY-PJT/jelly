@@ -21,21 +21,50 @@
     </section>
     
     <section class="post-content">
-      <div class="flex justify-between items-end px-2">
-        <div>
+      <div class="flex flex-col px-2">
+        <div class="flex items-center">
           <h2 class="title">{{ diary.title }}</h2>
-          <p class="date">{{ diary.created_at }}</p>
-        </div>
-        <div class="flex gap-4">
-          {% if request.user == diary.user %}
-            <form action="{% url 'diaries:unshare' group.pk diary.pk %}">
-              {% csrf_token %}
-              <input type="submit" value="공유취소" class="diary" onclick="return confirm('해당 게시글에 포함된 댓글도 함께 삭제됩니다.\n공유를 취소하시겠습니까?')">
-            </form>
+
+          {% comment %} {% if request.user == diary.user %}
+          <button id="postManageDropdownButton" data-dropdown-toggle="postManageDropdown" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9d9c9c" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+            </svg>
+          </button>
           {% endif %}
-          <a href="{% url 'diaries:update' diary.pk %}" class="diary">수정</a>
-          <a href="{% url 'diaries:delete' diary.pk %}" class="diary delete" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+          <!-- Dropdown menu -->
+          <div id="postManageDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="postManageDropdownButton">
+                <li class="hover:bg-gray-100">
+                  <form action="{% url 'diaries:unshare' group.pk diary.pk %}">
+                    {% csrf_token %}
+                    <input type="submit" value="공유취소" class="diary px-4 py-2" onclick="return confirm('해당 게시글에 포함된 댓글도 함께 삭제됩니다.\n공유를 취소하시겠습니까?')">
+                  </form>
+                </li>
+                <li class="hover:bg-gray-100">
+                  <a href="{% url 'diaries:update' diary.pk %}" class="block diary px-4 py-2">수정</a>
+                </li>
+                <!--
+                <li class="hover:bg-gray-100">
+                  <a href="{% url 'groups:notice_post' group.pk diary.pk %}" class="block diary px-4 py-2">공지 등록</a>
+                </li>-->
+                <li class="hover:bg-gray-100">
+                  <a href="{% url 'diaries:delete' diary.pk %}" class="block diary delete px-4 py-2" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+                </li>
+              </ul>
+          </div> {% endcomment %}
+          {% if request.user == diary.user %}
+            <div class="flex gap-4">
+              <form action="{% url 'diaries:unshare' group.pk diary.pk %}">
+                {% csrf_token %}
+                <input type="submit" value="공유취소" class="diary" onclick="return confirm('해당 게시글에 포함된 댓글도 함께 삭제됩니다.\n공유를 취소하시겠습니까?')">
+              </form>
+              <a href="{% url 'diaries:update' diary.pk %}" class="diary">수정</a>
+              <a href="{% url 'diaries:delete' diary.pk %}" class="diary delete" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+            </div>
+          {% endif %}
         </div>
+        <p class="date">{{ diary.created_at }}</p>
             
       </div>
       <hr class="diary-hr">
