@@ -9,6 +9,7 @@ from django.contrib import messages
 from itertools import chain
 from operator import attrgetter
 from django.db.models import Prefetch
+from argon2 import PasswordHasher as ph
 
 
 # 사이트 인덱스 페이지
@@ -24,20 +25,44 @@ def index(request):
 # 그룹 생성
 @login_required
 def group_create(request):
+    form = GroupForm(request.POST, request.FILES)
+    password1 = request.POST.get('password1')
+    password2 = request.POST.get('password2')
+
+    if form.is_valid() and password1 == password2:
+        group = form.save(commit=False)
+        group.chief = request.user
+        group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
+        group.save()
+        group.group_users.add(request.user)
+        return redirect('groups:group_detail', group.pk)
+    else:
+        messages.error(request, '정보를 정확하게 입력하세요.')
+        return redirect('groups:index')
+
+
+# 그룹 참가
+def group_join(request, group_pk):
+    group = Group.objects.get(pk=group_pk)
+
+    if not request.user.is_authenticated:
+        # 로그인 후 다시 group join url로 가도록 파라미터를 함께 보냄
+        return redirect(f'/accounts/login/?next={request.path}')
+
+    if group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:group_detail', group.pk)
+
     if request.method == 'POST':
-        form = GroupForm(request.POST, request.FILES)
-        if form.is_valid():
-            group = form.save(commit=False)
-            group.chief = request.user
-            group.save()
+        password = request.POST.get('password')
+        try:
+            ph().verify(group.password, password)
             group.group_users.add(request.user)
             return redirect('groups:group_detail', group.pk)
+        except:
+            messages.error(request, '암호가 일치하지 않습니다.')
+            return render(request, 'groups/group_join.html', {'group': group,})
     else:
-        form = GroupForm()
-    context = {
-        'form': form,
-    }
-    return render(request, 'groups/group_create.html', context)
+        return render(request, 'groups/group_join.html', {'group': group,})
 
 
 # 그룹 페이지 조회
@@ -56,9 +81,10 @@ def group_detail(request, group_pk):
     vote_form = VoteForm()
 
     # diary, post, vote 조회
-    shared_diaries = DiaryShare.objects.filter(group=group)
-    shared_diary_id = [obj.pk for obj in shared_diaries]
-    diaries = Diary.objects.filter(pk__in=shared_diary_id)
+    # shared_diaries = DiaryShare.objects.filter(group=group)
+    # shared_diary_id = [obj.pk for obj in shared_diaries]
+    # diaries = Diary.objects.filter(pk__in=shared_diary_id)
+    diaries = DiaryShare.objects.filter(group=group)
     posts = Post.objects.filter(group=group)
     votes = Vote.objects.filter(group=group)
     vote_exist = {}
@@ -75,12 +101,22 @@ def group_detail(request, group_pk):
     writings = list(chain(diaries, posts, votes))
     writings.sort(key=attrgetter('created_at'), reverse=True)
 
+    # share_data = {}
+    # for diary in diaries:
+    #     shared_diary = DiaryShare.objects.get(diary=diary, group=group)
+    #     share_data[writings.index(diary)] = {'shared_at': shared_diary.shared_string,
+    #                             'comment_cnt': shared_diary.diarycomment_set.count(),
+    #                             'emote_cnt': shared_diary.diaryemote_set.count()}
+    
+    # print(share_data)
+
     context = {
         'group': group,
         'notices': notices,
         'vote_form': vote_form,
         'vote_exist': vote_exist,
         'writings': writings,
+        # 'share_data': share_data,
     }
     return render(request, 'groups/group_detail.html', context)
 
@@ -138,6 +174,34 @@ def group_delete(request, group_pk):
     return redirect('groups:index')
 
 
+# 그룹 암호 변경
+@login_required
+def password_update(request, group_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    old_password = request.POST.get('old-password')
+    password1 = request.POST.get('new-password1')
+    password2 = request.POST.get('new-password2')
+
+    try:
+        ph().verify(group.password, old_password)
+        if password1 == password2:
+            group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
+            group.save()
+            return redirect('groups:group_detail', group.pk)
+        else:
+            messages.error(request, '비밀번호를 정확하게 입력하세요.')
+            return redirect('groups:group_setting', group.pk)
+    except:
+        messages.error(request, '비밀번호를 정확하게 입력하세요.')
+        return redirect('groups:group_setting', group.pk)
+
+
 # 멤버 삭제
 @login_required
 def member_delete(request, group_pk, username):
@@ -151,6 +215,19 @@ def member_delete(request, group_pk, username):
     member = get_user_model().objects.get(username=username)
     group.group_users.remove(member)
     return redirect('groups:group_setting', group.pk)
+
+
+# 그룹 탈퇴
+@login_required
+def member_withdraw(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if group.group_users.filter(pk=request.user.pk).exists():
+        # 방장이면 탈퇴 못함
+        if request.user == group.chief:
+            return redirect('groups:group_detail', group.pk)
+        else:
+            group.group_users.remove(request.user)
+    return redirect('groups:index')
 
 
 # 방장 위임

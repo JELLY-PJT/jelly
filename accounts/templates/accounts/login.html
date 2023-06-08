@@ -57,7 +57,10 @@
           {{ field }}
       </div>
       {% endfor %}
-        <button class='login-btn'>로그인</button>
+      {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+      <button class='login-btn'>로그인</button>
     </form>
     <a class='login-btn' href="{% url 'accounts:signup' %}">회원가입</a>
     <div class='bar'></div>

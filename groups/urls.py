@@ -7,11 +7,14 @@ urlpatterns = [
     path('', views.index, name='index'),
     # 그룹
     path('create/', views.group_create, name='group_create'),
+    path('<int:group_pk>/join/', views.group_join, name='group_join'),
     path('<int:group_pk>/', views.group_detail, name='group_detail'),
     path('<int:group_pk>/setting/', views.group_setting, name='group_setting'),
     path('<int:group_pk>/update/', views.group_update, name='group_update'),
     path('<int:group_pk>/delete/', views.group_delete, name='group_delete'),
-    path('<int:group_pk>/members/<str:username>/delete/', views.member_delete, name='member_delete'), # 멤버 삭제
+    path('<int:group_pk>/password_update/', views.password_update, name='password_update'),
+    path('<int:group_pk>/members/withdraw/', views.member_withdraw, name='member_withdraw'), # 멤버 탈퇴(본인이)
+    path('<int:group_pk>/members/<str:username>/delete/', views.member_delete, name='member_delete'), # 멤버 삭제(방장 권한)
     path('<int:group_pk>/chief/<str:username>/change/', views.chief_change, name='chief_change'), # 방장 위임
     # 게시글
     path('<int:group_pk>/posts/create/', views.post_create, name='post_create'),

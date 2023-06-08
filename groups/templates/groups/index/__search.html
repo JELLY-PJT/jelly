@@ -1,0 +1,48 @@
+{% load static %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+<div id="search-box">
+  <form action="#" method="POST">
+    <a class="fs-1" href="#"><button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">닫기 닫기 버튼</button></a>
+    <button class="btn">저장 저장 버튼</button>
+
+    {% csrf_token %}
+    <input type="search" class="form-control" placeholder="검색 검색 창" />
+    <!-- 추가할 영화 리스트 출력될 부분 -->
+    <div id="selected-list" class="">
+      <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#addList">추가 추가 버튼</button>
+    </div>
+    <input type="hidden" id="movies-input" name="selected_list" />
+  </form>
+
+  <!-- Modal Search Results -->
+  <div class="modal fade" id="addList" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header border-top border-bottom">
+          <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">모달 닫기 버튼</button>
+        </div>
+        <div class="d-flex align-items-center border-bottom ps-3">
+          <i class="bi bi-search"></i>
+          <input class="px-1 py-2 bg-transparent border-0 search collcetion-search" type="text" id="search-input" data-user-name="{{ request.user.username }}" placeholder="검색을 해보자 검색검색" aria-label="Search" />
+        </div>
+        <button class="" type="submit" hidden>모달 검색 버튼</button>
+        <div class="modal-body" id="search-results"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+#search-box {
+  width: 400px;
+  margin: auto;
+}
+#search-box * {
+  display: flex;
+  flex-direction: column;
+}
+#search-box .btn {
+  border: solid 3px var(--color-main);
+}
+</style>

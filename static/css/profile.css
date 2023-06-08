@@ -88,6 +88,7 @@ figure.image {
 
 .delete.main-btn {
   background-color: #ff5656;
+  cursor: pointer;
 }
 
 .delete.main-btn:hover {
