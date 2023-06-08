@@ -62,6 +62,14 @@ class PostImageDeleteForm(forms.ModelForm):
 
 
 class PostCommentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["content"].widget.attrs["class"] = "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[var(--color-main-light)] focus:border-[var(--color-main-light)]"
+        self.fields["content"].widget.attrs["placeholder"] = '댓글을 입력해주세요'
+        self.fields["content"].widget.attrs["rows"] = 1
+        self.fields["content"].label = ''
+
+
     class Meta:
         model = PostComment
         fields = ('content',)
