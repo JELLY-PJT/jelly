@@ -16,7 +16,7 @@
 {% block content %}
 <div class="wrapper">
   <div class="content">
-    <form action="{% url 'diaries:create' %}" method="POST" enctype="multipart/form-data">
+    <form action="{% block url %}{% url 'diaries:create' %}{% endblock url %}" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.media }}
       {% for field in form %}
@@ -30,6 +30,7 @@
         <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
       </div>
     </form>
+    <button id="select-thumbnail-btn">썸네일 선택하기</button>
   </div>
 </div>
 {% endblock content %}
@@ -37,4 +38,33 @@
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script>
+  const selectThumbnailBtn = document.getElementById('select-thumbnail-btn')
+  const thumbnailInput = document.getElementById('thumbnail_input')
+  let images = null
+  let selectedImage = null
+
+  // '썸네일 선택하기' 버튼 클릭 시 이미지 선택 기능 활성화
+  selectThumbnailBtn.addEventListener('click', function() {
+    images = document.querySelectorAll('.ck-editor__main img')
+    // 이미지 클릭 이벤트 핸들러 등록
+    for (var i = 0; i < images.length; i++) {
+      images[i].addEventListener('click', selectImageOnce)
+    }
+  })
+  // 이미지 클릭 시 선택 처리
+  function selectImageOnce() {
+    if (selectedImage) {
+      selectedImage.removeAttribute('id')
+    }
+    this.id = 'thumbnail'
+    selectedImage = this
+    thumbnailInput.setAttribute('value', `${this.src}`)
+
+    for (var i = 0; i < images.length; i++) {
+      images[i].removeEventListener('click', selectImageOnce)
+    }
+  }
+
+</script>
 {% endblock script %}

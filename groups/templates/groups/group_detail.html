@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ group }}{% endblock title %}
+{% block title %}JELLY | {{ group }}{% endblock title %}
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/group_detail.css' %}">
@@ -33,10 +33,10 @@
             <h3 class="group-name">{{ group }}</h3>
             <div class="flex item-center gap-4">
               <button onclick="copyLink()" class="main-btn" id="invite-btn" data-group-id="{{ group.pk }}">초대링크</button>                
-              <button class="user main-btn" data-popover-target="popover-click" data-popover-trigger="click" type="button">
+              <button class="user main-btn" data-popover-target="popover-bottom" data-popover-placement="bottom"  data-popover-trigger="click" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" stroke-width="2" fill="black" class="w-6 h-6"><path d="M480-481q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5t127.921 44.694q31.301 14.126 50.19 40.966Q800-292 800-254v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm260-321q39 0 64.5-25.5T570-631q0-39-25.5-64.5T480-721q-39 0-64.5 25.5T390-631q0 39 25.5 64.5T480-541Zm0-90Zm0 411Z"/></svg>
               </button>
-              <div data-popover id="popover-click" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
+              <div data-popover id="popover-bottom" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
                 <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
                   <h3 class="font-semibold text-gray-900">멤버</h3>
                 </div>
@@ -51,27 +51,28 @@
                         {% endif %}
                       </div>
                       <div class="font-medium">
-                        <div>{{ user }}</div>
+                        <div>{{ user.nickname }}</div>
                       </div>
                     </div>
                   {% endfor %}
                 </div>
               </div>
               <!-- 방장만 접근 가능한 그룹 설정 페이지 버튼 -->
-              {% if request.user == group.chief %}
-                <div>
+              <div>
+                {% if request.user == group.chief %}
                   <a href="{% url 'groups:group_setting' group.pk %}" class="block main-btn user">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-6 h-6">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    
                   </a>
+                {% else %}
+                  <a href="{% url 'groups:member_withdraw' group.pk %}" class="block text-[#ff5656]">그룹 나가기</a>
+                {% endif %}
                 </div>
-              {% endif %}
             </div>
           </div>
-          <div>
+          <div class="group-intro">
             <p>{{ group.intro }}</p>
           </div>
         </div>
@@ -140,7 +141,7 @@
                         <!-- Modal body -->
                         <div class="p-6 space-y-6">
                           {% for option in notice.voteselect_set.all %}
-                            <form action="{% url 'groups:throw_vote' group.pk notice.pk option.pk %}" method="POST">
+                            <form action="{% url 'groups:throw_vote' group.pk notice.pk %}" method="POST">
                               {% csrf_token %}
                               <!-- 선택지 -->
                               <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
@@ -196,19 +197,55 @@
             {% for writing in writings %}
               <!-- 다이어리 -->
               {% if writing.get_model_name == 'diaryshare' %}
-                <article>
-                  <div>
-                    {{ writing.diary.user }}
+              <article class="post">
+                <div class="user">
+                  <div class="image user-img">
                     {% if writing.diary.user.image %}
-                      <img src="{{ writing.diary.user.image.url }}" alt="프로필 이미지">
+                      <img src="{{ writing.diary.user.image.url }}" alt="profile image">
+                    {% else %}
+                      <img src="{% static 'img/blank_profile_img.png' %}" alt="">
                     {% endif %}
-                    {{ writing.diary.title }}
-                    {{ writing.diary.content }}
-                    공유된 날짜 - {{ writing.created_string }}
-                    댓글 개수 - {{ writing.diarycomment_set.all|length }}
-                    감정표현 개수 - {{ writing.diaryemote_set.all|length }}
                   </div>
-                </article>
+                  <p class="user-name">{{ writing.diary.user.nickname }}</p>
+                </div>
+                <a href="{% url 'diaries:group_detail' group.pk writing.diary.pk %}" class="post-link">
+                  <div class="post-content" {% if writing.postimage_set.all %}style="max-width: 750px;"{% endif %}>
+                    <h3 class="post-title">{{ writing.diary.title }}</h3>
+                    <div class="meeting">
+                      <p class="meeting-name">모임 이름</p>
+                      <p class="meeting-date">{{ writing.created_string }}</p>
+                    </div>
+                    <p class="post-detail">{{ writing.diary.content|striptags }}</p>
+                    <div class="reaction" {% if writing.postimage_set.all %}style="max-width: 800px;"{% endif %}>
+                      <div class="reaction-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                        </svg>
+                        <p>{{ writing.diarycomment_set.all|length }}</p>                      
+                      </div>
+                      <div class="reaction-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+                        <p>{{ writing.diaryemote_set.all|length }}</p>                      
+                      </div>
+                    </div>
+                  </div>
+                  {% comment %} {% if writing.postimage_set.all %}
+                    <div class="image post-img">
+                      {% for image in writing.postimage_set.all|slice:":1" %}
+                        <img src="{{ image.image.url }}" alt="post 첫번째 사진">
+                      {% endfor %}
+                      {% if writing.postimage_set.all > 1 %}
+                        <div class="more-img">
+                          <p>+{{ writing.postimage_set.all|length|add:"-1" }}</p>
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endif %} {% endcomment %}
+                </a>
+              </article>
+
               <!-- 게시글 -->
               {% elif writing.get_model_name == 'post' %}
                 <article class="post">
@@ -217,7 +254,7 @@
                       {% if writing.user.image %}
                         <img src="{{ writing.user.image.url }}" alt="profile image">
                       {% else %}
-                        <img src="https://images.unsplash.com/photo-1629142796909-aeddffc6a3a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
+                        <img src="{% static 'img/blank_profile_img.png' %}" alt="">
                       {% endif %}
                     </div>
                     <p class="user-name">{{ writing.user.nickname }}</p>
@@ -327,29 +364,36 @@
                           </button>
                         </div>
                         <!-- Modal body -->
-                        {% if vote_exist.writing %}
-                        <!-- 투표 읽기 모달 -->
-                        <p>읽기</p>
-                        {% else %}
-                        <!-- 투표 수행 모달 -->
-                        <p>exist: {{ vote_exist }}</p>
-                        <p>exist: {{ vote_exist.writing }}</p>
-                        <div class="p-6 space-y-6">
+                        <!-- 투표 읽기 모달(이전에 투표한 경우) -->
+                        <div id="for-read-vote-{{ writing.pk }}" {% if writing not in joined_vote %}hidden{% endif %}>
+                          <p>읽기</p>
                           {% for option in writing.voteselect_set.all %}
-                            <form action="{% url 'groups:throw_vote' group.pk writing.pk option.pk %}" method="POST">
-                              {% csrf_token %}
-                              <!-- 선택지 -->
-                              <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                            선택지 - {{ option.content }}
+                            투표한 사람 수 - {{ option.select_users.all|length }}
+                          {% endfor %}
+                          <button type="button" class="switch-btn" data-vote-id="{{ writing.pk }}">투표 다시하기</button>
+                        </div>
+                        <!-- 투표 수행 모달(투표하지 않은 경우) -->
+                        <div class="p-6 space-y-6" id="for-perform-vote-{{ writing.pk }}" {% if writing in joined_vote %}hidden{% endif %}>
+                          <form action="{% url 'groups:throw_vote' group.pk writing.pk %}" method="POST" class="vote-perform-form" data-vote-id="{{ writing.pk }}" data-vote-overlap="{{ writing.is_overlap }}">
+                            {% csrf_token %}
+                            <!-- 선택지 -->
+                            {% for option in writing.voteselect_set.all %}
+                              <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400 option" data-option-id="{{ option.pk }}" data-user-exist="{% if request.user in option.select_users.all %}true{% else %}false{% endif %}">
                                 {{ option.content }}
-                              </p>
+                              </div>
                               <!-- 투표한 사람 -->
                               <!-- 유저 어떤 방식으로 보여줄지 미정 -->
                               <div>{{ option.select_users.all|length }}</div>
-                              <!-- 투표버튼 -->
-                              <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
-                            </form>
-                          {% endfor %}
-                          <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                            {% endfor %}
+                            <!-- 고른 선택지 -->
+                            <input type="hidden" id="{{ writing.pk }}-options" name="selected_list">
+                            <!-- 투표버튼 -->
+                            <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
+                          </form>
+                        </div>
+                        <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                        <div>
                           {% if writing.is_addible %}
                             <button type="button" id="add-member-option">+항목 추가</button>
                             <form action="{% url 'groups:add_option' group.pk writing.pk %}" method="POST">
@@ -359,7 +403,6 @@
                             </form>
                           {% endif %}
                         </div>
-                        {% endif %}
                       </div>
                     </div>
                   </div>
@@ -447,7 +490,7 @@
               </li>
             {% else %}
               <li class="block px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg" tabindex="-1" disabled>
-                <a >
+                <a>
                   <span class="sr-only">이전</span>
                   <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
                 </a>
@@ -484,7 +527,7 @@
               </li>
             {% else %}
               <li class="block px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg" tabindex="-1" disabled>
-                <a >
+                <a>
                   <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                 </a>
               </li>
@@ -609,5 +652,6 @@
 <script src="{% static 'js/groups/vote_add_member_option.js' %}"></script>  <!-- vote의 is_addible True인 경우 멤버가 선택지 추가 -->
 <script src="{% static 'js/groups/vote_update.js' %}"></script>  <!-- vote 수정 -->
 <script src="{% static 'js/groups/group_detail.js' %}"></script>  <!-- vote 수정 -->
+<script src="{% static 'js/groups/vote_perform.js' %}"></script>  <!-- 투표 수행 -->
 <script src="{% static 'js/groups/group_invite.js' %}"></script>  <!-- 그룹 초대링크 -->
 {% endblock content %}

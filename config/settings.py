@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'schedules',
     'diaries',
     'chats',
+    'custom_ckeditor',
     'rest_framework',
     'django_ckeditor_5',
     'django.contrib.admin',
@@ -165,6 +166,8 @@ customColorPalette = [
     {"color": "hsl(207, 90%, 54%)", "label": "Blue"},
 ]
 
+CKEDITOR_5_FILE_STORAGE = "diaries.storage.CustomStorage"
+
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
@@ -193,7 +196,7 @@ CKEDITOR_5_CONFIGS = {
         ],
     },
     "extends": {
-        "language": "kr",
+        "language": "ko",
         "blockToolbar": [
             "paragraph",
             "heading1",

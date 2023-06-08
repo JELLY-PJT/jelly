@@ -42,6 +42,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 0.5rem 0;
 }
 
 .group-description {
@@ -59,6 +60,10 @@
   font-weight: 500;
 }
 
+.group-intro {
+  word-break: break-word;
+}
+
 .user.main-btn {
   background-color: var(--color-gray);
 }
@@ -67,12 +72,12 @@
   background-color: #c3c3c3;
 }
 
-#popover-click {
+#popover-bottom {
   z-index: 50;
-  max-width: 300px;
 }
 
 .user-list {
+  max-height: 180px;
   overflow-y: scroll;
 }
 

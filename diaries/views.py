@@ -5,6 +5,7 @@ from .models import Diary, DiaryComment, DiaryShare, DiaryEmote
 from .forms import DiaryForm, DiaryCommentForm
 from groups.models import Group
 from django.http import JsonResponse
+from bs4 import BeautifulSoup
 
 EMOTIONS = [
     {'label': '좋아요', 'value': 1},
@@ -31,6 +32,16 @@ def create(request):
         if form.is_valid():
             diary = form.save(commit=False)
             diary.user = request.user
+
+            if not diary.thumbnail:  # thumbnail 필드가 비어있는 경우에만 처리
+                # Diary 객체의 content 필드에 이미지 태그가 있는지 확인
+                if '<img' in diary.content:
+                    soup = BeautifulSoup(diary.content, 'html.parser')
+                    img_tag = soup.find('img')
+                    print(img_tag)
+                    if img_tag:
+                        first_img_url = img_tag['src']
+                        diary.thumbnail = first_img_url
             diary.save()
             return redirect('diaries:detail', diary.pk)
     else:
@@ -135,7 +146,7 @@ def unshare(request, group_pk, diary_pk):
     diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
     if request.user == diary.user:
         diary.share.remove(group)
-        return redirect('diaries:index')
+        return redirect('accounts:profile', request.user)
     return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
 
 

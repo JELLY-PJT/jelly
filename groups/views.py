@@ -8,8 +8,9 @@ from django.http import JsonResponse
 from django.contrib import messages
 from itertools import chain
 from operator import attrgetter
-from django.db.models import Prefetch
 from argon2 import PasswordHasher as ph
+import json
+from django.core.paginator import Paginator
 
 
 # 사이트 인덱스 페이지
@@ -81,42 +82,26 @@ def group_detail(request, group_pk):
     vote_form = VoteForm()
 
     # diary, post, vote 조회
-    # shared_diaries = DiaryShare.objects.filter(group=group)
-    # shared_diary_id = [obj.pk for obj in shared_diaries]
-    # diaries = Diary.objects.filter(pk__in=shared_diary_id)
     diaries = DiaryShare.objects.filter(group=group)
     posts = Post.objects.filter(group=group)
     votes = Vote.objects.filter(group=group)
-    vote_exist = {}
-    for vote in votes:
-        is_exist = False
-        for select in vote.voteselect_set.all():
-            if request.user in select.select_users.all():
-                is_exist = True
-                break
-        vote_exist[vote.title] = is_exist
-    print(vote_exist)
 
-    # diary, post, vote list에 담아 최신순 정렬
+    # diary, post, vote list에 담아 최신순 정렬 후 페이지네이션
     writings = list(chain(diaries, posts, votes))
     writings.sort(key=attrgetter('created_at'), reverse=True)
+    page = request.GET.get('page', '1')
+    per_page = 5
+    pagination = Paginator(writings, per_page)
+    page_objects = pagination.get_page(page)
 
-    # share_data = {}
-    # for diary in diaries:
-    #     shared_diary = DiaryShare.objects.get(diary=diary, group=group)
-    #     share_data[writings.index(diary)] = {'shared_at': shared_diary.shared_string,
-    #                             'comment_cnt': shared_diary.diarycomment_set.count(),
-    #                             'emote_cnt': shared_diary.diaryemote_set.count()}
-    
-    # print(share_data)
+    joined_vote = [selection.vote for selection in request.user.selections.all()]
 
     context = {
         'group': group,
         'notices': notices,
         'vote_form': vote_form,
-        'vote_exist': vote_exist,
-        'writings': writings,
-        # 'share_data': share_data,
+        'writings': page_objects,
+        'joined_vote': joined_vote,
     }
     return render(request, 'groups/group_detail.html', context)
 
@@ -515,24 +500,28 @@ def vote_create(request, group_pk):
 
 # 사용자 투표 행사/취소
 @login_required
-def throw_vote(request, group_pk, vote_pk, option_pk):
+def throw_vote(request, group_pk, vote_pk):
     group = Group.objects.get(pk=group_pk)
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
 
     vote = Vote.objects.get(pk=vote_pk)
-    vote_option = VoteSelect.objects.get(pk=option_pk)
-    # 투표 취소
-    if vote_option.select_users.filter(pk=request.user.pk).exists():
-        vote_option.select_users.remove(request.user)
-    # 투표 시행
+    # js에서 만든 selected_list를 받아옴
+    selected_options_json = request.POST.get('selected_list')
+    if selected_options_json:
+        selected_options = json.loads(selected_options_json)
     else:
-        # 중복 투표 가능한 경우 바로 add
-        if vote.is_overlap:
-            vote_option.select_users.add(request.user)
-        else: # 중복 안되는 경우 기존 투표 삭제 후 add
-            request.user.selections.clear()
-            vote_option.select_users.add(request.user)
+        selected_options = []
+    
+    # 기존 투표 삭제 후 새로 저장
+    for option in vote.voteselect_set.all():
+        if option.select_users.filter(pk=request.user.pk).exists():
+            option.select_users.remove(request.user)
+    
+    for option_id in selected_options:
+        option = VoteSelect.objects.get(pk=option_id)
+        option.select_users.add(request.user)
+
     return redirect('groups:group_detail', group.pk)
 
 

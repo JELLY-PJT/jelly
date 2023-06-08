@@ -32,8 +32,8 @@
         <div class="group-info">
           <h3 class="group-name">{{ user.nickname }}</h3>
           <div class="header-top">
-            <button class="main-btn" data-popover-target="popover-click" data-popover-trigger="click">그룹목록</button>
-            <div data-popover id="popover-click" role="tooltip" class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
+            <button class="main-btn" data-popover-target="popover-bottom" data-popover-placement="bottom" data-popover-trigger="click">그룹목록</button>
+            <div data-popover id="popover-bottom" role="tooltip" class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
               <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
                 <h3 class="font-semibold text-gray-900">가입한 그룹</h3>
               </div>
@@ -77,6 +77,7 @@
       <div class="relative h-6 mb-6">
         <a href="{% url 'diaries:create' %}" class="create main-btn" id="dropdownDefaultButton">글 작성</a>
       </div>
+      <!-- 개인 다이어리 탭-->
       <section class="post-list" id="post" role="tabpanel" aria-labelledby="post-tab">
         <div class="post-group">
           {% if diaries %}
@@ -99,7 +100,7 @@
                       <p class="meeting-name">모임 이름</p>
                       <p class="meeting-date">2023.05.29</p>
                     </div>
-                    <p class="post-detail">{{ diary.content|safe }}</p>
+                    <p class="post-detail">{{ diary.content|striptags }}</p>
                   </div>
                   <div class="image post-img">
                     <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
@@ -120,7 +121,7 @@
           {% endif %}
         </div>
         
-        {% comment %} 게시물 페이지네이션 {% endcomment %}
+        <!-- 게시물 페이지네이션 -->
         <nav class="page-navigation" aria-label="Page navigation">
           <ul class="inline-flex items-center -space-x-px">
             {% if diaries.has_previous %}
@@ -182,9 +183,9 @@
             {% endif %}
           </ul>
         </nav>
-
       </section>
 
+      <!-- 공유한 게시물 탭 -->
       <section class="post-list hidden" id="share" role="tabpanel" aria-labelledby="share-tab">
         <div class="post-group">
           {% if shared_diaries %}
@@ -205,9 +206,9 @@
                     <h3 class="post-title">{{ shared_diary.diary.title }}</h3>
                     <div class="meeting">
                       <p class="meeting-name">{{ shared_diary.group.name }}</p>
-                      <p class="meeting-date">{{ shared_diary.shared_at }}</p>
+                      <p class="meeting-date">{{ shared_diary.created_string }}</p>
                     </div>
-                    <p class="post-detail">{{ shared_diary.diary.content|safe }}</p>
+                    <p class="post-detail">{{ shared_diary.diary.content|striptags }}</p>
                     <div class="reaction">
                       <div class="reaction-item">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
@@ -242,7 +243,7 @@
           {% endif %}
         </div>
         
-        {% comment %} 공유한 다이어리 페이지네이션 {% endcomment %}
+        <!-- 공유한 다이어리 페이지네이션 -->
         <nav class="page-navigation" aria-label="Page navigation">
           <ul class="inline-flex items-center -space-x-px">
             {% if shared_diaries.has_previous %}
