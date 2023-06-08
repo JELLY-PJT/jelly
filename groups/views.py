@@ -35,6 +35,7 @@ def group_create(request):
         group.chief = request.user
         group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
         group.save()
+        group.calendar.create() # greate group calendar
         group.group_users.add(request.user)
         return redirect('groups:group_detail', group.pk)
     else:

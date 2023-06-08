@@ -1,113 +1,63 @@
+"""
+for MVT pattern
+"""
 from django.shortcuts import render, redirect
-from django.utils import timezone
-from .forms import ScheduleForm, GroupScheduleForm
-from .models import Schedule, GroupSchedule
+from .models import *
+"""
+for DRF viewsets
+"""
+from rest_framework import viewsets
+from django.db.models import Q
+from .serializers import *
+"""
+for view based authentication scheme
+"""
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 # Create your views here.
-def create(request):
+"""
+lookups keyword : field__lookuptype=value
+"""
 
-    if request.method == 'POST':
-        form = ScheduleForm(request.POST)
-        if form.is_valid():
-            schedule = form.save(commit=False)
-            schedule.user = request.user
-            schedule.save()
-            return redirect('groups:index')
-    else:
-        form = ScheduleForm()
-    context = {
-        'form': form,
-    }
-    return render(request, 'schedules/create.html', context)
-
-
-def today(request):
-    current_date = timezone.now()
-
-    schedules = Schedule.objects.filter(
-        user=request.user,  # 사용자
-        startdate__lte=current_date,  # 시작일이 오늘 이하
-        finishdate__gte=current_date  # 종료일이 오늘 이상
-    )
-
-    context = {
-        'schedules': schedules,
-    }
-    return render(request, 'schedules/', context) # 탬플릿 입력 필요
-
-
-def thisweek(request):
-    current_date = timezone.now()
+# class UserCalendarList(generics.ListAPIView):
+#     authentication_classes = [SessionAuthentication, BasicAuthentication]
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = CalendarSerializer
     
-    start_of_week = current_date - timezone.timedelta(days=current_date.weekday())
-    end_of_week = start_of_week + timezone.timedelta(days=6)
-
-    schedules = Schedule.objects.filter(
-        user=request.user,  # 사용자
-        startdate__lte=end_of_week  # 시작일이 이번 주인 스케줄
-    ) | Schedule.objects.filter(
-        user=request.user,  # 사용자
-        finishdate__gte=start_of_week  # 종료일이 이번 주인 스케줄
-    )
-
-    context = {
-        'schedules': schedules,
-    }
-    return render(request, 'schedules/', context) # 탬플릿 입력 필요
+#     def get_queryset(self):
+#         """
+#         현재 로그인한 user의 모든 calendar를 list
+#         """
+#         user = self.request.user
+#         queryset = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
+#         return queryset
 
 
-def thismonth(request):
-    current_date = timezone.now()
+class ScheduleViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Schedule.objects.all()
+    serializer_class = ScheduleSerializer    
 
-    start_of_month = current_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    next_month = start_of_month.replace(month=start_of_month.month+1)
-    end_of_month = next_month - timezone.timedelta(days=1)
-
-    schedules = Schedule.objects.filter(
-        user=request.user,  # 사용자
-        startdate__lte=end_of_month  # 시작일이 이번 달인 스케줄
-    ) | Schedule.objects.filter(
-        user=request.user,  # 사용자
-        finishdate__gte=start_of_month  # 종료일이 이번 달인 스케줄
-    )
-
-    context = {
-        'schedules': schedules,
-    }
-    return render(request, 'schedules/', context) # 탬플릿 입력 필요
+class CalendarViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAdminUser]
+    queryset = Calendar.objects.all()
+    serializer_class = CalendarSerializer
 
 
-def themonth(request, year, month):
-
-    start_of_month = timezone.datetime(year=year, month=month, day=1)
-    next_month = start_of_month.replace(month=start_of_month.month+1)
-    end_of_month = next_month - timezone.timedelta(days=1)
-
-    schedules = Schedule.objects.filter(
-        user=request.user,  # 사용자
-        startdate__lte=end_of_month  # 시작일이 특정 달인 스케줄
-    ) | Schedule.objects.filter(
-        user=request.user,  # 사용자
-        finishdate__gte=start_of_month  # 종료일이 특정 달인 스케줄
-    )
-
-    context = {
-        'schedules': schedules,
-    }
-    return render(request, 'schedules/', context) # 탬플릿 입력 필요
-
-
-def theday(request, year, month, day):
-
-    theday = timezone.datetime(year=year, month=month, day=day)
-
-    schedules = Schedule.objects.filter(
-        user=request.user,  # 사용자
-        startdate__lte=theday,  # 시작일이 특정일 이하
-        finishdate__gte=theday  # 종료일이 특정일 이상
-    )
-
-    context = {
-        'schedules': schedules,
-    }
-    return render(request, 'schedules/', context) # 탬플릿 입력 필요
+class UserCalendarViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ScheduleSerializer
+    def get_queryset(self):
+        """
+        현재 로그인한 user의 모든 calendar를 list
+        """
+        user = self.request.user
+        queryset = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
+        return queryset

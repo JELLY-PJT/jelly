@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'chats',
     'custom_ckeditor',
     'rest_framework',
+    'django_extensions',
     'django_ckeditor_5',
     'django.contrib.admin',
     'django.contrib.auth',
