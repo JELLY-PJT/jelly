@@ -6,12 +6,16 @@
   <a href="{% url 'diaries:create' %}">다이어리 생성</a>
 </div>
 <div>
+  <hr>
   {% for diary in diaries %}
     <div>
       <a href="{% url 'diaries:detail' diary.pk %}">
         <h4>{{ diary.title }}</h4>
+        <p>{{ diary.content|striptags }}</p>
+        <img src="{{ diary.thumbnail }}" alt="Thumbnail">
       </a>
+      <hr>
     </div>
   {% endfor %}
-</div>
+</div>  
 {% endblock content %}
