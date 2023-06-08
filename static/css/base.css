@@ -37,6 +37,7 @@ main {
   border-radius: 0.25rem;
   color: rgb(249 250 251);
   font-weight: 600;
+  cursor: pointer;
 }
 
 .main-btn:hover {

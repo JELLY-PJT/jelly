@@ -8,7 +8,7 @@ class GroupForm(forms.ModelForm):
         attrs={'class': 'create-form',}))
     thumbnail = ProcessedImageField(
         required=True, widget=forms.ClearableFileInput(attrs={'class': 'create-form',}),
-        label='그룹프로필 이미지',
+        label='그룹 프로필 이미지',
         label_suffix='',
         spec_id='image_size',
     )
@@ -20,6 +20,18 @@ class GroupForm(forms.ModelForm):
 
 
 class PostForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # tailwind 클래스 추가
+        self.fields["content"].label = ''
+        self.fields["content"].widget.attrs['class'] = "block px-6 py-4 w-full text-lg text-gray-900 rounded-md border border-gray-300 focus:ring-[var(--color-main-light)] focus:border-[var(--color-main-light)]"
+        self.fields["content"].widget.attrs['rows'] = "15"
+        # self.fields["content"].widget.attrs['placeholder'] = '내용을 입력하세요'
+        self.fields["title"].widget.attrs['class'] = "block py-2.5 px-1 mb-8 w-full text-2xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[var(--color-main-light)] peer"
+        self.fields["title"].widget.attrs['placeholder'] = '제목을 입력하세요'
+        self.fields["title"].label = ''
+
+
     class Meta:
         model = Post
         fields = ('title', 'content',)
@@ -57,29 +69,47 @@ class PostCommentForm(forms.ModelForm):
 
 class VoteForm(forms.ModelForm):
     title = forms.CharField(
-        label='제목',
+        label='투표 제목',
+        widget=forms.TextInput(
+            attrs={
+                'class': 'vote-form',
+            }
+        )
     )
     deadline = forms.DateTimeField(
         label='마감 기한',
         widget=forms.DateTimeInput(
             attrs={
                 'type': 'datetime-local',
+                'class': 'vote-form',
             }
         ),
     )
     is_overlap = forms.BooleanField(
-        label='중복 투표',
-        widget=forms.CheckboxInput(),
+        label='복수 선택',
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'vote-checkform',
+            }
+        ),
         required=False,
     )
     is_annony = forms.BooleanField(
         label='익명 투표',
-        widget=forms.CheckboxInput(),
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'vote-checkform',
+            }
+        ),
         required=False,
     )
     is_addible = forms.BooleanField(
         label='멤버의 선택지 추가 권한',
-        widget=forms.CheckboxInput(),
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'vote-checkform',
+            }
+        ),
         required=False,
     )
     class Meta:

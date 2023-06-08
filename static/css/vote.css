@@ -1,0 +1,124 @@
+* {
+  box-sizing: border-box;
+}
+
+.dropdown-vote {
+  width: 176px;
+  text-align: left;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.margin-left--10px {
+  margin-left: 10px;
+}
+
+
+/* 투표 모달 form*/
+.vote-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.vote-modal-content form p {
+  width: 350px;
+  margin-top: 0;
+}
+
+.margin-0 {
+  margin: 0;
+}
+
+.vote-form {
+  border: 1px solid darkgray;
+  border-radius: 10px;
+  margin-bottom: 0.3rem; 
+  width: 21rem;
+}
+
+.vote-form:hover {
+  border-color: var(--color-main);
+}
+
+.vote-checkform-container {
+  margin: 15px 0px 20px 35px;
+}
+
+.vote-checkform-container p {
+  margin-bottom: 10px;
+}
+
+.vote-checkform {
+  border: 1px solid darkgray;
+  margin-left: 0.3rem;
+  border-radius: 3px;
+}
+
+.vote-checkform:hover {
+  border-color: var(--color-main);
+}
+
+.option-line {
+  border: 1px var(--color-main) solid;
+  width: 400px;
+}
+
+.option-container {
+  margin-left: 25px;
+}
+
+.optionplus-btn {
+  /* margin-left: 15px; */
+}
+
+.optionplus-input {
+  border: 1px solid darkgray;
+  border-radius: 10px;
+  margin-bottom: 0.3rem; 
+  width: 19.5rem;
+}
+
+.optionplus-input:hover {
+  border-color: var(--color-main);
+}
+
+.VoteCreate-btn {
+  border: solid var(--color-main);
+  background-color: var(--color-main);
+  width: 21rem;
+  height: 3rem;
+  border-radius: 10px;
+  color: white;
+  margin-top: 1rem;
+  margin-right: 14px;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.VoteCreate-btn:hover {
+  border: #7B83C7;
+  background-color:#7B83C7;
+}
+
+.VoteCreate-txt {
+  color: #7B83C7;
+  font-weight: bolder;
+  width: 350px;
+  text-align: left;
+}
+
+/* 투표 수행 modal*/
+.header-container {
+  display: flex;
+}
+
+.header-container p {
+  font-size: 0.9rem;
+  color: gray;
+  margin-left: 8px;
+}

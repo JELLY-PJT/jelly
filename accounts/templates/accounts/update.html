@@ -1,20 +1,25 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/accounts/login.css' %}"> 
+{% endblock css %}
 
 {% block content %}
-<div>
-  <h1>회원정보 수정</h1>
-  <form action="{% url 'accounts:update' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% for field in form %}
+
+<div class='flex-row'>
+  <div class='signup-box'>
+    <div class='signup-logo'><img src="{% static 'img/index_logo.png' %}" alt=""></div>
+    <form class='signup-form' action="{% url 'accounts:update' %}" method="POST" enctype = 'multipart/form-data'>
+      {% csrf_token %}
+      {% for field in form %}
       <div>
-        <label for="{{ field.label }}">{{ field.label }}</label>
         {{ field }}
-      </div>
-    {% endfor %}
-    <input type="submit" value="정보수정">
-    
-    <a href="{% url 'accounts:change_password' %}">비밀번호 변경</a>
-  </form>
+      </div> 
+      {% endfor %}
+      <button class='update-btn'>정보수정</button> 
+      <a class='change-password-btn' href="{% url 'accounts:change_password' %}">비밀번호 변경</a>
+    </form>
+  </div>
 </div>
 
 {% endblock content %}

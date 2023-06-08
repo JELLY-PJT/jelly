@@ -87,7 +87,7 @@ def delete(request, diary_pk):
     diary = Diary.objects.get(pk=diary_pk)
     if request.user == diary.user:
         diary.delete()
-    return redirect('diaries:index')
+    return redirect('accounts:profile', request.user)
 
 
 # 그룹에 공유된 다이어리 디테일 / 감정, 댓글작성 가능
@@ -146,7 +146,7 @@ def unshare(request, group_pk, diary_pk):
     diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
     if request.user == diary.user:
         diary.share.remove(group)
-        return redirect('diaries:index')
+        return redirect('accounts:profile', request.user)
     return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
 
 
@@ -160,8 +160,16 @@ def emotes(request, group_pk, diary_pk, emotion):
         if diary_emote.emotion != emotion:
             diary_emote.emotion = emotion
             diary_emote.save()
+            delete = False
+            
         else:
             diary_emote.delete()
+            delete = True
+
+        context = {
+            'delete': delete,
+        }
+        return JsonResponse(context)
     except DiaryEmote.DoesNotExist:
         DiaryEmote.objects.create(share=diary_share, user=request.user, emotion=emotion)
     return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
@@ -207,15 +215,20 @@ def comment_update(request, group_pk, diary_pk, comment_pk):
         if request.method == 'POST':
             form = DiaryCommentForm(request.POST, instance=comment)
             if form.is_valid():
-                form.save()
+                updated_comment = form.save(commit=False)
+                updated_comment.save()
                 messages.success(request, "댓글이 수정되었습니다.")
-                return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
-        else:
-            form = DiaryCommentForm(instance=comment)
-        context = {
-            'form': form,
-        }
-        return render(request, 'comment_create.html', context)
+
+                context = {
+                    'content': updated_comment.comment,
+                }
+                return JsonResponse(context)
+        # else:
+        #     form = DiaryCommentForm(instance=comment)
+        # context = {
+        #     'form': form,
+        # }
+        # return JsonResponse(context)
     else:
         messages.error(request, "올바른 접근이 아닙니다.")
         return redirect('diaries:index')

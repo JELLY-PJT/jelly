@@ -1,377 +1,598 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ group }}{% endblock title %}
+{% block title %}JELLY | {{ group }}{% endblock title %}
 
-{% block css %}<link rel="stylesheet" href="{% static 'css/group_detail.css' %}">{% endblock css %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/group_detail.css' %}">
+  <link rel="stylesheet" href="{% static 'css/vote.css' %}">
+{% endblock css %}
 
 {% block side %}
-  {% include 'sidebar.html'%}
+  {% include 'sidebar.html' with current_group=group %}
 {% endblock side %} 
 
 {% block content %}
+<div class="content-wrapper">
+  <div id="dial-btn" class="fixed hidden bottom-12 right-12 group z-50">
+    <a href="#" data-dial-toggle="speed-dial-menu-dropdown-alternative" aria-controls="speed-dial-menu-dropdown-alternative" aria-expanded="false" class="flex items-center justify-center ml-auto text-white bg-[var(--color-main)] rounded-full w-14 h-14 hover:bg-[var(--color-main-dark)]">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#fff" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+      </svg>      
+    </a>
+  </div>
 
-<div class="content">
-  <section class="header">
-    <div class="wrapper">
-      <div class="image group-img">
-        <img src={{ group.thumbnail.url }} alt="그룹 이미지">
-      </div>
-      <div class="group-info">
-        <div class="header-top">
-          <h3 class="group-name">{{ group }}</h3>
-          <button class="main-btn">초대하기</button>
+  <div class="content">
+    <section class="header">
+      <div class="wrapper">
+        <div class="image group-img">
+          <img src={{ group.thumbnail.url }} alt="그룹 이미지">
         </div>
-        <div>
-          <p>{{ group.intro }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="tab-list">
-    <ul class="tab-content" id="groupTab" data-tabs-toggle="#groupTabContent" role="tablist">
-      <li class="tab-btn" role="presentation">
-        <button id="post-tab" data-tabs-target="#post" role="tab" aria-controls="post" aria-selected="false">게시물</button>
-      </li>
-      <li class="tab-btn" role="presentation">
-        <button id="calendar-tab" data-tabs-target="#calendar" role="tab" aria-controls="calendar" aria-selected="false">캘린더</button>
-      </li>
-      <li class="tab-btn" role="presentation">
-        <button id="chat-tab" data-tabs-target="#chat" role="tab" aria-controls="chat" aria-selected="false">채팅</button>
-      </li>
-      <li class="tab-btn" role="presentation">
-        <button id="album-tab" data-tabs-target="#album" role="tab" aria-controls="album" aria-selected="false">앨범</button>
-      </li>
-    </ul>
-  </section>
-
-
-  <div id="groupTabContent">
-    <!-- 게시물 탭 -->
-    <section class="post-list" id="post" role="tabpanel" aria-labelledby="post-tab">
-      <!-- 공지사항 dropdown -->
-      <div id="accordion-collapse" data-accordion="collapse">
-        <h2 id="accordion-collapse-heading-1">
-          <button id="notice-btn" data-accordion-target="#accordion-collapse-body-1" aria-expanded="false" aria-controls="accordion-collapse-body-1">
-            <span>공지사항(3)</span>
-            <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="rgb(107 114 128)" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-          </button>
-        </h2>
-        <div id="accordion-collapse-body-1" class="hidden mb-6" aria-labelledby="accordion-collapse-heading-1">
-          <div class="notice-link-wrapper">
-            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
-            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
-            <a href="" class="notice-link">공지 제목 어쩌고 저저고</a>
+        <div class="group-info">
+          <div class="header-top">
+            <h3 class="group-name">{{ group }}</h3>
+            <div class="flex item-center gap-4">
+              <button onclick="copyLink()" class="main-btn" id="invite-btn" data-group-id="{{ group.pk }}">초대링크</button>                
+              <button class="user main-btn" data-popover-target="popover-bottom" data-popover-placement="bottom"  data-popover-trigger="click" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" stroke-width="2" fill="black" class="w-6 h-6"><path d="M480-481q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5t127.921 44.694q31.301 14.126 50.19 40.966Q800-292 800-254v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm260-321q39 0 64.5-25.5T570-631q0-39-25.5-64.5T480-721q-39 0-64.5 25.5T390-631q0 39 25.5 64.5T480-541Zm0-90Zm0 411Z"/></svg>
+              </button>
+              <div data-popover id="popover-bottom" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
+                <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
+                  <h3 class="font-semibold text-gray-900">멤버</h3>
+                </div>
+                <div class="px-3 py-2 user-list space-y-4">
+                  {% for user in group.group_users.all %}
+                    <div class="flex items-center space-x-4">
+                      <div class="w-8 h-8 rounded-full">
+                        {% if user.image %}
+                          <img src="{{ user.image.url }}" alt="">
+                        {% else %}
+                          <img src="{% static 'img/blank_profile_img.png' %}" alt="">
+                        {% endif %}
+                      </div>
+                      <div class="font-medium">
+                        <div>{{ user.nickname }}</div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <!-- 방장만 접근 가능한 그룹 설정 페이지 버튼 -->
+              <div>
+                {% if request.user == group.chief %}
+                  <a href="{% url 'groups:group_setting' group.pk %}" class="block main-btn user">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </a>
+                {% else %}
+                  <a href="{% url 'groups:member_withdraw' group.pk %}" class="block text-[#ff5656]">그룹 나가기</a>
+                {% endif %}
+                </div>
+            </div>
+          </div>
+          <div class="group-intro">
+            <p>{{ group.intro }}</p>
           </div>
         </div>
-        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="create main-btn">글 작성  <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
-        <!-- Dropdown menu -->
-        <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-          <ul class="py-2 text-md text-gray-700" aria-labelledby="dropdownDefaultButton">
-            <li>
-              <a href="#" class="block px-4 py-2 hover:bg-gray-100">후기글</a>
-            </li>
-            <li>
-              <a href="{% url 'groups:post_create' group.pk %}" class="block px-4 py-2 hover:bg-gray-100">일반글</a>
-            </li>
-            <li>
-              {% comment %} <a href="#" class="block px-4 py-2 hover:bg-gray-100">투표</a> {% endcomment %}
-              <!-- Modal toggle -->
-              <button data-modal-target="vote-create-modal" data-modal-toggle="vote-create-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                투표
-              </button>
-            </li>
-          </ul>
-        </div>
       </div>
-      <!-- 게시물 출력 -->
-      <div class="post-group">
-        {% for writing in writings %}
-          <!-- 다이어리 -->
-          {% if writing.get_model_name == 'diary' %}
-            <article class="post diary">
-              <div class="user">
-                <div class="image user-img">
-                  {% if writing.user.image %}
-                    <img src="{{ writing.user.image.url }}" alt="profile image">
-                  {% else %}
-                    <img src="https://images.unsplash.com/photo-1629142796909-aeddffc6a3a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-                  {% endif %}
-                </div>
-                <p class="user-name">{{ writing.user.nickname }}</p>
-              </div>
-              <a href="{% url 'groups:post_detail' group.pk writing.pk %}" class="post-link">
-                <div class="post-content">
-                  <h3 class="post-title">{{ writing.title }}</h3>
-                  <div class="meeting">
-                    <p class="meeting-name">모임 이름</p>
-                    <p class="meeting-date">2023.05.29</p>
-                  </div>
-                  <p class="post-detail">{{ writing.content|striptags  }}</p>
-                  <div class="reaction">
-                    <div class="reaction-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-                      </svg>
-                      <p>{{ writing.postcomment_set.all|length }}</p>                      
-                    </div>
-                    <div class="reaction-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                      </svg>
-                      <p>{{ writing.emote_users.all|length }}</p>                      
-                    </div>
-                  </div>
-                </div>
-                <div class="image post-img">
-                  {% for image in writing.postimage_set.all|slice:":1" %}
-                    <img src="{{ image.image.url }}" alt="post 첫번째 사진">
-                  {% endfor %}
-                  <div class="more-img">
-                    <p>+{{ writing.postimage_set.all|length }}</p>
-                  </div>
-                </div>
-              </a>
-            </article>
-          <!-- 게시글 -->
-          {% elif writing.get_model_name == 'post' %}
-            <article class="post">
-              <div class="user">
-                <div class="image user-img">
-                  {% if writing.user.image %}
-                    <img src="{{ writing.user.image.url }}" alt="profile image">
-                  {% else %}
-                    <img src="https://images.unsplash.com/photo-1629142796909-aeddffc6a3a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-                  {% endif %}
-                </div>
-                <p class="user-name">{{ writing.user.nickname }}</p>
-              </div>
-              <a href="{% url 'groups:post_detail' group.pk writing.pk %}" class="post-link">
-                <div class="post-content">
-                  <h3 class="post-title">{{ writing.title }}</h3>
-                  <div class="meeting">
-                    <p class="meeting-name">모임 이름</p>
-                    <p class="meeting-date">2023.05.29</p>
-                  </div>
-                  <p class="post-detail">{{ writing.content }}</p>
-                  <div class="reaction">
-                    <div class="reaction-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-                      </svg>
-                      <p>{{ writing.postcomment_set.all|length }}</p>                      
-                    </div>
-                    <div class="reaction-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                      </svg>
-                      <p>{{ writing.emote_users.all|length }}</p>                      
-                    </div>
-                  </div>
-                </div>
-                <div class="image post-img">
-                  {% for image in writing.postimage_set.all|slice:":1" %}
-                    <img src="{{ image.image.url }}" alt="post 첫번째 사진">
-                  {% endfor %}
-                  <div class="more-img">
-                    <p>+{{ writing.postimage_set.all|length }}</p>
-                  </div>
-                </div>
-              </a>
-            </article>
-          <!-- 투표 -->
-          {% elif writing.get_model_name == 'vote' %}
-            <article class="post vote">
-              <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
-              <button data-modal-target="vote-modal-{{ writing.pk }}" data-modal-toggle="vote-modal-{{ writing.pk }}" class="vote-btn">
-                <h3 class="post-title">{{ writing.title }}</h3>
-                <p class="meeting">{{ writing.d_day }}</p>
+    </section>
+
+    <section class="tab-list">
+      <ul class="tab-content" id="groupTab" data-tabs-toggle="#groupTabContent" role="tablist">
+        <li class="tab-btn" role="presentation">
+          <button id="post-tab" data-tabs-target="#post" role="tab" aria-controls="post" aria-selected="false">게시물</button>
+        </li>
+        <li class="tab-btn" role="presentation">
+          <button id="calendar-tab" data-tabs-target="#calendar" role="tab" aria-controls="calendar" aria-selected="false">캘린더</button>
+        </li>
+        <li class="tab-btn" role="presentation">
+          <button id="chat-tab" data-tabs-target="#chat" role="tab" aria-controls="chat" aria-selected="false">채팅</button>
+        </li>
+        <li class="tab-btn" role="presentation">
+          <button id="album-tab" data-tabs-target="#album" role="tab" aria-controls="album" aria-selected="false">앨범</button>
+        </li>
+      </ul>
+    </section>
+
+
+    <div id="groupTabContent">
+      <!-- 게시물 탭 -->
+      <section class="post-list" id="post" role="tabpanel" aria-labelledby="post-tab">
+        <!-- 공지사항 dropdown -->
+        <div id="accordion-collapse" data-accordion="collapse">
+          <h2 id="accordion-collapse-heading-1">
+            {% if notices|length != 0 %}
+              <button id="notice-btn" data-accordion-target="#accordion-collapse-body-1" aria-expanded="false" aria-controls="accordion-collapse-body-1">
+                <span>공지사항({{ notices|length }})</span>
+                <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="rgb(107 114 128)" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
               </button>
-              {% if request.user == writing.user %}
-                <!-- 투표 수정 버튼 -->
-                <button class="vote-update" data-vote-id="{{ writing.pk }}" data-modal-target="vote-update-modal-{{ writing.pk }}" data-modal-toggle="vote-update-modal-{{ writing.pk }}" class="block w-full md:w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                  수정
-                </button>
-                <!-- 투표 삭제 버튼 -->
-                <form action="{% url 'groups:vote_delete' group.pk writing.pk %}" method="POST">
-                  {% csrf_token %}
-                  <input type="submit" value="삭제">
-                </form>
-              {% endif %}
-              <!-- 투표 수행 Modal -->
-              <div id="vote-modal-{{ writing.pk }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative w-full max-w-md max-h-full">
-                  <!-- Modal content -->
-                  <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-gray-600">
-                      <h3 class="text-xl font-medium text-gray-900 dark:text-white">
-                        {{ writing.title }}
-                      </h3>
-                      <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="vote-modal-{{ writing.pk }}">
-                          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                          <span class="sr-only">Close modal</span>
-                      </button>
+            {% else %}
+              <div id="notice-btn">공지사항(0)</div>
+            {% endif %}
+          </h2>
+          <div id="accordion-collapse-body-1" class="hidden mb-6" aria-labelledby="accordion-collapse-heading-1">
+            <div class="notice-link-wrapper">
+              {% for notice in notices %}
+                {% if notice.get_model_name == 'post' %}
+                  <!-- post인 경우 detail page로 이동 -->
+                  <a href="{% url 'groups:post_detail' group.pk notice.pk %}" class="notice-link">{{ notice.title }}</a>
+                {% else %}
+                  <!-- vote인 경우 모달 팝업 -->
+                  <button data-modal-target="notice-vote-modal-{{ notice.pk }}" data-modal-toggle="notice-vote-modal-{{ notice.pk }}" class="notice-link">
+                    {{ notice.title }}
+                  </button>
+                  <!-- notice vote modal -->
+                  <div id="notice-vote-modal-{{ notice.pk }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative w-full max-w-md max-h-full">
+                      <!-- Modal content -->
+                      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <!-- Modal header -->
+                        <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-gray-600">
+                          <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+                            {{ notice.title }}
+                          </h3>
+                          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="notice-vote-modal-{{ notice.pk }}">
+                              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                              <span class="sr-only">Close modal</span>
+                          </button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="p-6 space-y-6">
+                          {% for option in notice.voteselect_set.all %}
+                            <form action="{% url 'groups:throw_vote' group.pk notice.pk option.pk %}" method="POST">
+                              {% csrf_token %}
+                              <!-- 선택지 -->
+                              <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                {{ option.content }}
+                              </p>
+                              <!-- 투표한 사람 -->
+                              <!-- 유저 어떤 방식으로 보여줄지 미정 -->
+                              <div>{{ option.select_users.all|length }}</div>
+                              <!-- 투표버튼 -->
+                              <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
+                            </form>
+                          {% endfor %}
+                          <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                          {% if notice.is_addible %}
+                            <button type="button" id="add-member-option">+항목 추가</button>
+                            <form action="{% url 'groups:add_option' group.pk notice.pk %}" method="POST">
+                              {% csrf_token %}
+                              <div id="add-option-div"></div>
+                              <input type="submit" value="저장">
+                            </form>
+                          {% endif %}
+                        </div>
+                      </div>
                     </div>
-                    <!-- Modal body -->
-                    <div class="p-6 space-y-6">
-                      {% for option in writing.voteselect_set.all %}
-                        <form action="{% url 'groups:throw_vote' group.pk writing.pk option.pk %}" method="POST">
-                          {% csrf_token %}
-                          <!-- 선택지 -->
-                          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                            {{ option.content }}
-                          </p>
-                          <!-- 투표한 사람 -->
-                          <!-- 유저 어떤 방식으로 보여줄지 미정 -->
-                          <div>{{ option.select_users.all|length }}</div>
-                          <!-- 투표버튼 -->
-                          <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
-                        </form>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="create main-btn">글 작성  <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+          <!-- Dropdown menu -->
+          <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-md text-gray-700" aria-labelledby="dropdownDefaultButton">
+              <li>
+                <a href="#" class="block px-4 py-2 hover:bg-gray-100">후기글</a>
+              </li>
+              <li>
+                <a href="{% url 'groups:post_create' group.pk %}" class="block px-4 py-2 hover:bg-gray-100">일반글</a>
+              </li>
+              <li>
+                {% comment %} <a href="#" class="block px-4 py-2 hover:bg-gray-100">투표</a> {% endcomment %}
+                <!-- Modal toggle -->
+                <button data-modal-target="vote-create-modal" data-modal-toggle="vote-create-modal" class="dropdown-vote block px-4 py-2 hover:bg-gray-100" type="button">
+                  투표
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- 게시물 출력 -->
+        <div class="post-group">
+          {% if writings %}
+            {% for writing in writings %}
+              <!-- 다이어리 -->
+              {% if writing.get_model_name == 'diaryshare' %}
+              <article class="post">
+                <div class="user">
+                  <div class="image user-img">
+                    {% if writing.diary.user.image %}
+                      <img src="{{ writing.diary.user.image.url }}" alt="profile image">
+                    {% else %}
+                      <img src="{% static 'img/blank_profile_img.png' %}" alt="">
+                    {% endif %}
+                  </div>
+                  <p class="user-name">{{ writing.diary.user.nickname }}</p>
+                </div>
+                <a href="{% url 'diaries:group_detail' group.pk writing.diary.pk %}" class="post-link">
+                  <div class="post-content" {% if writing.postimage_set.all %}style="max-width: 750px;"{% endif %}>
+                    <h3 class="post-title">{{ writing.diary.title }}</h3>
+                    <div class="meeting">
+                      <p class="meeting-name">모임 이름</p>
+                      <p class="meeting-date">{{ writing.created_string }}</p>
+                    </div>
+                    <p class="post-detail">{{ writing.diary.content|striptags }}</p>
+                    <div class="reaction" {% if writing.postimage_set.all %}style="max-width: 800px;"{% endif %}>
+                      <div class="reaction-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                        </svg>
+                        <p>{{ writing.diarycomment_set.all|length }}</p>                      
+                      </div>
+                      <div class="reaction-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+                        <p>{{ writing.diaryemote_set.all|length }}</p>                      
+                      </div>
+                    </div>
+                  </div>
+                  {% comment %} {% if writing.postimage_set.all %}
+                    <div class="image post-img">
+                      {% for image in writing.postimage_set.all|slice:":1" %}
+                        <img src="{{ image.image.url }}" alt="post 첫번째 사진">
                       {% endfor %}
-                      <!-- 멤버(투표 생성자X)의 선택지 추가 -->
-                      {% if writing.is_addible %}
-                        <button type="button" id="add-member-option">+항목 추가</button>
-                        <form action="{% url 'groups:add_option' group.pk writing.pk %}" method="POST">
-                          {% csrf_token %}
-                          <div id="add-option-div"></div>
-                          <input type="submit" value="저장">
-                        </form>
+                      {% if writing.postimage_set.all > 1 %}
+                        <div class="more-img">
+                          <p>+{{ writing.postimage_set.all|length|add:"-1" }}</p>
+                        </div>
                       {% endif %}
                     </div>
+                  {% endif %} {% endcomment %}
+                </a>
+              </article>
+
+              <!-- 게시글 -->
+              {% elif writing.get_model_name == 'post' %}
+                <article class="post">
+                  <div class="user">
+                    <div class="image user-img">
+                      {% if writing.user.image %}
+                        <img src="{{ writing.user.image.url }}" alt="profile image">
+                      {% else %}
+                        <img src="{% static 'img/blank_profile_img.png' %}" alt="">
+                      {% endif %}
+                    </div>
+                    <p class="user-name">{{ writing.user.nickname }}</p>
                   </div>
-                </div>
-              </div>
-              <!-- 투표 수정 모달 -->
-              <div id="vote-update-modal-{{ writing.pk }}" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative w-full max-w-md max-h-full">
-                  <!-- Modal content -->
-                  <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="vote-update-modal-{{ writing.pk }}">
-                      <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                      <span class="sr-only">Close modal</span>
-                    </button>
-                    <div class="px-6 py-6 lg:px-8">
-                      <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">투표 수정</h3>
-                      <form id="vote-update-form-{{ writing.pk }}" class="space-y-6" action="{% url 'groups:vote_update' group.pk writing.pk %}" method="POST">
-                        {% csrf_token %}
-                        {% for field in vote_form %}
-                          <div>
-                            <label for="{{ field.auto_id }}">{{ field.label }}</label>
-                            {{ field }}
-                          </div>
-                        {% endfor %}
-                        <div>
-                          <label for="update-option-container" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">선택지</label>
-                          <button type="button" class="new-option-button" data-vote-id="{{ writing.pk }}">+항목추가</button>
-                          <!-- 선택지가 들어갈 div -->
-                          <div id="update-option-container-{{ writing.pk }}">
-                            {% for option in writing.voteselect_set.all %}
-                              <input type="text" value="{{ option.content }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                            {% endfor %}
-                          </div>
+                  <a href="{% url 'groups:post_detail' group.pk writing.pk %}" class="post-link">
+                    <div class="post-content" {% if writing.postimage_set.all %}style="max-width: 750px;"{% endif %}>
+                      <h3 class="post-title">{{ writing.title }}</h3>
+                      <div class="meeting">
+                        <p class="meeting-name">모임 이름</p>
+                        <p class="meeting-date">{{ writing.created_string }}</p>
+                      </div>
+                      <p class="post-detail">{{ writing.content }}</p>
+                      <div class="reaction" {% if writing.postimage_set.all %}style="max-width: 800px;"{% endif %}>
+                        <div class="reaction-item">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                          </svg>
+                          <p>{{ writing.postcomment_set.all|length }}</p>                      
                         </div>
-                        <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">저장</button>
-                      </form>
+                        <div class="reaction-item">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                          </svg>
+                          <p>{{ writing.emote_users.all|length }}</p>                      
+                        </div>
+                      </div>
+                    </div>
+                    {% if writing.postimage_set.all %}
+                      <div class="image post-img">
+                        {% for image in writing.postimage_set.all|slice:":1" %}
+                          <img src="{{ image.image.url }}" alt="post 첫번째 사진">
+                        {% endfor %}
+                        {% if writing.postimage_set.all > 1 %}
+                          <div class="more-img">
+                            <p>+{{ writing.postimage_set.all|length|add:"-1" }}</p>
+                          </div>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </a>
+                </article>
+              <!-- 투표 -->
+              {% elif writing.get_model_name == 'vote' %}
+                <article class="post vote">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
+                  <!-- 투표 수행 버튼 -->
+                  <button data-modal-target="vote-modal-{{ writing.pk }}" data-modal-toggle="vote-modal-{{ writing.pk }}" class="vote-btn">
+                    <h3 class="post-title">{{ writing.title }}</h3>
+                    <p class="meeting">{{ writing.d_day }}</p>
+                  </button>
+                  {% if request.user == writing.user %}
+                    <button id="dropdownDefaultButton" data-dropdown-toggle="vote-dropdown-{{ writing.pk }}" class="font-medium rounded-lg text-sm text-center inline-flex items-center" type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-gray-dark)" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                      </svg>                  
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div id="vote-dropdown-{{ writing.pk }}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                      <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDefaultButton">
+                        <li class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <!-- 투표 공지 등록 버튼 -->
+                          <form action="{% url 'groups:notice_vote' group.pk writing.pk %}" method="POST">
+                            {% csrf_token %}
+                            <input type="submit" value="공지 {% if writing.is_notice %}취소{% else %}등록{% endif %}" class="w-full text-start">
+                          </form>
+                        </li>
+                        <li class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <!-- 투표 수정 버튼 -->
+                          <button class="vote-update w-full text-start" data-vote-id="{{ writing.pk }}" data-modal-target="vote-update-modal-{{ writing.pk }}" data-modal-toggle="vote-update-modal-{{ writing.pk }}" type="button">
+                            수정
+                          </button>
+                        </li>
+                        <li class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <!-- 투표 삭제 버튼 -->
+                          <form action="{% url 'groups:vote_delete' group.pk writing.pk %}" method="POST">
+                            {% csrf_token %}
+                            <input type="submit" value="삭제" class="w-full delete text-start">
+                          </form>
+                        </li>
+                      </ul>
+                    </div>
+                  {% endif %}
+                
+                  <!-- 투표 수행 Modal -->
+                  <div id="vote-modal-{{ writing.pk }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative w-full max-w-md max-h-full">
+                      <!-- Modal content -->
+                      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <!-- Modal header -->
+                        <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-gray-600">
+                          <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+                            {{ writing.title }}
+                            <div class='header-container'>
+                              {% if writing.is_overlap %}
+                                <p>복수 선택</p>
+                              {% endif %}
+                              {% if writing.is_annony %}
+                                <p>익명 투표</p>
+                              {% endif %}
+                              <p>{{ writing.deadline }} </p>
+
+                            </div>
+                          </h3>
+                          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="vote-modal-{{ writing.pk }}">
+                              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                              <span class="sr-only">Close modal</span>
+                          </button>
+                        </div>
+                        <!-- Modal body -->
+                        <!-- 투표 읽기 모달(이전에 투표한 경우) -->
+                        <div id="for-read-vote-{{ writing.pk }}" {% if writing not in joined_vote %}hidden{% endif %}>
+                          <p>읽기</p>
+                          {% for option in writing.voteselect_set.all %}
+                            선택지 - {{ option.content }}
+                            투표한 사람 수 - {{ option.select_users.all|length }}
+                          {% endfor %}
+                          <button type="button" class="switch-btn" data-vote-id="{{ writing.pk }}">투표 다시하기</button>
+                        </div>
+                        <!-- 투표 수행 모달(투표하지 않은 경우) -->
+                        <div class="p-6 space-y-6" id="for-perform-vote-{{ writing.pk }}" {% if writing in joined_vote %}hidden{% endif %}>
+                          <form action="{% url 'groups:throw_vote' group.pk writing.pk %}" method="POST" class="vote-perform-form" data-vote-id="{{ writing.pk }}" data-vote-overlap="{{ writing.is_overlap }}">
+                            {% csrf_token %}
+                            <!-- 선택지 -->
+                            {% for option in writing.voteselect_set.all %}
+                              <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400 option" data-option-id="{{ option.pk }}" data-user-exist="{% if request.user in option.select_users.all %}true{% else %}false{% endif %}">
+                                {{ option.content }}
+                              </div>
+                              <!-- 투표한 사람 -->
+                              <!-- 유저 어떤 방식으로 보여줄지 미정 -->
+                              <div>{{ option.select_users.all|length }}</div>
+                            {% endfor %}
+                            <!-- 고른 선택지 -->
+                            <input type="hidden" id="{{ writing.pk }}-options" name="selected_list">
+                            <!-- 투표버튼 -->
+                            <input type="submit" value="{% if request.user in option.select_users.all %}취소{% else %}투표{% endif %}">
+                          </form>
+                        </div>
+                        <!-- 멤버(투표 생성자X)의 선택지 추가 -->
+                        <div>
+                          {% if writing.is_addible %}
+                            <button type="button" id="add-member-option">+항목 추가</button>
+                            <form action="{% url 'groups:add_option' group.pk writing.pk %}" method="POST">
+                              {% csrf_token %}
+                              <div id="add-option-div"></div>
+                              <input type="submit" value="저장">
+                            </form>
+                          {% endif %}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div> 
-            </article>
+                  
+                  <!-- 투표 수정 모달 -->
+                  <div id="vote-update-modal-{{ writing.pk }}" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative w-full max-w-md max-h-full">
+                      <!-- Modal content -->
+                      <div class="relative vote-modal-content bg-white rounded-lg shadow dark:bg-gray-700">
+                        <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="vote-update-modal-{{ writing.pk }}">
+                          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                          <span class="sr-only">Close modal</span>
+                        </button>
+                        <div class="vote-modal-content px-6 py-6 lg:px-8">
+                          <h3 class="VoteCreate-txt mb-4 text-xl font-medium text-gray-900 dark:text-white">투표 수정</h3>
+                          <form class="vote-modal-content" id="vote-update-form-{{ writing.pk }}" action="{% url 'groups:vote_update' group.pk writing.pk %}" method="POST">
+                            {% csrf_token %}
+                            <p>{{ vote_form.title.label }}</p>
+                            <p>{{ vote_form.title}}</p>
+                            <p>{{ vote_form.deadline.label }}</p>
+                            <p>{{ vote_form.deadline}}</p>
+                            <div class='vote-checkform-container'>
+                              <p>{{ vote_form.is_overlap.label }} {{ vote_form.is_overlap }}</p>
+                              <p>{{ vote_form.is_annony.label }} {{ vote_form.is_annony }}</p>
+                              <p>{{ vote_form.is_addible.label }} {{ vote_form.is_addible }}</p>
+                            </div>
+                            <div class='option-container'> 
+                              <div class='flex-row'>
+                                <button type="button" class="new-option-button optionplus-btn" data-vote-id="{{ writing.pk }}">
+                                  <div class='flex-row'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#A8AFED" class="w-6 h-5">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                                    </svg>
+                                    <span style='color:#A8AFED; font-weight: bolder;'>투표 항목 추가</span>                                 
+                                  </div>
+                                </button>
+                              </div>                
+                              <!-- 선택지가 들어갈 div -->
+                              <div id="update-option-container-{{ writing.pk }}">
+                                {% for option in writing.voteselect_set.all %}
+                                  <div class='flex-row originOptionInput'>
+                                    <input type="text" value="{{ option.content }}" name="options" class="optionplus-input bg-gray-50 border-gray-300">
+                                    <button class='originDeleteBtn margin-left--10px' type='button'>
+                                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff5656" class="w-6 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                      </svg>                                      
+                                    </button>
+                                  </div>
+                                {% endfor %}
+                              </div>
+                            </div>
+                            <button class='VoteCreate-btn'>투표 수정</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                </article>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <div class="no-post">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-24 h-24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+              </svg>
+              <h3>첫 게시글을 작성해보세요!</h3>
+            </div>
           {% endif %}
-        {% endfor %}
-      </div>
+        </div>
 
-      <nav class="page-navigation" aria-label="Page navigation">
-        <ul class="inline-flex items-center -space-x-px">
-          <li>
-            <a href="#" class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
-              <span class="sr-only">Previous</span>
-              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">1</a>
-          </li>
-          <li>
-            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</a>
-          </li>
-          <li>
-            <a href="#" aria-current="page" class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700">3</a>
-          </li>
-          <li>
-            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</a>
-          </li>
-          <li>
-            <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">5</a>
-          </li>
-          <li>
-            <a href="#" class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
-              <span class="sr-only">Next</span>
-              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-            </a>
-          </li>
-        </ul>
-      </nav>
+        <nav class="page-navigation" aria-label="Page navigation">
+          <ul class="inline-flex items-center -space-x-px">
+            {% if writings.has_previous %}
+              <li class="block px-3 py-2.5 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page=1">
+                  <span class="sr-only">처음</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /></svg>                
+                </a>
+              </li>
+              <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page={{ writings.previous_page_number }}" >
+                  <span class="sr-only">이전</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% else %}
+              <li class="block px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg" tabindex="-1" disabled>
+                <a >
+                  <span class="sr-only">이전</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% endif %}
+            {% for page_number in writings.paginator.page_range %}
+              {% if page_number >= writings.number|add:-2 and page_number <= writings.number|add:2 %}
+                {% if page_number ==  writings.number %}
+                  <li class="z-10 px-3 py-2 leading-tight text-gray-500 border border-[var(--color-main)] bg-[#d1d8ff80] hover:bg-[#a8afed80] hover:text-gray-700" aria-current="page" >
+                    <a href="?page={{ page_number }}">{{ page_number }}</a>
+                  </li>
+                {% else %}
+                  <li class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
+                    <a href="?page={{ page_number }}">{{ page_number }}</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {% if writings.has_next %}
+              <li class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" >
+                <a href="?page={{ writings.next_page_number }}">
+                  <span class="sr-only">다음</span>
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+              <li class="block px-3 py-2.5 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+                <a href="?page={{ writings.next_page_number }}" >
+                  <span class="sr-only">마지막</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </a>
+                </a>
+              </li>
+            {% else %}
+              <li class="block px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg" tabindex="-1" disabled>
+                <a >
+                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        
+      </section>
 
-    </section>
+      <section class="post-list" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
+        <p>calendar</p>
+      </section>
+      
+      <section class="post-list" id="chat" role="tabpanel" aria-labelledby="chat-tab">
+        <p>chat</p>
+      </section>
 
-    <section class="post-list" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
-      <p>calendar</p>
-    </section>
-    
-    <section class="post-list" id="chat" role="tabpanel" aria-labelledby="chat-tab">
-      <p>chat</p>
-    </section>
-
-    <section class="album-list" id="album" role="tabpanel" aria-labelledby="album-tab">
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-      <div class="imgae album-img">
-        <a href="">
-          <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-        </a>
-      </div>
-    </section>
+      <section class="album-list" id="album" role="tabpanel" aria-labelledby="album-tab">
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+        <div class="imgae album-img">
+          <a href="">
+            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
+          </a>
+        </div>
+      </section>
+    </div>
   </div>
 </div>
 
@@ -379,37 +600,58 @@
 <div id="vote-create-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
   <div class="relative w-full max-w-md max-h-full">
     <!-- Modal content -->
-    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+    <div class="relative vote-modal-content bg-white rounded-lg shadow dark:bg-gray-700">
       <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="vote-create-modal">
         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
         <span class="sr-only">Close modal</span>
       </button>
-      <div class="px-6 py-6 lg:px-8">
-        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">투표 작성</h3>
-        <form class="space-y-6" action="{% url 'groups:vote_create' group.pk %}" method="POST">
+      <div class="vote-modal-content px-6 py-6 lg:px-8">
+        <h3 class="VoteCreate-txt mb-4 text-xl font-medium dark:text-white">투표 작성</h3>
+        <form class="vote-modal-content" action="{% url 'groups:vote_create' group.pk %}" method="POST">
             {% csrf_token %}
-            {% for field in vote_form %}
-              <div>
-                <label for="{{ field.auto_id }}">{{ field.label }}</label>
-                {{ field }}
-              </div>
-            {% endfor %}
-            <!-- 선택지 -->
-            <div id="options-container">
-              <label for="options" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">선택지</label>
-              <button type="button" id="plus-button">+항목추가</button>
-              <!-- 필수 항목 두개, 이후 추가 가능 -->
-              <input type="text" name="options" id="options" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
-              <input type="text" name="options" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+            <p>{{ vote_form.title.label }}</p>
+            <p>{{ vote_form.title}}</p>
+            <p>{{ vote_form.deadline.label }}</p>
+            <p>{{ vote_form.deadline}}</p>
+            <div class='vote-checkform-container'>
+              <p>{{ vote_form.is_overlap.label }} {{ vote_form.is_overlap }}</p>
+              <p>{{ vote_form.is_annony.label }} {{ vote_form.is_annony }}</p>
+              <p>{{ vote_form.is_addible.label }} {{ vote_form.is_addible }}</p>
             </div>
-          <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">저장</button>
+            {% comment %} <div class='option-line'></div> {% endcomment %}
+            <!-- 선택지 -->
+            <div class="option-container" id="options-container">
+              <!-- 필수 항목 두개, 이후 추가 가능 -->
+              <div class='flex-row'>
+                <button class='optionplus-btn' id="plus-button">
+                  <div class='flex-row'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#A8AFED" class="w-6 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                    </svg>
+                    <span style='color:#A8AFED; font-weight: bolder;'>투표 항목 추가</span>                                 
+                  </div>
+                </button>
+              </div>
+              <input type="text" name="options" id="options" class="optionplus-input bg-gray-50 border-gray-300" required>
+              <input type="text" name="options" class="optionplus-input bg-gray-50 border-gray-300" required>
+            </div>
+          <button class='VoteCreate-btn'>투표 생성</button>
         </form>
       </div>
     </div>
   </div>
 </div>
 
+<!-- vote, post 공지 등록 실패 시 alert -->
+{% if messages %}
+  {% for message in messages %}
+    <script>alert('{{ message }}')</script>
+  {% endfor %}
+{% endif %}
 <script src="{% static 'js/groups/vote_option_create.js' %}"></script>  <!-- vote 생성 -->
 <script src="{% static 'js/groups/vote_add_member_option.js' %}"></script>  <!-- vote의 is_addible True인 경우 멤버가 선택지 추가 -->
 <script src="{% static 'js/groups/vote_update.js' %}"></script>  <!-- vote 수정 -->
+<script src="{% static 'js/groups/group_detail.js' %}"></script>  <!-- vote 수정 -->
+<script src="{% static 'js/groups/vote_perform.js' %}"></script>  <!-- 투표 수행 -->
+<script src="{% static 'js/groups/group_invite.js' %}"></script>  <!-- 그룹 초대링크 -->
 {% endblock content %}

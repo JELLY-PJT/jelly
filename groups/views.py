@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from .models import Group, Post, PostImage, PostComment, PostEmote, Vote, VoteSelect
 from diaries.models import Diary, DiaryShare
 from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm, VoteForm
@@ -7,6 +8,8 @@ from django.http import JsonResponse
 from django.contrib import messages
 from itertools import chain
 from operator import attrgetter
+from argon2 import PasswordHasher as ph
+import json
 
 
 # 사이트 인덱스 페이지
@@ -22,18 +25,44 @@ def index(request):
 # 그룹 생성
 @login_required
 def group_create(request):
+    form = GroupForm(request.POST, request.FILES)
+    password1 = request.POST.get('password1')
+    password2 = request.POST.get('password2')
+
+    if form.is_valid() and password1 == password2:
+        group = form.save(commit=False)
+        group.chief = request.user
+        group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
+        group.save()
+        group.group_users.add(request.user)
+        return redirect('groups:group_detail', group.pk)
+    else:
+        messages.error(request, '정보를 정확하게 입력하세요.')
+        return redirect('groups:index')
+
+
+# 그룹 참가
+def group_join(request, group_pk):
+    group = Group.objects.get(pk=group_pk)
+
+    if not request.user.is_authenticated:
+        # 로그인 후 다시 group join url로 가도록 파라미터를 함께 보냄
+        return redirect(f'/accounts/login/?next={request.path}')
+
+    if group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:group_detail', group.pk)
+
     if request.method == 'POST':
-        form = GroupForm(request.POST, request.FILES)
-        if form.is_valid():
-            group = form.save()
+        password = request.POST.get('password')
+        try:
+            ph().verify(group.password, password)
             group.group_users.add(request.user)
             return redirect('groups:group_detail', group.pk)
+        except:
+            messages.error(request, '암호가 일치하지 않습니다.')
+            return render(request, 'groups/group_join.html', {'group': group,})
     else:
-        form = GroupForm()
-    context = {
-        'form': form,
-    }
-    return render(request, 'groups/group_create.html', context)
+        return render(request, 'groups/group_join.html', {'group': group,})
 
 
 # 그룹 페이지 조회
@@ -42,25 +71,158 @@ def group_detail(request, group_pk):
     group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
+    
+    # 공지로 등록된 post, vote 조회
+    noticed_post = Post.objects.filter(group=group, is_notice=True)
+    noticed_vote = Vote.objects.filter(group=group, is_notice=True)
+    notices = list(chain(noticed_post, noticed_vote))
+    notices.sort(key=attrgetter('created_at'), reverse=True)
 
     vote_form = VoteForm()
 
     # diary, post, vote 조회
-    shared_diaries = DiaryShare.objects.filter(group=group)
-    shared_diary_id = [obj.pk for obj in shared_diaries]
-    diaries = Diary.objects.filter(pk__in=shared_diary_id)
+    diaries = DiaryShare.objects.filter(group=group)
     posts = Post.objects.filter(group=group)
     votes = Vote.objects.filter(group=group)
+
     # diary, post, vote list에 담아 최신순 정렬
     writings = list(chain(diaries, posts, votes))
     writings.sort(key=attrgetter('created_at'), reverse=True)
 
+    joined_vote = [selection.vote for selection in request.user.selections.all()]
+
     context = {
         'group': group,
+        'notices': notices,
         'vote_form': vote_form,
         'writings': writings,
+        'joined_vote': joined_vote,
     }
     return render(request, 'groups/group_detail.html', context)
+
+
+# 그룹 설정 페이지
+@login_required
+def group_setting(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    form = GroupForm(instance=group)
+    context = {
+        'group': group,
+        'form': form,
+    }
+    return render(request, 'groups/group_setting.html', context)
+
+
+# 그룹 정보 수정
+@login_required
+def group_update(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    form = GroupForm(request.POST, instance=group)
+    if form.is_valid():
+        form.save()
+        return redirect('groups:group_detail', group.pk)
+    else:
+        context = {
+            'form': form,
+        }
+        return render(request, 'groups/group_setting.html', context)
+
+
+# 그룹 삭제
+@login_required
+def group_delete(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    group.delete()
+    return redirect('groups:index')
+
+
+# 그룹 암호 변경
+@login_required
+def password_update(request, group_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    old_password = request.POST.get('old-password')
+    password1 = request.POST.get('new-password1')
+    password2 = request.POST.get('new-password2')
+
+    try:
+        ph().verify(group.password, old_password)
+        if password1 == password2:
+            group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
+            group.save()
+            return redirect('groups:group_detail', group.pk)
+        else:
+            messages.error(request, '비밀번호를 정확하게 입력하세요.')
+            return redirect('groups:group_setting', group.pk)
+    except:
+        messages.error(request, '비밀번호를 정확하게 입력하세요.')
+        return redirect('groups:group_setting', group.pk)
+
+
+# 멤버 삭제
+@login_required
+def member_delete(request, group_pk, username):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    member = get_user_model().objects.get(username=username)
+    group.group_users.remove(member)
+    return redirect('groups:group_setting', group.pk)
+
+
+# 그룹 탈퇴
+@login_required
+def member_withdraw(request, group_pk):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if group.group_users.filter(pk=request.user.pk).exists():
+        # 방장이면 탈퇴 못함
+        if request.user == group.chief:
+            return redirect('groups:group_detail', group.pk)
+        else:
+            group.group_users.remove(request.user)
+    return redirect('groups:index')
+
+
+# 방장 위임
+@login_required
+def chief_change(request, group_pk, username):
+    group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    if request.user != group.chief:
+        return redirect('groups:group_detail', group.pk)
+    
+    member = get_user_model().objects.get(username=username)
+    group.chief = member
+    return redirect('groups:group_detail', group.pk)
 
 
 # post 생성
@@ -189,6 +351,28 @@ def post_delete(request, group_pk, post_pk):
     return redirect('groups:group_detail', group.pk)
 
 
+# post 공지사항 등록/취소
+@login_required
+def notice_post(request, group_pk, post_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    post = Post.objects.get(pk=post_pk)
+    if post.is_notice:
+        post.is_notice = False
+        post.save()
+    else:
+        notice_cnt = len(Post.objects.filter(group=group, is_notice=True))
+        notice_cnt += len(Vote.objects.filter(group=group, is_notice=True))
+        if notice_cnt < 3:
+            post.is_notice = True
+            post.save()
+        else:
+            messages.info(request, '공지사항은 3개까지 등록 가능합니다. 기존의 공지를 삭제하고 다시 등록해주세요.')
+    return redirect('groups:group_detail', group_pk)
+
+
 # post 감정표현
 @login_required
 def emote(request, group_pk, post_pk, emotion):
@@ -285,24 +469,28 @@ def vote_create(request, group_pk):
 
 # 사용자 투표 행사/취소
 @login_required
-def throw_vote(request, group_pk, vote_pk, option_pk):
+def throw_vote(request, group_pk, vote_pk):
     group = Group.objects.get(pk=group_pk)
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
 
     vote = Vote.objects.get(pk=vote_pk)
-    vote_option = VoteSelect.objects.get(pk=option_pk)
-    # 투표 취소
-    if vote_option.select_users.filter(pk=request.user.pk).exists():
-        vote_option.select_users.remove(request.user)
-    # 투표 시행
+    # js에서 만든 selected_list를 받아옴
+    selected_options_json = request.POST.get('selected_list')
+    if selected_options_json:
+        selected_options = json.loads(selected_options_json)
     else:
-        # 중복 투표 가능한 경우 바로 add
-        if vote.is_overlap:
-            vote_option.select_users.add(request.user)
-        else: # 중복 안되는 경우 기존 투표 삭제 후 add
-            request.user.selections.clear()
-            vote_option.select_users.add(request.user)
+        selected_options = []
+    
+    # 기존 투표 삭제 후 새로 저장
+    for option in vote.voteselect_set.all():
+        if option.select_users.filter(pk=request.user.pk).exists():
+            option.select_users.remove(request.user)
+    
+    for option_id in selected_options:
+        option = VoteSelect.objects.get(pk=option_id)
+        option.select_users.add(request.user)
+
     return redirect('groups:group_detail', group.pk)
 
 
@@ -387,3 +575,25 @@ def vote_delete(request, group_pk, vote_pk):
     if request.user == vote.user:
         vote.delete()
     return redirect('groups:group_detail', group.pk)
+
+
+# vote 공지사항 등록/취소
+@login_required
+def notice_vote(request, group_pk, vote_pk):
+    group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
+    
+    vote = Vote.objects.get(pk=vote_pk)
+    if vote.is_notice:
+        vote.is_notice = False
+        vote.save()
+    else:
+        notice_cnt = len(Post.objects.filter(group=group, is_notice=True))
+        notice_cnt += len(Vote.objects.filter(group=group, is_notice=True))
+        if notice_cnt < 3:
+            vote.is_notice = True
+            vote.save()
+        else:
+            messages.info(request, '공지사항은 3개까지 등록 가능합니다. 기존의 공지를 삭제하고 다시 등록해주세요.')
+    return redirect('groups:group_detail', group_pk)

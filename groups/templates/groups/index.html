@@ -1,50 +1,41 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/index/testing.css' %}" />
+    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/__search.css' %}" /> {% endcomment %}
+    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/__calendar.css' %}" /> {% endcomment %}
+    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/testing.css' %}" />   {% endcomment %}
 {% endblock css %}
 {% block content %}
 
-    {% comment %}
-    <div class="header">
-        <div class="header--wrap">
-            <div class="index logo-box">
-                {# 로고 이미지 박스 #}
-                <img src="{% static 'img/index_logo.png' %}" alt="logo_image" />
-            </div>
-            <hr class="index logo-line" />
-            {# 헤더 하단 구분 라인 #}
-        </div>
-    </div>
-    {% endcomment %}
-    
-    {% comment %}
-    navbar 업데이트 시 위의 코드를 제거하고 아래의 include 블럭을 활성화 합니다.
-    {% endcomment %}
-
     {% include 'navbar.html' %}
 
-    <div class="index container">
-        <div class="index content">
-            {% comment %} calendar 표시 {% endcomment %}
-            <div class="index content item">
-                <div class="wrapper">
-                    {% comment %} calendar.html 차후 수정 현재는 그룹 area비교 용 임시 include {% endcomment %}
+    <div id="group-index">
+        <div class="content-container">
+            <div class="content-item">
+                {% comment %} calendar 표시 {% endcomment %}
+                <div id="calendar-area" class="item-wrapper">
                     {% include 'groups/index/__calendar.html' with groups=groups %}
                 </div>
             </div>
-            {% comment %} 가입한 group 표시 {% endcomment %}
-            <div class="index content item">
-                <div class="wrapper">{% include "groups/index/__groups.html" with groups=groups %}</div>
-                {% comment %} {% include 'groups/index_content_groups.html' with groups=groups %}  {% endcomment %}
+            <div class="content-item">
+                {% comment %} 가입한 group 표시 {% endcomment %}
+                <div id="group-area" class="item-wrapper">{% include "groups/index/__groups.html" with groups=groups %}</div>
             </div>
         </div>
     </div>
 
-
-    {% comment %} 모달 {% endcomment %}
+    {% comment %} 그룹 생성 모달 {% endcomment %}
     {% include 'groups/index/__group_create_modal.html' %}
+    
+    {% comment %} 그룹 검색 결과 레이어 {% endcomment %}
+    {% comment %} {% include 'groups/index/__search.html' %} {% endcomment %}
+
+<!-- 그룹 생성 실패 시 alert -->
+{% if messages %}
+{% for message in messages %}
+  <script>alert('{{ message }}')</script>
+{% endfor %}
+{% endif %}
 
 {% endblock content %}

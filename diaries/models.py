@@ -21,9 +21,6 @@ class Diary(models.Model):
 
     def __str__(self):
         return self.title
-    
-    def get_model_name(self):
-        return self._meta.model_name
 
     def increase_hit(self, user):
         diary_share, created = DiaryShare.objects.get_or_create(diary=self)
@@ -50,11 +47,14 @@ class Diary(models.Model):
 class DiaryShare(models.Model):
     diary = models.ForeignKey(Diary, on_delete=models.CASCADE)
     group = models.ForeignKey('groups.Group', on_delete=models.CASCADE)
-    shared_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_model_name(self):
+        return self._meta.model_name
 
     @property
-    def shared_string(self):
-        time = datetime.now(tz=timezone.utc) - self.shared_at
+    def created_string(self):
+        time = datetime.now(tz=timezone.utc) - self.created_at
         if time < timedelta(minutes=1):
             return '방금 전'
         elif time < timedelta(hours=1):
@@ -62,10 +62,10 @@ class DiaryShare(models.Model):
         elif time < timedelta(days=1):
             return str(time.seconds // 3600) + '시간 전'
         elif time < timedelta(weeks=1):
-            time = datetime.now(tz=timezone.utc).date() - self.shared_at.date()
+            time = datetime.now(tz=timezone.utc).date() - self.created_at.date()
             return str(time.days) + '일 전'
         else:
-            return self.shared_at.strftime('%Y-%m-%d')
+            return self.created_at.strftime('%Y-%m-%d')
 
 
 class DiaryComment(models.Model):

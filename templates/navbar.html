@@ -1,13 +1,14 @@
 {% load static %}
 <nav>
   <div class="row">
-    <img src="{% static 'img/JELLY_logo.png' %}" alt="로고" class="logo">
+    <img src="{% static 'img/index_logo.png' %}" alt="로고" class="logo">
     {% if user.is_authenticated %}
       <div class="row nav--tab">
         <a href="{% url 'accounts:profile' user.username %}"><p>프로필</p></a>
         <form action="{% url 'accounts:logout' %}" method='POST'>
+          {% csrf_token %}
           <input type="submit" value='로그아웃'>
-        </form>
+        </form> 
       </div>
     {% else %}
     <div class="row nav--tab">

@@ -15,21 +15,23 @@
 
 {% block content %}
 <div class="wrapper">
-  <form action="{% block url %}{% url 'diaries:create' %}{% endblock url %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.media }}
-    {% for field in form %}
-    <div>
-      {{ field.label_tag }}
-      {{ field }}
-    </div>
-    {% endfor %}
-    <div class="btns">
-      <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
-      <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
-    </div>
-  </form>
-  <button id="select-thumbnail-btn">썸네일 선택하기</button>
+  <div class="content">
+    <form action="{% block url %}{% url 'diaries:create' %}{% endblock url %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.media }}
+      {% for field in form %}
+      <div>
+        {{ field.label_tag }}
+        {{ field }}
+      </div>
+      {% endfor %}
+      <div class="btns">
+        <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
+        <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
+      </div>
+    </form>
+    <button id="select-thumbnail-btn">썸네일 선택하기</button>
+  </div>
 </div>
 {% endblock content %}
 

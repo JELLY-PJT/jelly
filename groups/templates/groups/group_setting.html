@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ group }}{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/group_setting.css' %}">
+{% endblock css %}
+
+{% block side %}
+  {% include 'sidebar.html' with current_group=group %}
+{% endblock side %} 
+
+{% block content %}
+
+
+
+<div class="wrapper">
+  <div class="content">
+    <h1 class="title">그룹 관리</h1>
+
+    <!-- 그룹 정보 -->
+    <section>
+      <h3 class="title">그룹 정보</h3>
+      <div>
+        <form class="space-y-6" action="{% url 'groups:group_update' group.pk %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="group-update">
+            <p>{{ form.name.label }}</p>
+            <div class="update-form">
+              {{ form.name}}
+            </div>
+          </div>
+          <div class="group-update file">
+            <p>{{ form.thumbnail.label }}</p>
+            <div class="flex flex-col">
+              <div class="image group-img">
+                <img src={{ group.thumbnail.url }} alt="그룹 이미지">
+              </div>
+              <div class="update-form">
+                {{ form.thumbnail}}
+              </div>
+            </div>
+          </div>
+          <div class="group-update">
+            <p>{{ form.intro.label }}</p>
+            <div class="update-form">
+              {{ form.intro}}
+            </div>
+          </div>
+          <input type="submit" value="저장" class="main-btn bg-[var(--color-main)]">
+        </form>
+      </div>
+    </section>
+
+    <hr>
+
+    <section>
+      <h3 class="title">멤버 정보</h3>
+      <ul class="user-list">
+        <!-- 그룹 멤버 삭제, 방장 위임 -->
+        {% for member in group.group_users.all %}
+          <li class="user">
+            <div class="info">
+              <div class="user-img image">
+                {% if member.image %}
+                  <img src="{{ member.image.url }}" alt="멤버 프로필 사진">
+                {% else %}
+                  <img src="{% static 'img/blank_profile_img.png' %}" alt="멤버 프로필 사진">
+                {% endif %}
+              </div>
+              <p>{{ member.nickname }}</p>
+            </div>
+            {% if member != request.user %}
+              <div class="manage">
+                <form action="{% url 'groups:chief_change' group.pk member.username %}" method="POST">
+                  {% csrf_token %}
+                  <input type="submit" value="방장 위임">
+                </form>
+                <form action="{% url 'groups:member_delete' group.pk member.username %}" method="POST">
+                  {% csrf_token %}
+                  <input type="submit" value="멤버 삭제" class="delete" onclick="return confirm('멤버를 삭제하시겠습니까?\n삭제한 멤버는 다시 초대할 수 있습니다.')">
+                </form>
+              </div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="flex justify-center">
+      <div>
+        <button data-modal-target="group-password-update-modal" data-modal-toggle="group-password-update-modal" class="main-btn update mr-6">암호 변경</button>
+        <a href="{% url 'groups:group_delete' group.pk %}" class="main-btn delete" onclick="return confirm('삭제한 그룹은 복구할 수 없습니다.\n정말 삭제하시겠습니까?')">그룹 삭제</a>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+
+<!-- 그룹 암호변경 modal -->
+<div id="group-password-update-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="relative w-full max-w-lg max-h-full">
+    <!-- Modal content -->
+    <div class="relative bg-white rounded-lg shadow">
+      <!-- Modal header -->
+      <div class="flex items-start justify-between p-4 border-b rounded-t">
+        <h3 class="text-xl font-semibold text-gray-900">그룹 암호 변경</h3>
+        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="group-password-update-modal">
+          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+          <span class="sr-only">Close modal</span>
+      </button>
+      </div>
+      <!-- Modal body -->
+      <div class="p-6">
+        <form action="{% url 'groups:password_update' group.pk %}" method="POST">
+          {% csrf_token %}
+          <div>
+            <label for="old-password">기존 암호</label>
+            <input type="password" id="old-password" name="old-password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[var(--color-main-light)] focus:border-[var(--color-main-light)] block w-full mt-1 p-2.5">
+          </div>
+          <div class="mt-4">
+            <label for="new-password1">새 암호</label>
+            <input type="password" id="new-password1" name="new-password1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[var(--color-main-light)] focus:border-[var(--color-main-light)] block w-full mt-1 p-2.5">
+          </div>
+          <div class="mt-4">
+            <label for="new-password2">새 암호 확인</label>
+            <input type="password" id="new-password2" name="new-password2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[var(--color-main-light)] focus:border-[var(--color-main-light)] block w-full mt-1 p-2.5">
+          </div>
+          <input type="submit" value="변경" class="main-btn bg-[var(--color-main)] mt-4">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- password 변경 실패 시 alert -->
+{% if messages %}
+  {% for message in messages %}
+    <script>alert('{{ message }}')</script>
+  {% endfor %}
+{% endif %}
+
+{% endblock content %}

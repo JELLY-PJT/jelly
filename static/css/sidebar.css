@@ -12,6 +12,7 @@
   height: 100vh;
   background-color: var(--color-main-light);
   align-items: center;
+  /* justify-content: center; */
   overflow-y: scroll;
 }
 
@@ -24,7 +25,7 @@
 }
 
 .aside::-webkit-scrollbar-thumb {
-  background-color: #A8AFED;
+  background-color: var(--color-main);
   border-radius: 4px;
 }
 
@@ -33,9 +34,17 @@
 }
 
 .side-img {
-  width: 75px;
-  height: 75px;
+  width: 4.7rem;
+  height: 4.7rem;
   border: white 3px solid;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.side-img-border-color{
+  width: 4.7rem;
+  height: 4.7rem;
+  border: red 3px solid;
   border-radius: 50%;
   margin-bottom: 20px;
 }
@@ -45,12 +54,13 @@
 }
 
 .side-logo {
-  width: 80%;
-  height: 35px;
+  width: 85%;
+  height: 38px; 
   border: 0px;
   border-radius: 0%;
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  margin: 20px auto 25px;
 }
 
 .bar {
@@ -59,13 +69,6 @@
   margin-bottom: 20px;
 }
 
-.border-color {
-  border: red;
-}
-
-input:hover, select:hover, textarea:hover, button:hover {
-  border-color: var(--color-main);
-}
 
 /* modal */
 
@@ -76,21 +79,58 @@ input:hover, select:hover, textarea:hover, button:hover {
 .GroupCreate-modal-content {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
 .create-form {
+  border: 1px solid darkgray;
   border-radius: 10px;
-  margin-bottom: 15px; 
-  width: 350px;
+  margin-bottom: 0.3rem; 
+  width: 21rem;
 }
 
-.GroupCreate-modal-button {
-  margin-top: 10px;
-  height: 50px;
+.create-form:hover {
+  border-color: var(--color-main);
 }
 
-.GroupCreate-field {
-  /* color: #42389D; */
+.GroupCreate-ModalToggle-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
 
+.GroupCreate-ModalToggle-btn:hover {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.GroupCreate-btn {
+  border: solid var(--color-main);
+  background-color: var(--color-main);
+  width: 21rem;
+  height: 3rem;
+  border-radius: 10px;
+  color: white;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.GroupCreate-btn:hover {
+  border: #7B83C7;
+  background-color:#7B83C7;
+}
+
+.GroupCreate-txt {
+  color: #7B83C7;
+  font-weight: bold;
+}
+
+.Group-label {
+  /* color: #7B83C7; */
+  /* font-weight: bold; */
 }

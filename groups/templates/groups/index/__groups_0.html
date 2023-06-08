@@ -1,18 +1,16 @@
 
-<div id="CreateGroup">
-
-  <div class="item">새로운 그룹을 만들어 보세요!</div>
+<div class="row menu">새로운 그룹을 만들어 보세요!</div>
   {# 그룹 생성 버튼 #}
-  <button id="group-create-button" data-modal-target="group-create-modal" data-modal-toggle="group-create-modal" class="item">
+<div class="row group-button">
+  <button id="group-create-button" class="big-group-button" data-modal-target="GroupCreate-modal" data-modal-toggle="GroupCreate-modal" class="item">
     <div class="square">
         <div class="inner">
-            <!-- SVG 그래픽 요소들 -->
-            {% comment %} 라인 위치는 groups.js 에서 컨트롤 됩니다.{% endcomment %}
-            {% comment %} <svg width="auto" height="auto">
-                <line id="vertical-line" class="line" />
-                <line id="horizontal-line" class="line" />
-            </svg> {% endcomment %}
+          <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C12.5523 4 13 4.44772 13 5V19C13 19.5523 12.5523 20 12 20C11.4477 20 11 19.5523 11 19V5C11 4.44772 11.4477 4 12 4Z"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M4 12C4 11.4477 4.44772 11 5 11H19C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13H5C4.44772 13 4 12.5523 4 12Z"/>
+          </svg>
         </div>
     </div>
   </button>
 </div>
+

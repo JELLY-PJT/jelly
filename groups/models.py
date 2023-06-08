@@ -7,8 +7,10 @@ from django.utils import timezone
 
 
 class Group(models.Model):
+    chief = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     group_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_groups')
     name = models.CharField(max_length=100)
+    password = models.CharField(max_length=128)
     
     def group_image_path(instance, filename):
         return f'groups/{instance.name}_{instance.pk}/{filename}'

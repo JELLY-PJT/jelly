@@ -6,168 +6,211 @@ html {
 *::before,
 *::after {
   box-sizing: inherit;
+  --thumbnail-border-radius: 15%;
+  --index-content-height: calc(var(--content-min-height) - 160px);
+  --group-area-height: calc(var(--index-content-height) - 115px);
 }
 
-@media (max-width: 1000px) {
-	.index.content {
-		flex-direction: column;
-	}
-}
-@media (min-width: 1000px) {
-	.index.content {
-  flex-direction: row;
-	}
-}
+#group-index *, 
+#group-index *::before,
+#group-index *::after {
+  height: inherit;}
 
-.index.container {
+#group-index {
   display: grid;
-  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-columns: 1fr 8fr 1fr;
   grid-template-areas: ". content .";
-  min-height: calc(var(--content-min-height) - 200px);
-  margin: 0 auto 0 auto;
+  height: var(--index-content-height);
+  margin:  0 auto 0 auto;
+  font-size: 1rem;
+  text-align: center;
+  line-height: normal;
 }
 
-.index.content {
+#group-index .content-container {
   grid-area: content;
   display: flex;
+  flex-direction: row;
 }
-
-.index.content.item {
-  margin: 5% 0 5% 0;
-  padding: 0 2% 0 2%;
-  flex-grow: 1;
-  flex-basis: 50%;
-}
-
-.index.content .wrapper {
-  width: 100%;
-  height: fit-content;
-  /* background-color: plum; */
-}
-
-#group-area {
-	width: 100%;
-	display:flex;
+/* @media (max-width: 600px) {
+	#group-index .content-container {
+		flex-direction: column;
+	}} */
+#group-index .content-container > .content-item {
+  flex-basis: 50%; flex-grow: 1;}
+/* #group-index .item-wrapper { */
+  /* height: inherit; */
+  /* margin: auto; */
+#group-area .item-wrapper{
+	/* width: 100%; */
+	display: flex;
 	flex-direction: column;
   justify-content: center;
-}
+  align-items: center;}
 
-#group-area .row{
-  margin: 0 0 5% 0;
+#group-area .row {
+  /* width: 100%; */
+  margin: 3% 0 3% 0;
 }
-
-#group-area .row.menu {
-  flex-basis: 1;
+#group-area .menu {
+  /* width: 100%; */
   display: flex;
+  height: fit-content;
   flex-direction: row;
-  align-items: center;
+  justify-content: center;
+  align-items:center;
+}
+#group-search-bar {
+  flex-basis: 50%;
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+}
+#group-search-bar form{
+  margin-left: auto;
+}
+#group-search-bar input[type='search'] {
+  width: 100%;
+  background-color: var(--color-main-light);
+  border-radius: 3rem;
+  border-color: var(--color-main-light);
+}
+#group-search-bar input[type='search']:focus {
+  border-color: var(--color-main-dark);
+}
+#group-area .menu button {
+  flex-basis: 10%;
+}
+#group-create-button {
+	display:flex;
+  flex-direction: row;
   justify-content: center;
 }
 
-
-#group-search-bar {
-  width: 70%;
+#group-area .row.group-button{
+  height: var(--group-area-height);
+  overflow: auto;
+  overflow-x: hidden;
 }
-#group-search-bar * {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#group-search-bar input[type='search'] {
-  width: 70%;
-  background-color: var(--color-main-light);
-  border-radius: 3rem;
-  border: none;
-}
-
-#group-search-bar input[type='search']:focus {
-  border-color: var(--color-main);
-  box-shadow: var(--color-main), var(--color-main), var(--color-main);
-}
-
-
-#group-create-button {
-  width: 15%;
-	display:flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  padding: 5% 0 5% 0;
-}
-
-
 #group-create-button .square {
   width: 100%;
   padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
   position: relative;
-
 }
-
 #group-create-button .inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
   border: dashed 3px var(--color-main);
   border-radius: 15%;
   justify-content: center;
   align-items: center;
   display:flex;
 }
-
 #group-create-button.menu-item .inner {
   border: none;
 }
-
-
-
-/* #group-create-button .icon g {
-  transform: scale(2);
-} */
-
-
 #group-create-button .icon {
   width: 70%;
   height: 70%;
 }
-
 #group-create-button.menu-item .icon {
   width: 50%;
   height: 50%;
 }
-
 #group-create-button .icon path {
   fill: var(--color-main);
 }
 
-#group-buttons-grid.row {
-  flex-basis: 4;
+#group-create-button.big-group-button {
+  width: 60%;
+  height: auto;
+  margin:auto;
+}
+
+#group-buttons-grid {
+  width: 65%;
+  height: fit-content;
+  max-height: 100%;
   display: grid;
+  gap: 5%;
+  padding: 1% 0 1% 0;
+  margin: auto;
   grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: minmax(
-    100px,
-    auto
-  ); /* 각 행의 최소 높이를 100px로 지정하고, 내용에 따라 높이가 자동 조정되도록 설정 */
 } 
 
 #group-buttons-grid .item.button {
-margin: 2px;
+  width: 100%;
+  color: white;
+  font-size: 1.2vw;
+  letter-spacing: 0.2vw; /* 글자 간격 */
 }
 
 #group-buttons-grid .square {
   width: 100%;
   padding-top: 100%; /* 가로 너비와 같은 비율의 패딩을 설정합니다 */
   position: relative;
+  margin: 0 auto 20% auto;
 }
 
 #group-buttons-grid .inner {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: absolute; top: 0; left: 0;
   width: 100%;
-  height: 100%;
+  height: 120%;
+  padding: 100% 0 0 0;
   background-color: var(--color-main);
-  border-radius: 15%;
+  border-radius: var(--thumbnail-border-radius);
 }
+
+#group-buttons-grid .group-button-thumbnail {
+  /* padding: 5% 10% 5% 10%; */
+  position: absolute; top: 0; left: 0;
+  width: 90%; height: calc(100% * 0.9 / 1.2); 
+  margin: 5%;
+  padding: 5%;
+  background-color: white;
+  border-radius: inherit;
+  display: flex;
+  justify-content: center; align-items: center;
+}
+
+#group-buttons-grid .group-button-thumbnail img {
+  width: 100%; height: auto;
+  border-radius: inherit;
+}
+
+#group-buttons-grid .group-button-no-thumbnail {
+  /* padding: 5% 10% 5% 10%; */
+  position: absolute; top: 0; left: 0;
+  width: 90%; height: calc(100% * 0.9 / 1.2); 
+  margin: 5%;
+  padding: 5%;
+  border-radius: inherit;
+  display: flex;
+  justify-content: center; align-items: center;
+}
+
+.row.group-button::-webkit-scrollbar {
+  width: 5px;
+}
+
+.row.group-button::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.row.group-button::-webkit-scrollbar-thumb {
+  background-color: var(--color-main);
+  border-radius: 4px;
+}
+
+.row.group-button::-webkit-scrollbar-thumb:hover {
+  background-color: #7B83C7;
+}
+
+/* .container {
+  overflow: auto;
+}
+
+.box {
+  display: grid;
+  grid-template-columns: 1fr;
+} */

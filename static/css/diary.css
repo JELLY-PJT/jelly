@@ -3,6 +3,10 @@ input {
 }
 
 .wrapper {
+  padding-left: 130px;
+}
+
+.content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 1rem;
@@ -38,13 +42,13 @@ input {
   border: 1px solid var(--color-gray-dark);
 }
 
-.content {
+.post-content {
   padding: 1.5rem 1.5rem 3rem;
   border: 2px solid var(--color-main);
   border-radius: 0.75rem;
 }
 
-.content.bottom {
+.post-content.bottom {
   margin-top: 2rem;
   padding-bottom: 1rem;
   background-color: #d1d8ff50;
@@ -210,11 +214,12 @@ input {
   align-items: center;
   padding: 0.5rem 1rem 0;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .selected-emotion {
-  color: var(--color-main);
-  font-weight: 500;
+  color: var(--color-main-dark);
+  font-weight: 600;
 }
 
 .emotion-btn {
