@@ -80,20 +80,31 @@ def group_detail(request, group_pk):
     vote_form = VoteForm()
 
     # diary, post, vote 조회
-    shared_diaries = DiaryShare.objects.filter(group=group)
-    shared_diary_id = [obj.pk for obj in shared_diaries]
-    diaries = Diary.objects.filter(pk__in=shared_diary_id)
+    # shared_diaries = DiaryShare.objects.filter(group=group)
+    # shared_diary_id = [obj.pk for obj in shared_diaries]
+    # diaries = Diary.objects.filter(pk__in=shared_diary_id)
+    diaries = DiaryShare.objects.filter(group=group)
     posts = Post.objects.filter(group=group)
     votes = Vote.objects.filter(group=group)
     # diary, post, vote list에 담아 최신순 정렬
     writings = list(chain(diaries, posts, votes))
     writings.sort(key=attrgetter('created_at'), reverse=True)
 
+    # share_data = {}
+    # for diary in diaries:
+    #     shared_diary = DiaryShare.objects.get(diary=diary, group=group)
+    #     share_data[writings.index(diary)] = {'shared_at': shared_diary.shared_string,
+    #                             'comment_cnt': shared_diary.diarycomment_set.count(),
+    #                             'emote_cnt': shared_diary.diaryemote_set.count()}
+    
+    # print(share_data)
+
     context = {
         'group': group,
         'notices': notices,
         'vote_form': vote_form,
         'writings': writings,
+        # 'share_data': share_data,
     }
     return render(request, 'groups/group_detail.html', context)
 
