@@ -7,7 +7,7 @@
   <a href="{% url 'groups:index' %}">
     <img src="{% static 'img/side_logo.png' %}" alt="로고" class="side-logo">
   </a>
-  {% if user.imgage %}
+  {% if user.image %}
   <a href="{% url 'accounts:profile' user.username %}">
     <img src="{{ user.image.url}}" alt="프로필" class='side-img'>
   </a>

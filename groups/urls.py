@@ -25,6 +25,7 @@ urlpatterns = [
     path('<int:group_pk>/posts/<int:post_pk>/comment/create/', views.comment_create, name='comment_create'),
     path('<int:group_pk>/posts/<int:post_pk>/comment/<int:comment_pk>/update/', views.comment_update, name='comment_update'),
     path('<int:group_pk>/posts/<int:post_pk>/comment/<int:comment_pk>/delete/', views.comment_delete, name='comment_delete'),
+    path('<int:group_pk>/posts/<int:post_pk>/comments/<int:comment_pk>/like/', views.comment_like, name='comment_like'),
     path('<int:group_pk>/posts/<int:post_pk>/notice/', views.notice_post, name='notice_post'),
     # 투표
     path('<int:group_pk>/votes/create/', views.vote_create, name='vote_create'),

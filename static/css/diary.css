@@ -2,6 +2,10 @@ input {
   cursor: pointer;
 }
 
+input[type=text] {
+  cursor: text;
+}
+
 .wrapper {
   padding-left: 130px;
 }
@@ -236,6 +240,7 @@ input {
 .comment-form {
   display: flex;
   gap: 1rem;
+  margin: 1rem 0;
 }
 
 .comment.main-btn {
@@ -301,4 +306,50 @@ input {
 
 .comment-hr:last-child {
   display: none;
+}
+
+
+/* post_detail */
+.create-user-img {
+  width: 4.7rem;
+  height: 4.7rem;
+  border: white 3px solid;
+  border-radius: 50%;
+}
+
+.content-img-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.content-img {
+  width: 240px;
+  height: 240px;
+  margin-right: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.content-img:nth-child(4n) {
+  margin-right: 2.5rem;
+}
+
+.content-img:nth-child(4n+1) {
+  margin-left: 2.5rem;
+}
+
+.comment-area .create-user-img {
+  width: 2.125rem;
+  height: 2.125rem;
+  border: none;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.create-user-img img {
+  max-width: 100%;
+  min-width: 100%;
+  max-height: 100%;
+  min-height: 100%;
+  object-fit: cover;
 }

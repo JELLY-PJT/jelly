@@ -292,6 +292,7 @@ def post_detail(request, group_pk, post_pk):
         return redirect('groups:index')
     
     post = Post.objects.get(pk=post_pk)
+    comments = post.postcomment_set.all()
     comment_form = PostCommentForm()
     # 조회수
     if not post.hits.filter(pk=request.user.pk).exists():
@@ -316,6 +317,7 @@ def post_detail(request, group_pk, post_pk):
         'group': group,
         'post': post,
         'comment_form': comment_form,
+        'comments': comments,
         'emotions': emotions,
     }
     return render(request, 'groups/post_detail.html', context)
@@ -438,10 +440,16 @@ def comment_update(request, group_pk, post_pk, comment_pk):
         return redirect('groups:index')
     
     comment = PostComment.objects.get(pk=comment_pk)
-    if request.user == comment.user:
+
+    if request.method == 'POST':
+        form = PostCommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            updated_comment = form.save(commit=False)
+            updated_comment.save()
+
         # 여기서 ajax로 데이터 받아서 저장하고 context에 담아 Jsonresponse반환?
         context = {
-
+            'content': updated_comment.content,
         }
         return JsonResponse(context)
 
@@ -457,6 +465,24 @@ def comment_delete(request, group_pk, post_pk, comment_pk):
     if request.user == comment.user:
         comment.delete()
     return redirect('groups:post_detail', group.pk, post_pk)
+
+
+def comment_like(request, group_pk, post_pk, comment_pk):
+    group = Group.objects.get(pk=group_pk)
+    comment = PostComment.objects.get(pk=comment_pk)
+
+    if comment.like_users.filter(pk=request.user.pk).exists():
+        comment.like_users.remove(request.user)
+        is_liked = False
+    else:
+        comment.like_users.add(request.user)
+        is_liked = True
+
+    context = {
+        'is_liked': is_liked,
+        'comment_like_users': comment.like_users.count(),
+    }
+    return JsonResponse(context)
 
 
 # 투표 생성
