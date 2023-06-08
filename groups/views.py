@@ -628,3 +628,5 @@ def notice_vote(request, group_pk, vote_pk):
         else:
             messages.info(request, '공지사항은 3개까지 등록 가능합니다. 기존의 공지를 삭제하고 다시 등록해주세요.')
     return redirect('groups:group_detail', group_pk)
+
+# ㅇㅇ

@@ -36,3 +36,5 @@ urlpatterns = [
     path('<int:group_pk>/votes/<int:vote_pk>/delete/', views.vote_delete, name='vote_delete'),
     path('<int:group_pk>/votes/<int:vote_pk>/notice/', views.notice_vote, name='notice_vote'),
 ]
+
+# ㅇㅇ

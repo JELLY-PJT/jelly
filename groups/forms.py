@@ -123,3 +123,5 @@ class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
         fields = ('title', 'deadline', 'is_overlap', 'is_annony', 'is_addible',)
+
+# ㅇㅇ
