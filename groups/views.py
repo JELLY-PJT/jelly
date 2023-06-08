@@ -10,6 +10,7 @@ from itertools import chain
 from operator import attrgetter
 from argon2 import PasswordHasher as ph
 import json
+from django.core.paginator import Paginator
 
 
 # 사이트 인덱스 페이지
@@ -85,9 +86,13 @@ def group_detail(request, group_pk):
     posts = Post.objects.filter(group=group)
     votes = Vote.objects.filter(group=group)
 
-    # diary, post, vote list에 담아 최신순 정렬
+    # diary, post, vote list에 담아 최신순 정렬 후 페이지네이션
     writings = list(chain(diaries, posts, votes))
     writings.sort(key=attrgetter('created_at'), reverse=True)
+    page = request.GET.get('page', '1')
+    per_page = 5
+    pagination = Paginator(writings, per_page)
+    page_objects = pagination.get_page(page)
 
     joined_vote = [selection.vote for selection in request.user.selections.all()]
 
@@ -95,7 +100,7 @@ def group_detail(request, group_pk):
         'group': group,
         'notices': notices,
         'vote_form': vote_form,
-        'writings': writings,
+        'writings': page_objects,
         'joined_vote': joined_vote,
     }
     return render(request, 'groups/group_detail.html', context)
