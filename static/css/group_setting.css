@@ -17,31 +17,56 @@
 }
 
 .content {
-  padding: 3rem 1rem 0 1rem;
-  max-width: 1200px;
+  padding: 2rem 1rem 0 1rem;
+  max-width: 900px;
   margin: 0 auto;
 }
 
+section {
+  margin: 3rem 0;
+}
+
+section:nth-of-type(1) {
+  margin-top: 2rem;
+}
+
 .title {
-  font-size: 1.5rem;
+  margin-top: 1rem;
   font-weight: 600;
+  font-size: 1.875rem;
+}
+
+section .title {
+  margin: 0;
+  font-size: 1.5rem;
 }
 
 .group-img {
   width: 7.5rem;
   height: 7.5rem;
-  border: 1px solid var(--color-gray-dark);
+  border: 1px solid var(--color-gray);
+}
+
+.delete[type=submit] {
+  color: #ff5656;
 }
 
 .delete.main-btn {
   display: inline-block;
-  margin-top: 3rem;
   background-color: #ff5656;
   cursor: pointer;
 }
 
 .delete.main-btn:hover {
   background-color: #e74b4b;
+}
+
+.update.main-btn {
+  background-color: #9d9c9c;
+}
+
+.update.main-btn:hover {
+  background-color: #838383;
 }
 
 .group-update {
@@ -64,8 +89,47 @@
 
 .user-list {
   margin-top: 1.5rem;
+  max-height: 450px;
+  overflow-y: scroll;
+}
+
+.user-list::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 2px;
+}
+
+.user-list::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 2px;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray);
+  border-radius: 4px;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+  background-color: #b6b6b6;
+}
+
+.user {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .user-img {
   width: 3rem;
+}
+
+.manage {
+  padding-right: 2rem;
 }
