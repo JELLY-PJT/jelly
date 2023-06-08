@@ -7,7 +7,9 @@
 {% block content %}
 <div class='flex-row'>
   <div class='signup-box'>
-    <div class='signup-logo'><img src="{% static 'img/index_logo.png' %}" alt=""></div>
+    <div class='signup-logo'>
+      <a href="{% url 'accounts:login' %}"><img src="{% static 'img/index_logo.png' %}" alt=""></a>
+    </div>
     <form class='signup-form' action="{% url 'accounts:signup' %}" method="POST" enctype = 'multipart/form-data'>
       {% csrf_token %}
       {% for field in form %}
@@ -15,13 +17,7 @@
         {{ field }}
       </div> 
       {% endfor %}
-      {% comment %} {{ form.username }}
-      {{ form.passowrd1 }}
-      {{ form.password2 }}
-      {{ form.nickname }}
-      {{ form.email }}
-      {{ form.image }} {% endcomment %}
-      <input type="submit" class='signup-btn' value="회원가입">
+      <button class='signup-btn'>회원가입</button>
     </form>
   </div>
 </div>

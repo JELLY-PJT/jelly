@@ -74,7 +74,7 @@ class VoteForm(forms.ModelForm):
         ),
     )
     is_overlap = forms.BooleanField(
-        label='중복 투표',
+        label='복수 선택',
         widget=forms.CheckboxInput(
             attrs={
                 'class': 'vote-checkform',

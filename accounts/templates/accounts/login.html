@@ -63,7 +63,16 @@
       <button class='login-btn'>로그인</button>
     </form>
     <a class='login-btn' href="{% url 'accounts:signup' %}">회원가입</a>
-    {% comment %} <div class='bar'></div> {% endcomment %}
+    <div class='bar'></div>
+    {% comment %} 소셜로그인 {% endcomment %}
+    {% load socialaccount %}
+    <a href="{% provider_login_url 'kakao' method='oauth2' %}" class="social--login">
+      카카오로그인
+    </a>
+    <a href="{% provider_login_url 'google' method='oauth2' %}" class="social--login">
+      구글로그인
+    </a>
+    
   </div>
   </div>
 </div>
