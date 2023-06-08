@@ -20,6 +20,18 @@ class GroupForm(forms.ModelForm):
 
 
 class PostForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # tailwind 클래스 추가
+        self.fields["content"].label = ''
+        self.fields["content"].widget.attrs['class'] = "block px-6 py-4 w-full text-lg text-gray-900 rounded-md border border-gray-300 focus:ring-[var(--color-main-light)] focus:border-[var(--color-main-light)]"
+        self.fields["content"].widget.attrs['rows'] = "15"
+        # self.fields["content"].widget.attrs['placeholder'] = '내용을 입력하세요'
+        self.fields["title"].widget.attrs['class'] = "block py-2.5 px-1 mb-8 w-full text-2xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[var(--color-main-light)] peer"
+        self.fields["title"].widget.attrs['placeholder'] = '제목을 입력하세요'
+        self.fields["title"].label = ''
+
+
     class Meta:
         model = Post
         fields = ('title', 'content',)
