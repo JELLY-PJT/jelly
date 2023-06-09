@@ -69,11 +69,22 @@
                 {% else %}
                   <a href="{% url 'groups:member_withdraw' group.pk %}" class="block main-btn delete">그룹 나가기</a>
                 {% endif %}
-                </div>
+              </div>
             </div>
           </div>
           <div class="group-intro">
             <p>{{ group.intro }}</p>
+          </div>
+          <!-- 그룹 레벨 & 경험치 이미지 -->
+          <div>
+            <div>
+              <img src="/static/{{ level.image }}" alt="그룹 레벨 이미지">
+              <p>{{ level.name }} 단계</p>
+            </div>
+            <div>
+              <img src="{% static 'img/test_jelly.jpg' %}" alt="젤리 경험치">
+              <p>+10</p>
+            </div>
           </div>
         </div>
       </div>
@@ -352,12 +363,14 @@
                             <input type="submit" value="공지 {% if writing.is_notice %}취소{% else %}등록{% endif %}" class="w-full text-start">
                           </form>
                         </li>
-                        <li class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                          <!-- 투표 수정 버튼 -->
-                          <button class="vote-update w-full text-start" data-vote-id="{{ writing.pk }}" data-modal-target="vote-update-modal-{{ writing.pk }}" data-modal-toggle="vote-update-modal-{{ writing.pk }}" type="button">
-                            수정
-                          </button>
-                        </li>
+                        {% if not writing.is_end %}
+                          <li class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                            <!-- 투표 수정 버튼 -->
+                            <button class="vote-update w-full text-start" data-vote-id="{{ writing.pk }}" data-modal-target="vote-update-modal-{{ writing.pk }}" data-modal-toggle="vote-update-modal-{{ writing.pk }}" type="button">
+                              수정
+                            </button>
+                          </li>
+                        {% endif %}
                         <li class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">
                           <!-- 투표 삭제 버튼 -->
                           <form action="{% url 'groups:vote_delete' group.pk writing.pk %}" method="POST">
