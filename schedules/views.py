@@ -1,31 +1,27 @@
+from schedules.models import *
+from schedules.serializers import *
 """
-for MVT pattern
+for authentication and permissions
+"""
+from rest_framework import permissions
+"""
+for query & logic
+"""
+from django.db.models import Q
+from rest_framework import viewsets
+"""
+for response
 """
 from django.shortcuts import render, redirect
-from .models import *
-"""
-for DRF viewsets
-"""
-from rest_framework import viewsets
-from django.db.models import Q
-from .serializers import *
-"""
-for view based authentication scheme
-"""
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import permissions
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
-from rest_framework.views import APIView
+
 
 # Create your views here.
 """
 lookups keyword : field__lookuptype=value
 """
 
+# '~/schedules/calendars'
 class UserCalendarViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CalendarSerializer
@@ -37,14 +33,16 @@ class UserCalendarViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
         return queryset
 
+#'~/schedules/calendars/<int:calendar_id>/schedules'
 class CalendarScheduleViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ScheduleSerializer
     def get_queryset(self):
         """
-        현재 calendar의 모든 schedule을 list
+        해당 calendar의 모든 schedule을 list
         """
         q = self.kwargs
+        user = self.request.user
         calendar = Calendar.objects.get(id=q['calendar_id'])
         user_calendar_set = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
         if calendar in user_calendar_set:
@@ -53,11 +51,17 @@ class CalendarScheduleViewSet(viewsets.ModelViewSet):
             queryset = None
         return queryset
 
+    def perform_create(self, serializer):
+        serializer.save(calendar_id=self.kwargs['calendar_id'])
+
+
+# superuser only
 class ScheduleViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer    
 
+# superuser only
 class CalendarViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Calendar.objects.all()
