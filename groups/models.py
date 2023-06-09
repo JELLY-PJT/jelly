@@ -20,6 +20,7 @@ class Group(models.Model):
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
     calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_group')
+
     def group_image_path(instance, filename):
         return f'groups/{instance.name}_{instance.pk}/{filename}'
     
@@ -28,6 +29,7 @@ class Group(models.Model):
                                     format='JPEG',
                                     options={'quality': 100})
     intro = models.CharField(max_length=500)
+    exp = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     objects = GroupManager()

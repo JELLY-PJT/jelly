@@ -34,6 +34,7 @@ def group_create(request):
         group = form.save(commit=False)
         group.chief = request.user
         group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
+        group.exp = 1
         group.save()
         group.calendar.create() # greate group calendar
         group.group_users.add(request.user)
@@ -61,6 +62,8 @@ def group_join(request, group_pk):
         try:
             ph().verify(group.password, password)
             group.group_users.add(request.user)
+            group.exp += 1
+            group.save()
             return redirect('groups:group_detail', group.pk)
         except:
             messages.error(request, '암호가 일치하지 않습니다.')
@@ -70,12 +73,31 @@ def group_join(request, group_pk):
         return render(request, 'groups/group_join.html', {'group': group,})
 
 
+# 그룹 레벨 이름 & 이미지
+LEVEL = {
+    1: {'name': '테스트', 'image': 'img/test_level.png'},
+    # 1: {'name': '새싹', 'img': '-'},
+    2: {'name': '잔디', 'img': '-'},
+    3: {'name': '나무', 'img': '-'},
+    4: {'name': '개화', 'img': '-'},
+    5: {'name': '열매', 'img': '-'},
+    6: {'name': '반달곰', 'img': '-'},
+    7: {'name': '판다', 'img': '-'},
+    8: {'name': '레서판다', 'img': '-'},
+    9: {'name': '유니콘', 'img': '-'},
+    10: {'name': '뿔 달린 유니콘', 'img': '-'},
+    11: {'name': '날개 달린 유니콘', 'img': '-'},
+}
+
 # 그룹 페이지 조회
 @login_required
 def group_detail(request, group_pk):
     group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
+    
+    # 그룹 레벨
+    level = LEVEL[group.exp//10 + 1]
     
     # 공지로 등록된 post, vote 조회
     noticed_post = Post.objects.filter(group=group, is_notice=True)
@@ -102,6 +124,7 @@ def group_detail(request, group_pk):
 
     context = {
         'group': group,
+        'level': level,
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
@@ -253,6 +276,9 @@ def post_create(request, group_pk):
             # 다중 이미지 저장
             for image in images:
                 PostImage.objects.create(post=post, image=image)
+
+            group.exp += 1
+            group.save()
             return redirect('groups:post_detail', group.pk, post.pk)
     else:
         form = PostForm()
@@ -418,10 +444,12 @@ def comment_create(request, group_pk, post_pk):
         comment.user = request.user
         comment.post = post
         comment.save()
+        group.exp += 1
+        group.save()
         return redirect('groups:post_detail', group.pk, post.pk)
 
 
-# 댓글 수정(비동기처리 가정하고 만들었습니다)
+# 댓글 수정
 @login_required
 def comment_update(request, group_pk, post_pk, comment_pk):
     group = Group.objects.get(pk=group_pk)
@@ -436,7 +464,6 @@ def comment_update(request, group_pk, post_pk, comment_pk):
             updated_comment = form.save(commit=False)
             updated_comment.save()
 
-        # 여기서 ajax로 데이터 받아서 저장하고 context에 담아 Jsonresponse반환?
         context = {
             'content': updated_comment.content,
         }
@@ -498,6 +525,8 @@ def vote_create(request, group_pk):
         vote.is_notice = False
         vote.save()
         vote.hits.add(request.user)
+        group.exp += 1
+        group.save()
 
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)

@@ -136,6 +136,8 @@ def share(request, group_pk, diary_pk):
         return redirect('diaries:detail', diary_pk)
     
     diary_share = DiaryShare.objects.create(group=group, diary=diary)
+    group.exp += 1
+    group.save()
     return redirect('diaries:group_detail', group_pk, diary_pk)
 
 
@@ -188,6 +190,8 @@ def comment_create(request, group_pk, diary_pk):
             comment.share = diary_share
             comment.user = request.user
             comment.save()
+            group.exp += 1
+            group.save()
             messages.success(request, "댓글이 작성되었습니다.")
             # return JsonResponse({'success': True})
 
