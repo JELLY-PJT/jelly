@@ -26,19 +26,28 @@ from rest_framework.views import APIView
 lookups keyword : field__lookuptype=value
 """
 
-# class UserCalendarList(generics.ListAPIView):
-#     authentication_classes = [SessionAuthentication, BasicAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = CalendarSerializer
-    
-#     def get_queryset(self):
-#         """
-#         현재 로그인한 user의 모든 calendar를 list
-#         """
-#         user = self.request.user
-#         queryset = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
-#         return queryset
+class UserCalendarViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CalendarSerializer
+    def get_queryset(self):
+        """
+        현재 로그인한 user의 모든 calendar를 list
+        """
+        user = self.request.user
+        queryset = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
+        return queryset
 
+class CalendarScheduleViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ScheduleSerializer
+    def get_queryset(self):
+        """
+        현재 calendar의 모든 schedule을 list
+        """
+        q = self.kwargs
+        calendar = Calendar.objects.get(id=q['calendar_id'])
+        queryset = calendar.schedules.all()
+        return queryset
 
 class ScheduleViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
@@ -49,15 +58,3 @@ class CalendarViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
-
-
-class UserCalendarViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ScheduleSerializer
-    def get_queryset(self):
-        """
-        현재 로그인한 user의 모든 calendar를 list
-        """
-        user = self.request.user
-        queryset = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
-        return queryset

@@ -7,12 +7,19 @@ from django.utils import timezone
 from django.contrib.contenttypes import fields
 
 
+class GroupManager(models.Manager):
+    def create(self, **kwargs):
+        group = super().create(**kwargs)
+        group.calendar.create()
+        return group
+
+
 class Group(models.Model):
     chief = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     group_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_groups')
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
-    calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_user')
+    calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_group')
     def group_image_path(instance, filename):
         return f'groups/{instance.name}_{instance.pk}/{filename}'
     
@@ -22,6 +29,8 @@ class Group(models.Model):
                                     options={'quality': 100})
     intro = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = GroupManager()
 
     def __str__(self):
         return self.name

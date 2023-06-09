@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import UserManager
 from django.utils import timezone
 # Create your models here.
 from django.contrib.contenttypes.models import ContentType
@@ -6,15 +7,13 @@ from django.db.models import Q
 from django.contrib.contenttypes import fields
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from groups.models import Group
 from django.contrib.contenttypes import fields
-from django.contrib.auth.models import UserManager
 
 
 # 캘린더
 class Calendar(models.Model):
-    owner_content_type = models.ForeignKey(ContentType, limit_choices_to=Q(app_label='accounts', model='user') | Q(app_label='groups', model='group'), on_delete=models.DO_NOTHING)
-    owner_object_id = models.PositiveIntegerField()
+    owner_content_type = models.ForeignKey(ContentType, editable=False, limit_choices_to=Q(app_label='accounts', model='user') | Q(app_label='groups', model='group'), on_delete=models.DO_NOTHING)
+    owner_object_id = models.PositiveIntegerField(editable=False)
     owner = fields.GenericForeignKey('owner_content_type', 'owner_object_id')
     color = models.CharField(
         max_length=6, 
@@ -22,45 +21,10 @@ class Calendar(models.Model):
     )
 
     def __str__(self):
-        return f'{self.id} {self.get_title()}'
+        return f'{self.owner_content_type.name} "{self.owner}"의  캘린더'
     
     class Meta:
         indexes = [models.Index(fields=["owner_content_type", "owner_object_id"]),]
-
-    def get_owner(self):
-        if self.owner_content_type_id == 1:
-            try:
-                owner = get_user_model().objects.get(pk=self.owner_object_id)
-                return owner
-            except:
-                return None
-             
-        elif self.owner_content_type_id == 2:
-            try:
-                owner = Group.objects.get(pk=self.owner_object_id)
-                return owner
-            except:
-                return None
-        else:
-            return None
-        
-    def get_title(self):
-        if self.owner_content_type_id == 1:
-            try:
-                owner = get_user_model().objects.get(pk=self.owner_object_id)
-                return f'{owner.username}의 개인 캘린더'
-            except:
-                return None
-             
-        elif self.owner_content_type_id == 2:
-            try:
-                owner = Group.objects.get(pk=self.owner_object_id)
-                return f'{owner.name}의 그룹 캘린더'
-            except:
-                return None
-        else:
-            return None
-
 
 # 스케쥴
 class Schedule(models.Model):
@@ -74,7 +38,7 @@ class Schedule(models.Model):
 
     calendar = models.ForeignKey('schedules.Calendar', on_delete=models.CASCADE, related_name='schedules') # 일정 소속 캘린더
     attendee = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    
+
     created_at = models.DateTimeField(auto_now_add=True) # 일정 생성시각
     updated_at = models.DateTimeField(auto_now=True) # 일정 수정시각
 
@@ -92,26 +56,7 @@ class Schedule(models.Model):
 
         return f'({startdate}) {self.summary[:32]}'
     
-
-class CustomUserManager(UserManager):
-    use_in_migrations = True
-
-    def _create_user(self, username, email, password, **extra_fields):
-        """
-        Create and save a user with the given username, email, and password.
-        """
-        user = super()._create_user(self, username, email, password, **extra_fields)
-        user.calendar.create()
-        return user
-    
-class CustomGroupManager(UserManager):
-    use_in_migrations = True
-
-    def _create_user(self, username, email, password, **extra_fields):
-        """
-        Create and save a user with the given username, email, and password.
-        """
-        user = super()._create_user(self, username, email, password, **extra_fields)
-        user.calendar.create()
-        return user
+    @property
+    def preview(self):
+        return f'{self.start} ~ {self.end} : {self.summary[:32]}'
     
