@@ -48,3 +48,23 @@ votePerformForms.forEach(form => {
     })
   })
 })
+
+// vote 조회수 
+const voteHitsForm = document.querySelectorAll('#vote-hits')
+console.log(voteHitsForm)
+voteHitsForm.forEach(form => {
+  form.addEventListener('click', function(event) {
+    event.preventDefault()
+    const voteId = form.dataset.voteId
+    const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value
+    axios({
+      method: 'POST',
+      url: `/groups/votes/${voteId}/hits/`,
+      headers: {'X-CSRFToken': csrftoken,}
+    })
+      .then((response) => {
+        const voteHitsCount = document.getElementById(`${voteId}-hits-count`)
+        voteHitsCount.textContent = response.data.vote_hits
+      })
+  })
+})

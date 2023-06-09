@@ -11,7 +11,6 @@ updateBtn.forEach(btn => {
     })
       .then((response) => {
         const titleInput = updateForm.querySelector('#id_title')
-        console.log(titleInput)
         titleInput.value = response.data.title
         const deadlineInput = updateForm.querySelector('#id_deadline')
         let deadline = new Date(response.data.deadline)

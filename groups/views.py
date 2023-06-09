@@ -455,6 +455,8 @@ def comment_delete(request, group_pk, post_pk, comment_pk):
 
 def comment_like(request, group_pk, post_pk, comment_pk):
     group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
     comment = PostComment.objects.get(pk=comment_pk)
 
     if comment.like_users.filter(pk=request.user.pk).exists():
@@ -492,6 +494,7 @@ def vote_create(request, group_pk):
         vote.group = group
         vote.is_notice = False
         vote.save()
+        vote.hits.add(request.user)
 
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)
@@ -629,3 +632,15 @@ def notice_vote(request, group_pk, vote_pk):
         else:
             messages.info(request, '공지사항은 3개까지 등록 가능합니다. 기존의 공지를 삭제하고 다시 등록해주세요.')
     return redirect('groups:group_detail', group_pk)
+
+
+# vote 조회수
+@login_required
+def vote_hits(request, vote_pk):
+    vote = Vote.objects.get(pk=vote_pk)
+    if not vote.hits.filter(pk=request.user.pk).exists():
+        vote.hits.add(request.user)
+    context = {
+        'vote_hits': vote.hits.count()
+    }
+    return JsonResponse(context)
