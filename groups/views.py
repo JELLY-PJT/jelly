@@ -55,14 +55,17 @@ def group_join(request, group_pk):
         return redirect('groups:group_detail', group.pk)
 
     if request.method == 'POST':
-        password = request.POST.get('password')
+        jsonResponse = json.loads(request.body.decode('utf-8'))
+        password = jsonResponse.get('password')
+
         try:
             ph().verify(group.password, password)
             group.group_users.add(request.user)
             return redirect('groups:group_detail', group.pk)
         except:
             messages.error(request, '암호가 일치하지 않습니다.')
-            return render(request, 'groups/group_join.html', {'group': group,})
+            # return render(request, 'groups/group_join.html', {'group': group,})
+            return JsonResponse({'message': '암호가 일치하지 않습니다.'})
     else:
         return render(request, 'groups/group_join.html', {'group': group,})
 
