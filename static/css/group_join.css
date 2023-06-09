@@ -1,0 +1,16 @@
+.wrapper {
+  margin-bottom: 2rem;
+}
+
+.header-top {
+  gap: 1rem;
+}
+
+.join {
+  max-width: 500px;
+}
+
+.main-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1.125rem;
+}
