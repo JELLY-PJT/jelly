@@ -8,14 +8,20 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CalendarSerializer(serializers.ModelSerializer):
+    owner = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='name'
+    )
     schedules = serializers.SlugRelatedField(
         many=True,
         read_only=True,
         slug_field='preview'
     )
+    color = serializers.CharField()
+
     class Meta:
         model = Calendar
-        fields =  '__all__'
+        fields =  ['id', 'owner', 'color', 'schedules']
 
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:

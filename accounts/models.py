@@ -25,6 +25,10 @@ class User(AbstractUser):
     """
     calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_user')
     objects = UserManager()
+    @property
+    def name(self):
+        return f'{self.username}'
+
 
 
 

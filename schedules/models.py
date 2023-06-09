@@ -22,13 +22,15 @@ class Calendar(models.Model):
 
     def __str__(self):
         return f'{self.owner_content_type.name} "{self.owner}"의  캘린더'
+    @property
+    def belongs_to(self):
+        return f'{self.owner}'
     
     class Meta:
         indexes = [models.Index(fields=["owner_content_type", "owner_object_id"]),]
 
 # 스케쥴
 class Schedule(models.Model):
-
     start = models.DateTimeField(default=timezone.now) # 시작 일시
     end = models.DateTimeField(blank=True, null=True) # 종료 일시
 
@@ -44,7 +46,6 @@ class Schedule(models.Model):
 
 
     # # Month and day names.  For localized versions, see the calendar module.
-
     # _DAYNAMES = [None, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
     def __str__(self):
@@ -60,3 +61,7 @@ class Schedule(models.Model):
     def preview(self):
         return f'{self.start} ~ {self.end} : {self.summary[:32]}'
     
+"""
+scheduleIcalString += "DTSTART;TZID=Asia/Seoul:20161116T190000\n"     # 시작 일시
+scheduleIcalString += "DTEND;TZID=Asia/Seoul:20161116T193000\n"       # 종료 일시
+"""
