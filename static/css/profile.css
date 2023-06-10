@@ -267,7 +267,6 @@ figure.image {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  max-width: 750px;
 }
 
 .post-title {
@@ -310,7 +309,6 @@ figure.image {
 }
 
 .reaction {
-  max-width: 800px;
   display: inline-flex;
   justify-content: end;
   align-items: end;

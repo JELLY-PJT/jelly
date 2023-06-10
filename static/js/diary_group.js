@@ -1,3 +1,12 @@
+// 댓글 위치로 이동하는 js
+const scrollBtn = document.querySelector('.scroll')
+const scrollTarget = document.querySelector('.bottom').offsetTop
+
+scrollBtn.addEventListener('click', function() {
+  window.scrollTo({left: 0, top: scrollTarget, behavior: 'smooth'})
+})
+
+
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
 
 

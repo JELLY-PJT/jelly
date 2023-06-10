@@ -37,7 +37,9 @@ textarea[name='content']:focus {
 
 .btns {
   display: flex;
+  justify-content: space-between;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .main-btn {
@@ -52,4 +54,19 @@ textarea[name='content']:focus {
 
 .back:hover {
   background-color: #ababab;
+}
+
+.select.main-btn {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background-color: #1f2937;
+  cursor: pointer;
+}
+
+.select.main-btn:hover {
+  background-color: #161d27;
+}
+
+.selected {
+  border: 5px solid #1f2937;
 }

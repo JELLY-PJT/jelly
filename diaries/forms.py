@@ -10,6 +10,7 @@ class DiaryForm(forms.ModelForm):
         self.fields["title"].widget.attrs['class'] = "block py-2.5 px-1 mb-8 w-full text-2xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[var(--color-main-light)] peer"
         self.fields["title"].widget.attrs['placeholder'] = '제목을 입력하세요'
         self.fields["title"].label = ''
+        self.fields["thumbnail"].label = ''
 
         
     class Meta:
