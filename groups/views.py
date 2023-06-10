@@ -169,6 +169,7 @@ def group_update(request, group_pk):
         context = {
             'form': form,
         }
+        messages.error(request, '정보를 정확하게 입력해주세요.')
         return render(request, 'groups/group_setting.html', context)
 
 
@@ -280,9 +281,10 @@ def post_create(request, group_pk):
             group.exp += 1
             group.save()
             return redirect('groups:post_detail', group.pk, post.pk)
+        else:
+            messages.error(request, '내용을 올바르게 입력해주세요.')
     else:
         form = PostForm()
-        # post_image_form = PostImageForm()
     context = {
         'group': group,
         'form': form,
@@ -361,6 +363,8 @@ def post_update(request, group_pk, post_pk):
             for image in images:
                 PostImage.objects.create(post=post, image=image)
             return redirect('groups:post_detail', group.pk, post.pk)
+        else:
+            messages.error(request, '내용을 올바르게 입력해주세요.')
     else:
         post_form = PostForm(instance=post)
         image_delete_form = PostImageDeleteForm(instance=post)
@@ -446,7 +450,9 @@ def comment_create(request, group_pk, post_pk):
         comment.save()
         group.exp += 1
         group.save()
-        return redirect('groups:post_detail', group.pk, post.pk)
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
+    return redirect('groups:post_detail', group.pk, post.pk)
 
 
 # 댓글 수정
@@ -530,7 +536,8 @@ def vote_create(request, group_pk):
 
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)
-    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
     return redirect('groups:group_detail', group.pk)
 
 
@@ -580,7 +587,8 @@ def add_option(request, group_pk, vote_pk):
     if option_valid:
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)
-    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
     return redirect('groups:group_detail', group.pk)
 
 
@@ -627,7 +635,8 @@ def vote_update(request, group_pk, vote_pk):
         # input 받은 선택지로 다시 저장
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)
-    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
     return redirect('groups:group_detail', group.pk)
 
 

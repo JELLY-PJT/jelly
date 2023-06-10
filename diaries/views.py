@@ -44,6 +44,8 @@ def create(request):
                         diary.thumbnail = first_img_url
             diary.save()
             return redirect('diaries:detail', diary.pk)
+        else:
+            messages.error(request, '내용을 올바르게 입력해주세요.')
     else:
         form = DiaryForm()
     context = {
@@ -72,6 +74,8 @@ def update(request, diary_pk):
             if form.is_valid():
                 form.save()
                 return redirect('diaries:detail', diary.pk)
+            else:
+                messages.error(request, '내용을 올바르게 입력해주세요.')
         else:
             form = DiaryForm(instance=diary)
         context = {
@@ -195,7 +199,6 @@ def comment_create(request, group_pk, diary_pk):
             comment.save()
             group.exp += 1
             group.save()
-            messages.success(request, "댓글이 작성되었습니다.")
             # return JsonResponse({'success': True})
 
         return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
@@ -224,7 +227,6 @@ def comment_update(request, group_pk, diary_pk, comment_pk):
             if form.is_valid():
                 updated_comment = form.save(commit=False)
                 updated_comment.save()
-                messages.success(request, "댓글이 수정되었습니다.")
 
                 context = {
                     'content': updated_comment.comment,
@@ -251,7 +253,6 @@ def comment_delete(request, group_pk, diary_pk, comment_pk):
         diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
         if request.user == comment.user:
             comment.delete()
-            messages.success(request, "댓글이 삭제되었습니다.")
         return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
     else:
         messages.error(request, "올바른 접근이 아닙니다.")
