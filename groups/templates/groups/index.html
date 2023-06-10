@@ -2,7 +2,6 @@
 {% load static %}
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
-    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/__search.css' %}" /> {% endcomment %}
     {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/__calendar.css' %}" /> {% endcomment %}
     {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/testing.css' %}" />   {% endcomment %}
 {% endblock css %}
@@ -28,8 +27,7 @@
     {% comment %} 그룹 생성 모달 {% endcomment %}
     {% include 'groups/index/__group_create_modal.html' %}
     
-    {% comment %} 그룹 검색 결과 레이어 {% endcomment %}
-    {% comment %} {% include 'groups/index/__search.html' %} {% endcomment %}
+<script src="{% static 'js/index.js' %}"></script>
 
 <!-- 그룹 생성 실패 시 alert -->
 {% if messages %}
@@ -37,5 +35,6 @@
   <script>alert('{{ message }}')</script>
 {% endfor %}
 {% endif %}
+
 
 {% endblock content %}

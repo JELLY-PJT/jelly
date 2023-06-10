@@ -22,9 +22,6 @@ class Calendar(models.Model):
 
     def __str__(self):
         return f'{self.owner_content_type.name} "{self.owner}"의  캘린더'
-    @property
-    def belongs_to(self):
-        return f'{self.owner}'
     
     class Meta:
         indexes = [models.Index(fields=["owner_content_type", "owner_object_id"]),]
@@ -53,7 +50,7 @@ class Schedule(models.Model):
                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         
         startdate = f'{_MONTHNAMES[self.start.month]} {self.start.day}'
-        time = [f'{self.start.time}' , f'{self.end.time}']
+        # time = [f'{self.start.time}' , f'{self.end.time}']
 
         return f'({startdate}) {self.summary[:32]}'
     

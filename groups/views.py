@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Group, Post, PostImage, PostComment, PostEmote, Vote, VoteSelect
+from .serializers import GroupSerializer
 from diaries.models import Diary, DiaryShare
 from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm, VoteForm
 from django.http import JsonResponse
@@ -676,3 +677,16 @@ def vote_hits(request, vote_pk):
         'vote_hits': vote.hits.count()
     }
     return JsonResponse(context)
+
+
+# group index 의 search function
+@login_required
+def group_search(request):
+    if request.method == 'GET':
+        q = request.GET['q'].strip()
+        if q == "" or None:
+            groups = request.user.user_groups.all()
+        else:
+            groups = request.user.user_groups.filter(name__icontains=q)
+        serializer = GroupSerializer(groups, many=True)
+        return JsonResponse(serializer.data, safe=False)
