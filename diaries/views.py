@@ -98,6 +98,9 @@ def group_detail(request, group_pk, diary_pk):
     diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
     comments = diary_share.diarycomment_set.all()
 
+    if not diary.hit.filter(pk=request.user.pk).exists():
+        diary.hit.add(request.user)
+
     emotions = []
     for emotion in EMOTIONS:
         label = emotion['label']

@@ -93,7 +93,7 @@
                   </div>
                   <p class="user-name">{{ person.nickname }}</p>
                 </div>
-                <a href="{% url 'diaries:detail' diary.pk %}" class="post-link">
+                <a href="{% url 'diaries:detail' diary.pk %}" class="post-link" {% if not diary.thumbnail %}style="max-width: 800px;"{% endif %}>
                   <div class="post-content">
                     <h3 class="post-title">{{ diary.title }}</h3>
                     <div class="meeting">
@@ -102,12 +102,11 @@
                     </div>
                     <p class="post-detail">{{ diary.content|striptags }}</p>
                   </div>
-                  <div class="image post-img">
-                    <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-                    <div class="more-img">
-                      <p>+2</p>
+                  {% if diary.thumbnail %}
+                    <div class="image post-img">
+                      <img src="{{ diary.thumbnail }}" alt="">
                     </div>
-                  </div>
+                  {% endif %}
                 </a>
               </article>
             {% endfor %}
@@ -202,14 +201,14 @@
                   <p class="user-name">{{ person }}</p>
                 </div>
                 <a href="{% url 'diaries:group_detail' shared_diary.group.pk shared_diary.diary.pk %}" class="post-link">
-                  <div class="post-content">
+                  <div class="post-content" {% if shared_diary.diary.thumbnail %}style="max-width: 750px;"{% endif %}>
                     <h3 class="post-title">{{ shared_diary.diary.title }}</h3>
                     <div class="meeting">
                       <p class="meeting-name">{{ shared_diary.group.name }}</p>
                       <p class="meeting-date">{{ shared_diary.created_string }}</p>
                     </div>
                     <p class="post-detail">{{ shared_diary.diary.content|striptags }}</p>
-                    <div class="reaction">
+                    <div class="reaction" {% if shared_diary.diary.thumbnail %}style="max-width: 800px;"{% endif %}>
                       <div class="reaction-item">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
@@ -224,12 +223,11 @@
                       </div>
                     </div>
                   </div>
-                  <div class="image post-img">
-                    <img src="https://images.unsplash.com/photo-1564419320461-6870880221ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="">
-                    <div class="more-img">
-                      <p>+2</p>
+                  {% if shared_diary.diary.thumbnail %}
+                    <div class="image post-img">
+                      <img src="{{ shared_diary.diary.thumbnail }}" alt="">
                     </div>
-                  </div>
+                  {% endif %}
                 </a>
               </article>
             {% endfor %}

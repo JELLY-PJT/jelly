@@ -16,6 +16,11 @@
 {% block content %}
 <div class="wrapper">
   <div class="content">
+    <div class="hidden absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white rounded-full -top-2 -right-2 dark:border-gray-900" id="check">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#F05252" class="w-6 h-6">
+        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+      </svg>      
+    </div>
     <form action="{% block url %}{% url 'diaries:create' %}{% endblock url %}" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.media }}
@@ -26,11 +31,13 @@
       </div>
       {% endfor %}
       <div class="btns">
-        <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
-        <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
+        <div id="select-thumbnail-btn" class="main-btn select">썸네일 선택하기</div>
+        <div class="flex gap-4">
+          <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
+          <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
+        </div>
       </div>
     </form>
-    <button id="select-thumbnail-btn">썸네일 선택하기</button>
   </div>
 </div>
 {% endblock content %}
@@ -38,33 +45,5 @@
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-<script>
-  const selectThumbnailBtn = document.getElementById('select-thumbnail-btn')
-  const thumbnailInput = document.getElementById('thumbnail_input')
-  let images = null
-  let selectedImage = null
-
-  // '썸네일 선택하기' 버튼 클릭 시 이미지 선택 기능 활성화
-  selectThumbnailBtn.addEventListener('click', function() {
-    images = document.querySelectorAll('.ck-editor__main img')
-    // 이미지 클릭 이벤트 핸들러 등록
-    for (var i = 0; i < images.length; i++) {
-      images[i].addEventListener('click', selectImageOnce)
-    }
-  })
-  // 이미지 클릭 시 선택 처리
-  function selectImageOnce() {
-    if (selectedImage) {
-      selectedImage.removeAttribute('id')
-    }
-    this.id = 'thumbnail'
-    selectedImage = this
-    thumbnailInput.setAttribute('value', `${this.src}`)
-
-    for (var i = 0; i < images.length; i++) {
-      images[i].removeEventListener('click', selectImageOnce)
-    }
-  }
-
-</script>
+<script src="{% static 'js/diary_create.js' %}"></script>
 {% endblock script %}
