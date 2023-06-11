@@ -130,7 +130,6 @@ LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'Asia/Seoul'
 
-
 USE_I18N = True
 
 USE_L10N = True
@@ -335,19 +334,12 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.DjangoModelPermissions'
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-    ],
-    'UNAUTHENTICATED_USER': [
-        'django.contrib.auth.models.AnonymousUser',
-    ],
-    'UNAUTHENTICATED_TOKEN': None,
     'UNICODE_JSON': True,
     'COMPACT_JSON': False,
 }
