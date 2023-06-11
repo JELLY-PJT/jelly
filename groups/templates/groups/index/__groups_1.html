@@ -3,7 +3,7 @@
   <div class="row menu">
     <div id="group-search-bar" class="menu-item">
       <form action"#" method="get">
-        <input type="search" placeholder="{{ user }} : {{ groups|length }} 그룹">
+        <input id="search-input" type="search" placeholder="{{ user }} : {{ groups|length }} 그룹">
       </form>
     </div>
       <button id="group-create-button"
@@ -38,22 +38,3 @@
       </button> {% endcomment %}
   </div>
   </div>
-
-
-{% comment %}
-<script>
-
-  function handleResize() {
-    updateIconViewBox();
-  }
-
-  function handleLoad() {
-    updateIconViewBox();
-  }
-
-// 화면 로드 시 호출
-window.addEventListener('load', handleLoad);
-// 리사이징 이벤트 시 호출
-window.addEventListener('resize', handleResize);
-</script>
-{% endcomment %}

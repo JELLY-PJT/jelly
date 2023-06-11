@@ -30,8 +30,9 @@ class UserCalendarViewSet(viewsets.ReadOnlyModelViewSet):
         현재 로그인한 user의 모든 calendar를 list
         """
         user = self.request.user
-        queryset = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
-        return queryset
+        self.queryset = Calendar.objects.filter(id__in=user.permitted_calendar_id)
+        return super().get_queryset()
+
 
 #'~/schedules/calendars/<int:calendar_id>/schedules'
 class CalendarScheduleViewSet(viewsets.ModelViewSet):
@@ -41,15 +42,13 @@ class CalendarScheduleViewSet(viewsets.ModelViewSet):
         """
         해당 calendar의 모든 schedule을 list
         """
-        q = self.kwargs
-        user = self.request.user
-        calendar = Calendar.objects.get(id=q['calendar_id'])
-        user_calendar_set = Calendar.objects.filter(Q(owner_group__in=user.user_groups.all()) | Q(owner_user__exact=user))
-        if calendar in user_calendar_set:
-            queryset = calendar.schedules.all()
+        user, calendar_id = self.request.user, self.kwargs['calendar_id']
+
+        if calendar_id in user.permitted_calendar_id:
+            self.queryset = Calendar.objects.get(id=calendar_id).schedules.all()
         else:
-            queryset = None
-        return queryset
+            self.queryset = Schedule.objects.none() # empty queryset
+        return super().get_queryset()
 
     def perform_create(self, serializer):
         serializer.save(calendar_id=self.kwargs['calendar_id'])

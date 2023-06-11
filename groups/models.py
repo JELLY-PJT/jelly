@@ -10,7 +10,7 @@ from django.contrib.contenttypes import fields
 class GroupManager(models.Manager):
     def create(self, **kwargs):
         group = super().create(**kwargs)
-        group.calendar.create()
+        group._calendar.create()
         return group
 
 
@@ -19,7 +19,7 @@ class Group(models.Model):
     group_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_groups')
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
-    calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_group')
+    _calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_group')
 
     def group_image_path(instance, filename):
         return f'groups/{instance.name}_{instance.pk}/{filename}'
@@ -36,6 +36,10 @@ class Group(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def calendar(self):
+         return self._calendar.all()[0]
 
 
 class Post(models.Model):
@@ -174,3 +178,5 @@ class VoteSelect(models.Model):
     vote = models.ForeignKey(Vote, on_delete=models.CASCADE)
     select_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='selections')
     content = models.CharField(max_length=100)
+
+
