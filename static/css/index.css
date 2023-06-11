@@ -214,3 +214,7 @@ html {
   display: grid;
   grid-template-columns: 1fr;
 } */
+
+.footer-wrapper {
+  padding-left: 1.5rem;
+}

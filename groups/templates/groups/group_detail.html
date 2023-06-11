@@ -28,63 +28,73 @@
         <div class="image group-img">
           <img src={{ group.thumbnail.url }} alt="그룹 이미지">
         </div>
-        <div class="group-info">
-          <div class="header-top">
-            <h3 class="group-name">{{ group }}</h3>
-            <div class="flex item-center gap-4">
-              <button onclick="copyLink()" class="main-btn" id="invite-btn" data-group-id="{{ group.pk }}">초대하기</button>                
-              <button class="user main-btn" data-popover-target="popover-bottom" data-popover-placement="bottom"  data-popover-trigger="click" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" stroke-width="2" fill="black" class="w-6 h-6"><path d="M480-481q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5t127.921 44.694q31.301 14.126 50.19 40.966Q800-292 800-254v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm260-321q39 0 64.5-25.5T570-631q0-39-25.5-64.5T480-721q-39 0-64.5 25.5T390-631q0 39 25.5 64.5T480-541Zm0-90Zm0 411Z"/></svg>
-              </button>
-              <div data-popover id="popover-bottom" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
-                <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
-                  <h3 class="font-semibold text-gray-900">멤버</h3>
-                </div>
-                <div class="px-3 py-2 user-list space-y-4">
-                  {% for user in group.group_users.all %}
-                    <div class="flex items-center space-x-4">
-                      <div class="w-8 h-8 rounded-full">
-                        {% if user.image %}
-                          <img src="{{ user.image.url }}" alt="">
-                        {% else %}
-                          <img src="{% static 'img/blank_profile_img.png' %}" alt="">
-                        {% endif %}
+        <div class="flex flex-grow">
+          <div class="group-info">
+            <div class="header-top">
+              <h3 class="group-name">{{ group }}</h3>
+              <div class="flex item-center gap-4">
+                <button onclick="copyLink()" class="main-btn" id="invite-btn" data-group-id="{{ group.pk }}">초대하기</button>                
+                <button class="user main-btn" data-popover-target="popover-bottom" data-popover-placement="bottom"  data-popover-trigger="click" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" stroke-width="2" fill="black" class="w-6 h-6"><path d="M480-481q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5t127.921 44.694q31.301 14.126 50.19 40.966Q800-292 800-254v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm260-321q39 0 64.5-25.5T570-631q0-39-25.5-64.5T480-721q-39 0-64.5 25.5T390-631q0 39 25.5 64.5T480-541Zm0-90Zm0 411Z"/></svg>
+                </button>
+                <div data-popover id="popover-bottom" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
+                  <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
+                    <h3 class="font-semibold text-gray-900">멤버</h3>
+                  </div>
+                  <div class="px-3 py-2 user-list space-y-4">
+                    {% for user in group.group_users.all %}
+                      <div class="flex items-center space-x-4">
+                        <div class="w-8 h-8 rounded-full">
+                          {% if user.image %}
+                            <img src="{{ user.image.url }}" alt="">
+                          {% else %}
+                            <img src="{% static 'img/blank_profile_img.png' %}" alt="">
+                          {% endif %}
+                        </div>
+                        <div class="font-medium">
+                          <div>{{ user.nickname }}</div>
+                        </div>
                       </div>
-                      <div class="font-medium">
-                        <div>{{ user.nickname }}</div>
-                      </div>
-                    </div>
-                  {% endfor %}
+                    {% endfor %}
+                  </div>
                 </div>
-              </div>
-              <!-- 방장만 접근 가능한 그룹 설정 페이지 버튼 -->
-              <div>
-                {% if request.user == group.chief %}
-                  <a href="{% url 'groups:group_setting' group.pk %}" class="block main-btn user">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </a>
-                {% else %}
-                  <a href="{% url 'groups:member_withdraw' group.pk %}" class="block main-btn delete">그룹 나가기</a>
-                {% endif %}
+                <!-- 방장만 접근 가능한 그룹 설정 페이지 버튼 -->
+                <div>
+                  {% if request.user == group.chief %}
+                    <a href="{% url 'groups:group_setting' group.pk %}" class="block main-btn user">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </a>
+                  {% else %}
+                    <a href="{% url 'groups:member_withdraw' group.pk %}" class="block main-btn delete">그룹 나가기</a>
+                  {% endif %}
+                </div>
               </div>
             </div>
-          </div>
-          <div class="group-intro">
-            <p>{{ group.intro }}</p>
+            <div class="group-intro">
+              <p>{{ group.intro }}</p>
+            </div>
           </div>
           <!-- 그룹 레벨 & 경험치 이미지 -->
-          <div>
-            <div>
-              <img src="/static/{{ level.image }}" alt="그룹 레벨 이미지">
-              <p>{{ level.name }} 단계</p>
+          <div class="level flex items-center">
+            <div class="">
+              <div class="image character">
+                <img src="/static/{{ level.image }}" alt="그룹 레벨 이미지">
+              </div>
+              <div class="flex justify-between mt-2 mb-1">
+                <span class="text-base font-medium text-[var(--color-main-dark)]">{{ level.name }} 단계</span>
+                <span class="text-sm font-medium text-[var(--color-main-dark)]">{{ group.exp }}</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-1.5">
+                <div class="bg-[var(--color-main)] h-1.5 rounded-full" style="width: {% widthratio group.exp 1 10 %}%"></div>
+              </div>
             </div>
-            <div>
+            {% comment %} <div>
               <img src="{% static 'img/test_jelly.jpg' %}" alt="젤리 경험치">
               <p>+10</p>
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
       </div>
@@ -179,11 +189,11 @@
                   <p class="user-name">{{ writing.diary.user.nickname }}</p>
                 </div>
                 <a href="{% url 'diaries:group_detail' group.pk writing.diary.pk %}" class="post-link">
-                  <div class="post-content" {% if writing.postimage_set.all %}style="max-width: 750px;"{% endif %}>
+                  <div class="post-content" {% if writing.diary.thumbnail %}style="max-width: 750px;"{% endif %}>
                     <h3 class="post-title">{{ writing.diary.title }}</h3>
                     <div class="meeting">
                       <p class="meeting-name">모임 이름</p>
-                      <p class="meeting-date">{{ writing.created_string }}</p>
+                      <p class="meeting-date">{{ writing.created_string }} 공유</p>
                     </div>
                     <p class="post-detail">{{ writing.diary.content|striptags }}</p>
                     <div class="reaction" {% if writing.postimage_set.all %}style="max-width: 800px;"{% endif %}>
@@ -201,18 +211,11 @@
                       </div>
                     </div>
                   </div>
-                  {% comment %} {% if writing.postimage_set.all %}
+                  {% if writing.diary.thumbnail %}
                     <div class="image post-img">
-                      {% for image in writing.postimage_set.all|slice:":1" %}
-                        <img src="{{ image.image.url }}" alt="post 첫번째 사진">
-                      {% endfor %}
-                      {% if writing.postimage_set.all > 1 %}
-                        <div class="more-img">
-                          <p>+{{ writing.postimage_set.all|length|add:"-1" }}</p>
-                        </div>
-                      {% endif %}
+                      <img src="{{ writing.diary.thumbnail }}" alt="post 첫번째 사진">
                     </div>
-                  {% endif %} {% endcomment %}
+                  {% endif %}
                 </a>
               </article>
 
@@ -266,12 +269,13 @@
                     {% endif %}
                   </a>
                 </article>
+
               <!-- 투표 -->
               {% elif writing.get_model_name == 'vote' %}
                 <article class="post vote">
-                  <form action="{% url 'groups:vote_hits' writing.pk %}" method="POST" id="vote-hits" data-vote-id="{{ writing.pk }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
+                  <form action="{% url 'groups:vote_hits' writing.pk %}" method="POST" class="vote-hits" data-vote-id="{{ writing.pk }}">
                     {% csrf_token %}
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" stroke="gray"><path stroke-width="1" d="M180-80q-24 0-42-18t-18-42v-198l135-149 43 43-118 129h600L669-441l43-43 128 146v198q0 24-18 42t-42 18H180Zm0-60h600v-115H180v115Zm262-245L283-544q-19-19-17-42.5t20-41.5l212-212q16.934-16.56 41.967-17.28Q565-858 583-840l159 159q17 17 17.5 40.5T740-597L528-385q-17 17-42 18t-44-18Zm249-257L541-792 333-584l150 150 208-208ZM180-140v-115 115Z"/></svg>
                     <!-- 투표 수행 버튼 -->
                     <button data-modal-target="vote-modal-{{ writing.pk }}" data-modal-toggle="vote-modal-{{ writing.pk }}" class="vote-btn">
                       <h3 class="post-title">{{ writing.title }}</h3>
@@ -520,51 +524,28 @@
       </section>
 
       <section class="album-list" id="album" role="tabpanel" aria-labelledby="album-tab">
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
-        <div class="imgae album-img">
-          <a href="">
-            <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="">
-          </a>
-        </div>
+        {% for writing in writings %}
+          {% if writing.get_model_name == 'post' %}
+            {% if writing.postimage_set.all %}
+              <div class="imgae album-img">
+                <a href="{% url 'groups:post_detail' group.pk writing.pk %}">
+                  {% for image in writing.postimage_set.all|slice:":1" %}
+                    <img src="{{ image.image.url }}" alt="post 첫번째 사진">
+                  {% endfor %}
+                </a>
+              </div>
+            {% endif %}
+          {% endif %}
+        {% empty %}
+          <!-- 작성된 post가 하나도 없을 때-->
+          <div class="no-post">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-24 h-24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+            <h3>첫 게시글을 작성해보세요!</h3>
+          </div>
+        {% endfor %}
+        
       </section>
     </div>
   </div>

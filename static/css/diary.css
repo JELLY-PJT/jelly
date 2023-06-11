@@ -71,6 +71,7 @@ input[type=text] {
   gap: 0.75rem;
   cursor: pointer;
   color: var(--color-gray-dark);
+  font-size: 0.875rem;
 }
 
 .reaction-item {
@@ -271,7 +272,7 @@ input[type=text] {
 }
 
 .comment-wrapper {
-  margin: 1rem 0 0.5rem;
+  margin: 1rem 0 0;
 }
 
 .comment-area {
