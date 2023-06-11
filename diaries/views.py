@@ -134,6 +134,31 @@ def group_detail(request, group_pk, diary_pk):
     return redirect('diaries:index')
 
 
+# 그룹 레벨 이름 & 이미지
+LEVEL = {
+    1: {'name': '새싹', 'img': 'img/group_level/lv1_sprout.png', 'levelup_standard': 10},
+    2: {'name': '잔디', 'img': 'img/group_level/lv2_grass.png', 'levelup_standard': 30},
+    3: {'name': '나무', 'img': 'img/group_level/lv3_tree.png', 'levelup_standard': 60},
+    4: {'name': '개화', 'img': 'img/group_level/lv4_flower.png', 'levelup_standard': 100},
+    5: {'name': '열매', 'img': 'img/group_level/lv5_fruit.png', 'levelup_standard': 150},
+    6: {'name': '반달곰', 'img': 'img/group_level/lv6_bear.png', 'levelup_standard': 210},
+    7: {'name': '판다', 'img': 'img/group_level/lv7_panda.png', 'levelup_standard': 280},
+    8: {'name': '레서판다', 'img': 'img/group_level/lv8_lesser_panda.png', 'levelup_standard': 360},
+    9: {'name': '유니콘', 'img': 'img/group_level/lv9_unicorn.png', 'levelup_standard': 450},
+    10: {'name': '뿔 달린 유니콘', 'img': 'img/group_level/lv10_horn_unicorn.png', 'levelup_standard': 550},
+    11: {'name': '날개 달린 유니콘', 'img': 'img/group_level/lv11_wing_unicorn.png', 'levelup_standard': 660},
+}
+
+# 그룹 경험치 추가 & 레벨업 관리
+def exp_up(group_pk):
+    group = Group.objects.get(pk=group_pk)
+    group.exp += 1
+    group.save()
+    if group.exp/(group.group_users**0.5) >= LEVEL[group.level]['level_up']:
+        group.level += 1
+        group.save()
+
+
 # 개인 다이어리를 원하는 그룹에 공유
 def share(request, group_pk, diary_pk):
     group = get_object_or_404(Group, pk=group_pk)
@@ -143,8 +168,7 @@ def share(request, group_pk, diary_pk):
         return redirect('diaries:detail', diary_pk)
     
     diary_share = DiaryShare.objects.create(group=group, diary=diary)
-    group.exp += 1
-    group.save()
+    exp_up(group_pk)
     return redirect('diaries:group_detail', group_pk, diary_pk)
 
 
@@ -197,8 +221,7 @@ def comment_create(request, group_pk, diary_pk):
             comment.share = diary_share
             comment.user = request.user
             comment.save()
-            group.exp += 1
-            group.save()
+            exp_up(group_pk)
             # return JsonResponse({'success': True})
 
         return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)

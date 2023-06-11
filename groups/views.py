@@ -36,6 +36,7 @@ def group_create(request):
         group.chief = request.user
         group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
         group.exp = 1
+        group.level = 1
         group.save()
         group.calendar.create() # greate group calendar
         group.group_users.add(request.user)
@@ -44,6 +45,31 @@ def group_create(request):
         messages.error(request, '정보를 정확하게 입력하세요.')
         return redirect('groups:index')
 
+
+# 그룹 레벨 이름 & 이미지
+LEVEL = {
+    1: {'name': '새싹', 'img': 'img/group_level/lv1_sprout.png', 'levelup_standard': 10},
+    2: {'name': '잔디', 'img': 'img/group_level/lv2_grass.png', 'levelup_standard': 30},
+    3: {'name': '나무', 'img': 'img/group_level/lv3_tree.png', 'levelup_standard': 60},
+    4: {'name': '개화', 'img': 'img/group_level/lv4_flower.png', 'levelup_standard': 100},
+    5: {'name': '열매', 'img': 'img/group_level/lv5_fruit.png', 'levelup_standard': 150},
+    6: {'name': '반달곰', 'img': 'img/group_level/lv6_bear.png', 'levelup_standard': 210},
+    7: {'name': '판다', 'img': 'img/group_level/lv7_panda.png', 'levelup_standard': 280},
+    8: {'name': '레서판다', 'img': 'img/group_level/lv8_lesser_panda.png', 'levelup_standard': 360},
+    9: {'name': '유니콘', 'img': 'img/group_level/lv9_unicorn.png', 'levelup_standard': 450},
+    10: {'name': '뿔 달린 유니콘', 'img': 'img/group_level/lv10_horn_unicorn.png', 'levelup_standard': 550},
+    11: {'name': '날개 달린 유니콘', 'img': 'img/group_level/lv11_wing_unicorn.png', 'levelup_standard': 660},
+}
+
+# 그룹 경험치 추가 & 레벨업 관리
+def exp_up(group_pk):
+    group = Group.objects.get(pk=group_pk)
+    group.exp += 1
+    group.save()
+    if group.exp/(group.group_users**0.5) >= LEVEL[group.level]['levelup_standard']:
+        group.level += 1
+        group.save()
+        # messages.info(request, '그룹이 레벨업했어요! 축하드립니다!')
 
 # 그룹 참가
 def group_join(request, group_pk):
@@ -63,32 +89,14 @@ def group_join(request, group_pk):
         try:
             ph().verify(group.password, password)
             group.group_users.add(request.user)
-            group.exp += 1
-            group.save()
+            exp_up(group_pk)
             return redirect('groups:group_detail', group.pk)
         except:
             messages.error(request, '암호가 일치하지 않습니다.')
-            # return render(request, 'groups/group_join.html', {'group': group,})
             return JsonResponse({'message': '암호가 일치하지 않습니다.'})
     else:
         return render(request, 'groups/group_join.html', {'group': group,})
 
-
-# 그룹 레벨 이름 & 이미지
-LEVEL = {
-    1: {'name': '테스트', 'image': 'img/test_level.png'},
-    # 1: {'name': '새싹', 'img': '-'},
-    2: {'name': '잔디', 'img': '-'},
-    3: {'name': '나무', 'img': '-'},
-    4: {'name': '개화', 'img': '-'},
-    5: {'name': '열매', 'img': '-'},
-    6: {'name': '반달곰', 'img': '-'},
-    7: {'name': '판다', 'img': '-'},
-    8: {'name': '레서판다', 'img': '-'},
-    9: {'name': '유니콘', 'img': '-'},
-    10: {'name': '뿔 달린 유니콘', 'img': '-'},
-    11: {'name': '날개 달린 유니콘', 'img': '-'},
-}
 
 # 그룹 페이지 조회
 @login_required
@@ -97,8 +105,8 @@ def group_detail(request, group_pk):
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
     
-    # 그룹 레벨
-    level = LEVEL[group.exp//10 + 1]
+    # 그룹 레벨 정보(이름, 이미지경로, 레벨업 기준)
+    level_dict = LEVEL[group.level]
     
     # 공지로 등록된 post, vote 조회
     noticed_post = Post.objects.filter(group=group, is_notice=True)
@@ -125,7 +133,7 @@ def group_detail(request, group_pk):
 
     context = {
         'group': group,
-        'level': level,
+        'level_dict': level_dict,
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
@@ -279,8 +287,7 @@ def post_create(request, group_pk):
             for image in images:
                 PostImage.objects.create(post=post, image=image)
 
-            group.exp += 1
-            group.save()
+            exp_up(group_pk)
             return redirect('groups:post_detail', group.pk, post.pk)
         else:
             messages.error(request, '내용을 올바르게 입력해주세요.')
@@ -449,8 +456,7 @@ def comment_create(request, group_pk, post_pk):
         comment.user = request.user
         comment.post = post
         comment.save()
-        group.exp += 1
-        group.save()
+        exp_up(group_pk)
     else:
         messages.error(request, '내용을 올바르게 입력해주세요.')
     return redirect('groups:post_detail', group.pk, post.pk)
@@ -532,8 +538,7 @@ def vote_create(request, group_pk):
         vote.is_notice = False
         vote.save()
         vote.hits.add(request.user)
-        group.exp += 1
-        group.save()
+        exp_up(group_pk)
 
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)

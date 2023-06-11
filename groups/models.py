@@ -30,6 +30,15 @@ class Group(models.Model):
                                     options={'quality': 100})
     intro = models.CharField(max_length=500)
     exp = models.PositiveIntegerField()
+    level = models.PositiveIntegerField()
+    # 기준 = 경험치/(그룹인원**0.5)
+    # lv.1 : 새싹 단계, 기준 < 10       
+    # lv.2 : 풀 단계, 기준 < 30          lv.7 : 판다 단계, 기준 < 280
+    # lv.3 : 나무 단계, 기준 < 60        lv.8 : 레서판다 단계, 기준 < 360
+    # lv.4 : 개화 단계, 기준 < 100       lv.9 : 유니콘 단계, 기준 < 450
+    # lv.5 : 열매 단계, 기준 < 150       lv.10 : 뿔 달린 유니콘 단계, 기준 < 550
+    # lv.6 : 반달곰 단계, 기준 < 210     lv.11 : 날개 달린 유니콘 단계, 기준 < 660
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     objects = GroupManager()
