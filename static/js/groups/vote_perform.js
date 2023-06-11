@@ -50,8 +50,8 @@ votePerformForms.forEach(form => {
 })
 
 // vote 조회수 
-const voteHitsForm = document.querySelectorAll('#vote-hits')
-console.log(voteHitsForm)
+const voteHitsForm = document.querySelectorAll('.vote-hits')
+// console.log(voteHitsForm)
 voteHitsForm.forEach(form => {
   form.addEventListener('click', function(event) {
     event.preventDefault()

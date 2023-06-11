@@ -34,15 +34,25 @@
 }
 
 .group-img {
-  width: 7.5rem;
-  height: 7.5rem;
+  width: 10rem;
+  height: 10rem;
 }
 
 .group-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 0.5rem 0;
+  flex-grow: 1;
+  gap: 1rem;
+  padding: 0.5rem 2rem 0.5rem 0;
+}
+
+.character {
+  width: 11rem;
+  height: 7rem;
+}
+
+.character.image {
+  border-radius: 0;
 }
 
 .group-description {
@@ -202,7 +212,8 @@
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
-  min-height: 400px;
+  min-height: 350px;
+  width: 100%;
   color: #a9a9a9;
   font-size: 1.25rem;
 }
@@ -226,6 +237,7 @@
 
 .delete {
   color: #ff5656;
+  cursor: pointer;
 }
 
 .delete.main-btn {
@@ -365,6 +377,10 @@
 
 .vote:hover {
   background-color: #c3c8ef;
+}
+
+.vote-hits {
+  flex-grow: 1;
 }
 
 .vote .meeting {
