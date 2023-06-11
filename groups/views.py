@@ -310,7 +310,7 @@ def post_detail(request, group_pk, post_pk):
         return redirect('groups:index')
     
     post = Post.objects.get(pk=post_pk)
-    comments = post.postcomment_set.all()
+    comments = post.postcomment_set.all().order_by('-created_at')
     comment_form = PostCommentForm()
     # 조회수
     if not post.hits.filter(pk=request.user.pk).exists():
