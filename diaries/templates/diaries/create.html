@@ -40,6 +40,13 @@
     </form>
   </div>
 </div>
+
+{% if messages %}
+  {% for message in messages %}
+    <script>alert('{{ message }}')</script>
+  {% endfor %}
+{% endif %}
+
 {% endblock content %}
 
 {% block script %}
