@@ -6,7 +6,7 @@ const GroupButtonGrid = document.getElementById('group-buttons-grid')
 // const selectedList = []
 // const moviesInput = document.getElementById('movies-input')
 
-searchInput.addEventListener('input', async (event) => {
+searchInput.addEventListener('keydown input', async (event) => {
   const query = searchInput.value
   if (query) {
     try {
@@ -32,7 +32,7 @@ searchInput.addEventListener('input', async (event) => {
 function drawButton(id, name, thumbnail){
   const btnTag = document.createElement('button');
   btnTag.classList.add('item', 'button');
-  btnTag.innerHTML=`<a href="./groups/${id}"><div class="square"><div class="inner"><div class="group-button-thumbnail"><img src="${thumbnail}" alt=""></div><div class="group-button-name"><span>${name}</span></div></div></div></a>`;
+  btnTag.innerHTML=`<a href="./${id}"><div class="square"><div class="inner"><div class="group-button-thumbnail"><img src="${thumbnail}" alt=""></div><div class="group-button-name"><span>${name}</span></div></div></div></a>`;
   return btnTag;
 }
 

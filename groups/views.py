@@ -739,7 +739,7 @@ def vote_hits(request, vote_pk):
 def group_search(request):
     if request.method == 'GET':
         q = request.GET['q'].strip()
-        if q == "" or None:
+        if q == "":
             groups = request.user.user_groups.all()
         else:
             groups = request.user.user_groups.filter(name__icontains=q)
