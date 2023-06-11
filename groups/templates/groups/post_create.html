@@ -16,23 +16,24 @@
 {% block content %}
 <div class="wrapper">
   <div class="content">
-    <form action="{% url 'groups:post_create' group.pk %}" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      {% for field in form %}
-      <div>
-        {{ field.label_tag }}
-        {{ field }}
-      </div>
-      {% endfor %}
-      <div class="my-8">
-        {% comment %} <label for="post-images">이미지 업로드</label> {% endcomment %}
-        <input type="file" name="images" id="post-images" multiple>
-      </div>
-      <div class="btns">
-        <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
-        <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
-      </div>
-    </form>
+    {% block form %}
+      <form action="{% url 'groups:post_create' group.pk %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+          {{ field.label_tag }}
+          {{ field }}
+        </div>
+        {% endfor %}
+        <div class="btns">
+          <input type="file" name="images" id="post-images" multiple>
+          <div class="flex gap-4">
+            <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
+            <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
+          </div>
+        </div>
+      </form>
+    {% endblock form %}
   </div>
 </div>
 

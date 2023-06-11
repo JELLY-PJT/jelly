@@ -39,7 +39,7 @@ textarea[name='content']:focus {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .main-btn {
