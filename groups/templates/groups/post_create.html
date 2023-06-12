@@ -26,7 +26,7 @@
         </div>
         {% endfor %}
         <div class="btns">
-          <input type="file" name="images" id="post-images" multiple>
+          <input type="file" name="images" id="post-images" multiple required>
           <div class="flex gap-4">
             <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
             <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
