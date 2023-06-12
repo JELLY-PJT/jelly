@@ -39,7 +39,7 @@ def group_create(request):
         group.exp = 1
         group.level = 1
         group.save()
-        group.calendar.create() # greate group calendar
+        group._calendar.create() # greate group calendar
         group.group_users.add(request.user)
         return redirect('groups:group_detail', group.pk)
     else:
@@ -107,8 +107,13 @@ def group_detail(request, group_pk):
         return redirect('groups:index')
     
     # 그룹 레벨 정보(이름, 이미지경로, 레벨업 기준)
-    group_exp = group.exp/(len(group.group_users.all())**0.5)
+    group_exp = group.exp/(len(group.group_users.all())**0.5) - float(LEVEL[group.level-1]['levelup_standard'])
     level_dict = LEVEL[group.level]
+    if group.level > 1:
+        levelup_percent = group_exp / (float(LEVEL[group.level]['levelup_standard'] - LEVEL[group.level-1]['levelup_standard'])) * 100
+    else:
+        levelup_percent = group_exp * 10
+
     
     # 공지로 등록된 post, vote 조회
     noticed_post = Post.objects.filter(group=group, is_notice=True)
@@ -143,6 +148,8 @@ def group_detail(request, group_pk):
         'group': group,
         'group_exp': round(group_exp, 2),
         'level_dict': level_dict,
+        'levelup_percent': levelup_percent,
+        'levelup_total': float(LEVEL[group.level]['levelup_standard'] - LEVEL[group.level-1]['levelup_standard']),
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
