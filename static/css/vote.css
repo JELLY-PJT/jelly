@@ -172,10 +172,13 @@
   background-color:#7B83C7;
 }
 
-/*  */
+.readmodal-scroll {
+  max-height: 300px; 
+  overflow-y: auto;
+}
 
 .scroll {
-  max-height: 400px; 
+  max-height: 500px; 
   overflow-y: auto;
 }
 
@@ -195,3 +198,25 @@
 .scroll::-webkit-scrollbar-thumb:hover {
   background-color: #7B83C7;
 } */
+
+/* 투표 참여자 */
+.vote-collapse-box {
+  display: flex;
+  border: 0px solid darkgray;
+  background-color: none;
+  width: 350px;
+}
+
+.option_selecter-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 4px 0 4px;
+}
+
+.option_selecter-box img{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
