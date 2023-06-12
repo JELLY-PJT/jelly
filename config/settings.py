@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'groups',
     'schedules',
     'diaries',
-    'chats',
+    'channels',
+    'chat',
     'custom_ckeditor',
+    "daphne",
     'rest_framework',
     'django_extensions',
     'django_ckeditor_5',
@@ -337,3 +339,14 @@ LOGIN_REDIRECT_URL = '/'  # 로그인 후 리다이렉트 될 경로
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
+
+# Daphne
+ASGI_APPLICATION = "config.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

@@ -28,6 +28,7 @@ urlpatterns = [
     path('diaries/', include('diaries.urls')),
     path('groups/', include('groups.urls')),
     path('schedules/', include('schedules.urls')),
+    path("chat/", include("chat.urls")),
     path("ckeditor5/image_upload/", custom_ckeditor.views.upload_file, name="ck_editor_5_upload_file"),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('accounts/', include('allauth.urls')),

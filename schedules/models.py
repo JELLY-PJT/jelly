@@ -100,7 +100,7 @@ class CustomUserManager(UserManager):
         """
         Create and save a user with the given username, email, and password.
         """
-        user = super()._create_user(self, username, email, password, **extra_fields)
+        user = super()._create_user(username, email, password, **extra_fields)
         user.calendar.create()
         return user
     
