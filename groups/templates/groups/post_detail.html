@@ -35,7 +35,7 @@
             {% endif %}
             <h2 class="title flex items-center ms-4">{{ post }}</h2>
           </div>
-          <p class="mx-4 px-3 date">{{ post.user }}</p>
+          <p class="mx-4 px-3 date">{{ post.user.nickname }}</p>
           <div class='flex px-2 mt-1'>
             <p class="date mx-3">{{ post.created_string }}</p>
             <p class="date">조회수: {{ post.hits.all|length }}</p>
@@ -157,11 +157,11 @@
                       {% if comment.user.image %}
                         <img src="{{ comment.user.image.url }}" alt="">
                       {% else %}
-                        <img src="{% static 'img/blank_profile_image.png' %}" alt="">
+                        <img src="{% static 'img/blank_profile_img.png' %}" alt="">
                       {% endif %}
                     </div>
                     <div>
-                      <p class="comment-user">{{ comment.user }}</p>
+                      <p class="comment-user">{{ comment.user.nickname }}</p>
                       <p class="comment-comment">{{ comment.content }}</p>
                     </div>
                   </div>

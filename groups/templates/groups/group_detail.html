@@ -79,18 +79,23 @@
           </div>
           <!-- 그룹 레벨 & 경험치 이미지 -->
           <div class="level flex items-center">
-            <div class="">
+            <div class="flex flex-col items-center w-full">
               <div class="image character">
                 <img src="/static/{{ level_dict.img }}" alt="그룹 레벨 이미지">
               </div>
-              <div class="flex justify-between mt-2 mb-1">
+              <div class="flex justify-between w-full mb-1">
                 <span class="text-base font-medium text-[var(--color-main-dark)]">{{ level_dict.name }} 단계</span>
-                <span class="text-sm font-medium text-[var(--color-main-dark)]">{{ group_exp }}</span>
+                <span class="text-sm font-medium text-[var(--color-main-dark)]">{{ group_exp }} / {{ levelup_total }}</span>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-1.5">
-                <img src="{% static 'img/group_level/jelly_gom.png' %}" alt="젤리곰 이미지">
-                <div>레벨업 기준 경험치 - {{ level_dict.levelup_standard }}</div>
-                <div class="bg-[var(--color-main)] h-1.5 rounded-full" style="width: {% widthratio group_exp 1 10 %}%"></div>
+              <div class="w-full">
+                <div class="flex items-center">
+                  <div class="jelly-img">
+                    <img src="{% static 'img/group_level/jelly_gom.png' %}" alt="젤리곰 이미지">
+                  </div>
+                  <div class="w-full ml-2 bg-gray-200 rounded-full h-1.5">
+                    <div class="bg-[var(--color-main)] h-1.5 rounded-full" style="width: {{ levelup_percent }}%"></div>
+                  </div>
+                </div>
               </div>
             </div>
             {% comment %} <div>
@@ -135,21 +140,23 @@
               <div id="notice-btn">공지사항(0)</div>
             {% endif %}
           </h2>
-          <div id="accordion-collapse-body-1" class="hidden mb-6" aria-labelledby="accordion-collapse-heading-1">
+          <div id="accordion-collapse-body-1" class="hidden mt-3 mb-6" aria-labelledby="accordion-collapse-heading-1">
             <div class="notice-link-wrapper">
               {% for notice in notices %}
-                {% if notice.get_model_name == 'post' %}
-                  <!-- post인 경우 detail page로 이동 -->
-                  <a href="{% url 'groups:post_detail' group.pk notice.pk %}" class="notice-link">{{ notice.title }}</a>
-                {% else %}
-                  <!-- vote인 경우 모달 팝업 -->
-                  <form action="{% url 'groups:vote_hits' notice.pk %}" method="POST" id="vote-hits" data-vote-id="{{ notice.pk }}">
-                    {% csrf_token %}
-                    <button data-modal-target="vote-modal-{{ notice.pk }}" data-modal-toggle="vote-modal-{{ notice.pk }}" class="notice-link">
-                      {{ notice.title }}
-                    </button>
-                  </form>
-                {% endif %}
+                <article class="notice-link">
+                  {% if notice.get_model_name == 'post' %}
+                    <!-- post인 경우 detail page로 이동 -->
+                    <a href="{% url 'groups:post_detail' group.pk notice.pk %}">{{ notice.title }}</a>
+                  {% else %}
+                    <!-- vote인 경우 모달 팝업 -->
+                    <form action="{% url 'groups:vote_hits' notice.pk %}" method="POST" id="vote-hits" data-vote-id="{{ notice.pk }}">
+                      {% csrf_token %}
+                      <button data-modal-target="vote-modal-{{ notice.pk }}" data-modal-toggle="vote-modal-{{ notice.pk }}">
+                        {{ notice.title }}
+                      </button>
+                    </form>
+                  {% endif %}
+                </article>
               {% endfor %}
             </div>
           </div>

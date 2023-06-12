@@ -38,14 +38,14 @@ figure.image {
 }
 
 .group-img {
-  width: 7.5rem;
-  height: 7.5rem;
+  width: 10rem;
+  height: 10rem;
 }
 
 .group-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 0.5rem 0;
 }
 
