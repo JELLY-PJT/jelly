@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Group, Post, PostImage, PostComment, PostEmote, Vote, VoteSelect
+from .serializers import GroupSerializer
 from diaries.models import Diary, DiaryShare
 from .forms import GroupForm, PostForm, PostImageDeleteForm, PostCommentForm, VoteForm
 from django.http import JsonResponse
@@ -11,6 +12,7 @@ from operator import attrgetter
 from argon2 import PasswordHasher as ph
 import json
 from django.core.paginator import Paginator
+from django.db.models import Prefetch, Count
 
 
 # 사이트 인덱스 페이지
@@ -34,13 +36,40 @@ def group_create(request):
         group = form.save(commit=False)
         group.chief = request.user
         group.password = ph().hash(password1)  # 비밀번호 hashing해서 저장
+        group.exp = 1
+        group.level = 1
         group.save()
-        group.calendar.create() # greate group calendar
+        group._calendar.create() # greate group calendar
         group.group_users.add(request.user)
         return redirect('groups:group_detail', group.pk)
     else:
         messages.error(request, '정보를 정확하게 입력하세요.')
         return redirect('groups:index')
+
+
+# 그룹 레벨 이름 & 이미지
+LEVEL = {
+    1: {'name': '새싹', 'img': 'img/group_level/lv1_sprout.png', 'levelup_standard': 10},
+    2: {'name': '풀잎', 'img': 'img/group_level/lv2_grass.png', 'levelup_standard': 30},
+    3: {'name': '나무', 'img': 'img/group_level/lv3_tree.png', 'levelup_standard': 60},
+    4: {'name': '개화', 'img': 'img/group_level/lv4_flower.png', 'levelup_standard': 100},
+    5: {'name': '열매', 'img': 'img/group_level/lv5_fruit.png', 'levelup_standard': 150},
+    6: {'name': '반달곰', 'img': 'img/group_level/lv6_bear.png', 'levelup_standard': 210},
+    7: {'name': '판다', 'img': 'img/group_level/lv7_panda.png', 'levelup_standard': 280},
+    8: {'name': '레서판다', 'img': 'img/group_level/lv8_lesser_panda.png', 'levelup_standard': 360},
+    9: {'name': '유니콘', 'img': 'img/group_level/lv9_unicorn.png', 'levelup_standard': 450},
+    10: {'name': '뿔 달린 유니콘', 'img': 'img/group_level/lv10_horn_unicorn.png', 'levelup_standard': 550},
+    11: {'name': '날개 달린 유니콘', 'img': 'img/group_level/lv11_wing_unicorn.png', 'levelup_standard': 660},
+}
+
+# 그룹 경험치 추가 & 레벨업 관리
+def exp_up(group_pk):
+    group = Group.objects.get(pk=group_pk)
+    group.exp += 1
+    group.save()
+    if group.exp/(len(group.group_users.all())**0.5) >= LEVEL[group.level]['levelup_standard']:
+        group.level += 1
+        group.save()
 
 
 # 그룹 참가
@@ -55,14 +84,17 @@ def group_join(request, group_pk):
         return redirect('groups:group_detail', group.pk)
 
     if request.method == 'POST':
-        password = request.POST.get('password')
+        jsonResponse = json.loads(request.body.decode('utf-8'))
+        password = jsonResponse.get('password')
+
         try:
             ph().verify(group.password, password)
             group.group_users.add(request.user)
+            exp_up(group_pk)
             return redirect('groups:group_detail', group.pk)
         except:
             messages.error(request, '암호가 일치하지 않습니다.')
-            return render(request, 'groups/group_join.html', {'group': group,})
+            return JsonResponse({'message': '암호가 일치하지 않습니다.'})
     else:
         return render(request, 'groups/group_join.html', {'group': group,})
 
@@ -73,6 +105,15 @@ def group_detail(request, group_pk):
     group = Group.objects.prefetch_related('group_users').get(pk=group_pk)
     if not group.group_users.filter(pk=request.user.pk).exists():
         return redirect('groups:index')
+    
+    # 그룹 레벨 정보(이름, 이미지경로, 레벨업 기준)
+    group_exp = group.exp/(len(group.group_users.all())**0.5) - float(LEVEL[group.level-1]['levelup_standard'])
+    level_dict = LEVEL[group.level]
+    if group.level > 1:
+        levelup_percent = group_exp / (float(LEVEL[group.level]['levelup_standard'] - LEVEL[group.level-1]['levelup_standard'])) * 100
+    else:
+        levelup_percent = group_exp * 10
+
     
     # 공지로 등록된 post, vote 조회
     noticed_post = Post.objects.filter(group=group, is_notice=True)
@@ -96,13 +137,24 @@ def group_detail(request, group_pk):
     page_objects = pagination.get_page(page)
 
     joined_vote = [selection.vote for selection in request.user.selections.all()]
+    voter_cnt = {}
+    for obj in page_objects:
+        if obj.get_model_name() == 'vote':
+            voter_cnt[obj.pk] = 0
+            for option in obj.voteselect_set.all():
+                voter_cnt[obj.pk] += option.select_users.count()
 
     context = {
         'group': group,
+        'group_exp': round(group_exp, 2),
+        'level_dict': level_dict,
+        'levelup_percent': levelup_percent,
+        'levelup_total': float(LEVEL[group.level]['levelup_standard'] - LEVEL[group.level-1]['levelup_standard']),
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
         'joined_vote': joined_vote,
+        'voter_cnt': voter_cnt.items(),
     }
     return render(request, 'groups/group_detail.html', context)
 
@@ -143,6 +195,7 @@ def group_update(request, group_pk):
         context = {
             'form': form,
         }
+        messages.error(request, '정보를 정확하게 입력해주세요.')
         return render(request, 'groups/group_setting.html', context)
 
 
@@ -199,6 +252,16 @@ def member_delete(request, group_pk, username):
         return redirect('groups:group_detail', group.pk)
     
     member = get_user_model().objects.get(username=username)
+    diaries = member.diary_set.all()
+    for diary in diaries:
+        diary.share.remove(group)
+    posts = Post.objects.filter(user=member, group=group)
+    for post in posts:
+        post.delete()
+    votes = Vote.objects.filter(user=member, group=group)
+    for vote in votes:
+        vote.delete()
+        
     group.group_users.remove(member)
     return redirect('groups:group_setting', group.pk)
 
@@ -212,6 +275,16 @@ def member_withdraw(request, group_pk):
         if request.user == group.chief:
             return redirect('groups:group_detail', group.pk)
         else:
+            diaries = request.user.diary_set.all()
+            for diary in diaries:
+                diary.share.remove(group)
+            posts = Post.objects.filter(user=request.user, group=group)
+            for post in posts:
+                post.delete()
+            votes = Vote.objects.filter(user=request.user, group=group)
+            for vote in votes:
+                vote.delete()
+
             group.group_users.remove(request.user)
     return redirect('groups:index')
 
@@ -250,10 +323,13 @@ def post_create(request, group_pk):
             # 다중 이미지 저장
             for image in images:
                 PostImage.objects.create(post=post, image=image)
+
+            exp_up(group_pk)
             return redirect('groups:post_detail', group.pk, post.pk)
+        else:
+            messages.error(request, '내용을 올바르게 입력해주세요.')
     else:
         form = PostForm()
-        # post_image_form = PostImageForm()
     context = {
         'group': group,
         'form': form,
@@ -278,7 +354,7 @@ def post_detail(request, group_pk, post_pk):
         return redirect('groups:index')
     
     post = Post.objects.get(pk=post_pk)
-    comments = post.postcomment_set.all()
+    comments = post.postcomment_set.all().order_by('-created_at')
     comment_form = PostCommentForm()
     # 조회수
     if not post.hits.filter(pk=request.user.pk).exists():
@@ -332,6 +408,8 @@ def post_update(request, group_pk, post_pk):
             for image in images:
                 PostImage.objects.create(post=post, image=image)
             return redirect('groups:post_detail', group.pk, post.pk)
+        else:
+            messages.error(request, '내용을 올바르게 입력해주세요.')
     else:
         post_form = PostForm(instance=post)
         image_delete_form = PostImageDeleteForm(instance=post)
@@ -415,10 +493,13 @@ def comment_create(request, group_pk, post_pk):
         comment.user = request.user
         comment.post = post
         comment.save()
-        return redirect('groups:post_detail', group.pk, post.pk)
+        exp_up(group_pk)
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
+    return redirect('groups:post_detail', group.pk, post.pk)
 
 
-# 댓글 수정(비동기처리 가정하고 만들었습니다)
+# 댓글 수정
 @login_required
 def comment_update(request, group_pk, post_pk, comment_pk):
     group = Group.objects.get(pk=group_pk)
@@ -433,7 +514,6 @@ def comment_update(request, group_pk, post_pk, comment_pk):
             updated_comment = form.save(commit=False)
             updated_comment.save()
 
-        # 여기서 ajax로 데이터 받아서 저장하고 context에 담아 Jsonresponse반환?
         context = {
             'content': updated_comment.content,
         }
@@ -455,6 +535,8 @@ def comment_delete(request, group_pk, post_pk, comment_pk):
 
 def comment_like(request, group_pk, post_pk, comment_pk):
     group = Group.objects.get(pk=group_pk)
+    if not group.group_users.filter(pk=request.user.pk).exists():
+        return redirect('groups:index')
     comment = PostComment.objects.get(pk=comment_pk)
 
     if comment.like_users.filter(pk=request.user.pk).exists():
@@ -492,10 +574,13 @@ def vote_create(request, group_pk):
         vote.group = group
         vote.is_notice = False
         vote.save()
+        vote.hits.add(request.user)
+        exp_up(group_pk)
 
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)
-    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
     return redirect('groups:group_detail', group.pk)
 
 
@@ -545,7 +630,8 @@ def add_option(request, group_pk, vote_pk):
     if option_valid:
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)
-    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
     return redirect('groups:group_detail', group.pk)
 
 
@@ -592,7 +678,8 @@ def vote_update(request, group_pk, vote_pk):
         # input 받은 선택지로 다시 저장
         for option in options:
             VoteSelect.objects.create(vote=vote, content=option)
-    # 유효성검사 통과하지 못한 경우(else) 에러메세지 추후 적용
+    else:
+        messages.error(request, '내용을 올바르게 입력해주세요.')
     return redirect('groups:group_detail', group.pk)
 
 
@@ -629,3 +716,28 @@ def notice_vote(request, group_pk, vote_pk):
         else:
             messages.info(request, '공지사항은 3개까지 등록 가능합니다. 기존의 공지를 삭제하고 다시 등록해주세요.')
     return redirect('groups:group_detail', group_pk)
+
+
+# vote 조회수
+@login_required
+def vote_hits(request, vote_pk):
+    vote = Vote.objects.get(pk=vote_pk)
+    if not vote.hits.filter(pk=request.user.pk).exists():
+        vote.hits.add(request.user)
+    context = {
+        'vote_hits': vote.hits.count()
+    }
+    return JsonResponse(context)
+
+
+# group index 의 search function
+@login_required
+def group_search(request):
+    if request.method == 'GET':
+        q = request.GET['q'].strip()
+        if q == "" or None:
+            groups = request.user.user_groups.all()
+        else:
+            groups = request.user.user_groups.filter(name__icontains=q)
+        serializer = GroupSerializer(groups, many=True)
+        return JsonResponse(serializer.data, safe=False)

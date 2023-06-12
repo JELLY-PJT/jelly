@@ -37,7 +37,9 @@ textarea[name='content']:focus {
 
 .btns {
   display: flex;
+  justify-content: space-between;
   gap: 0.5rem;
+  margin-top: 2rem;
 }
 
 .main-btn {
@@ -52,4 +54,36 @@ textarea[name='content']:focus {
 
 .back:hover {
   background-color: #ababab;
+}
+
+.select.main-btn {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background-color: #1f2937;
+  cursor: pointer;
+}
+
+.select.main-btn:hover {
+  background-color: #161d27;
+}
+
+.thumbnail-btn {
+  position: absolute;
+  display: none ;
+  z-index: 10;
+  top: 0;
+  right: 90px;
+  padding: 0.25rem 0.75rem;
+  border: #1f2937 1px solid;
+  border-radius: 20px;
+  background-color: #fff;
+  font-size: 0.875rem;
+}
+
+.thumbnail-border {
+  border: 5px solid #6A66F2;
+}
+
+.ck .ck-widget.ck-widget_selected, .ck .ck-widget.ck-widget_selected:hover, .ck .ck-widget:hover {
+  outline: none !important;
 }

@@ -7,12 +7,20 @@ from django.utils import timezone
 from django.contrib.contenttypes import fields
 
 
+class GroupManager(models.Manager):
+    def create(self, **kwargs):
+        group = super().create(**kwargs)
+        group._calendar.create()
+        return group
+
+
 class Group(models.Model):
     chief = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     group_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_groups')
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
-    calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_user')
+    _calendar = fields.GenericRelation('schedules.Calendar', object_id_field='owner_object_id', content_type_field='owner_content_type', related_query_name='owner_group')
+
     def group_image_path(instance, filename):
         return f'groups/{instance.name}_{instance.pk}/{filename}'
     
@@ -21,10 +29,26 @@ class Group(models.Model):
                                     format='JPEG',
                                     options={'quality': 100})
     intro = models.CharField(max_length=500)
+    exp = models.PositiveIntegerField()
+    level = models.PositiveIntegerField()
+    # 기준 = 경험치/(그룹인원**0.5)
+    # lv.1 : 새싹 단계, 기준 < 10       
+    # lv.2 : 풀 단계, 기준 < 30          lv.7 : 판다 단계, 기준 < 280
+    # lv.3 : 나무 단계, 기준 < 60        lv.8 : 레서판다 단계, 기준 < 360
+    # lv.4 : 개화 단계, 기준 < 100       lv.9 : 유니콘 단계, 기준 < 450
+    # lv.5 : 열매 단계, 기준 < 150       lv.10 : 뿔 달린 유니콘 단계, 기준 < 550
+    # lv.6 : 반달곰 단계, 기준 < 210     lv.11 : 날개 달린 유니콘 단계, 기준 < 660
+
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = GroupManager()
 
     def __str__(self):
         return self.name
+    
+    @property
+    def calendar(self):
+         return self._calendar.all()[0]
 
 
 class Post(models.Model):
@@ -163,3 +187,5 @@ class VoteSelect(models.Model):
     vote = models.ForeignKey(Vote, on_delete=models.CASCADE)
     select_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='selections')
     content = models.CharField(max_length=100)
+
+

@@ -6,7 +6,7 @@
 {% block title %}JELLY | {{ diary.title }}{% endblock title %}
 
 {% block side %}
-  {% include 'sidebar.html' %}
+  {% include 'sidebar.html' with current_group=group %}
 {% endblock side %}
 
 {% block content %}
@@ -24,47 +24,67 @@
       <div class="flex flex-col px-2">
         <div class="flex items-center">
           <h2 class="title">{{ diary.title }}</h2>
-
-          {% comment %} {% if request.user == diary.user %}
-          <button id="postManageDropdownButton" data-dropdown-toggle="postManageDropdown" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9d9c9c" class="w-8 h-8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-            </svg>
-          </button>
-          {% endif %}
-          <!-- Dropdown menu -->
-          <div id="postManageDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="postManageDropdownButton">
-                <li class="hover:bg-gray-100">
-                  <form action="{% url 'diaries:unshare' group.pk diary.pk %}">
-                    {% csrf_token %}
-                    <input type="submit" value="공유취소" class="diary px-4 py-2" onclick="return confirm('해당 게시글에 포함된 댓글도 함께 삭제됩니다.\n공유를 취소하시겠습니까?')">
-                  </form>
-                </li>
-                <li class="hover:bg-gray-100">
-                  <a href="{% url 'diaries:update' diary.pk %}" class="block diary px-4 py-2">수정</a>
-                </li>
-                <!--
-                <li class="hover:bg-gray-100">
-                  <a href="{% url 'groups:notice_post' group.pk diary.pk %}" class="block diary px-4 py-2">공지 등록</a>
-                </li>-->
-                <li class="hover:bg-gray-100">
-                  <a href="{% url 'diaries:delete' diary.pk %}" class="block diary delete px-4 py-2" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
-                </li>
-              </ul>
-          </div> {% endcomment %}
           {% if request.user == diary.user %}
-            <div class="flex gap-4">
-              <form action="{% url 'diaries:unshare' group.pk diary.pk %}">
-                {% csrf_token %}
-                <input type="submit" value="공유취소" class="diary" onclick="return confirm('해당 게시글에 포함된 댓글도 함께 삭제됩니다.\n공유를 취소하시겠습니까?')">
-              </form>
-              <a href="{% url 'diaries:update' diary.pk %}" class="diary">수정</a>
-              <a href="{% url 'diaries:delete' diary.pk %}" class="diary delete" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+            <button id="postManageDropdownButton" data-dropdown-toggle="postManageDropdown" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9d9c9c" class="w-8 h-8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+              </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="postManageDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="postManageDropdownButton">
+                  <li class="hover:bg-gray-100">
+                    <form action="{% url 'diaries:unshare' group.pk diary.pk %}">
+                      {% csrf_token %}
+                      <input type="submit" value="공유취소" class="diary px-4 py-2" onclick="return confirm('해당 게시글에 포함된 댓글도 함께 삭제됩니다.\n공유를 취소하시겠습니까?')">
+                    </form>
+                  </li>
+                  <li class="hover:bg-gray-100">
+                    <a href="{% url 'diaries:update' diary.pk %}" class="block diary px-4 py-2">수정</a>
+                  </li>
+                  <!--
+                  <li class="hover:bg-gray-100">
+                    <a href="{% url 'groups:notice_post' group.pk diary.pk %}" class="block diary px-4 py-2">공지 등록</a>
+                  </li>-->
+                  <li class="hover:bg-gray-100">
+                    <a href="{% url 'diaries:delete' diary.pk %}" class="block diary delete px-4 py-2" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+                  </li>
+                </ul>
             </div>
           {% endif %}
         </div>
-        <p class="date">{{ diary.created_at }}</p>
+        <div class="flex justify-between items-end">
+          <div class="flex items-center">
+            <div class="create-user-img w-10 h-10 mr-2">
+              {% if diary.user.image %}
+                <img src="{{ diary.user.image.url }}" alt="">
+              {% else %}
+                <img src="{% static 'img/blank_profile_img.png' %}" alt="">
+              {% endif %}
+            </div>
+            <div class="flex-grow">
+              <p>{{ diary.user }}</p>
+              <div class="flex gap-2">
+                <p class="date">{{ diary.created_at }}</p>
+                <p class="date">조회 {{ diary.hit.all|length }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="scroll">
+            <div class="reaction-item">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--color-main)" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+              </svg>
+              <p>{{ comments|length }}</p>                      
+            </div>
+            <div class="reaction-item">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="var(--color-main)" viewBox="0 0 24 24" stroke="var(--color-main)" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+              <p>{{ diary_share.diaryemote_set.all|length }}</p>                      
+            </div>
+          </div>
+        </div>
             
       </div>
       <hr class="diary-hr">
@@ -142,11 +162,21 @@
             {% for comment in comments %}
               <div class="comment-area" data-comment-id="{{ comment.pk }}" data-group-id="{{ group.pk }}" data-diary-id="{{ diary.pk }}">
                 <div class="user-img image">
-                  {% comment %} <img src="" alt=""> {% endcomment %}
                 </div>
                 <div class="comment-content">
-                  <p class="comment-user">{{ comment.user }}</p>
-                  <p class="comment-comment">{{ comment.comment }}</p>
+                  <div class="flex gap-3">
+                    <div class="create-user-img">
+                      {% if comment.user.image %}
+                        <img src="{{ comment.user.image.url }}" alt="">
+                      {% else %}
+                        <img src="{% static 'img/blank_profile_img.png' %}" alt="">
+                      {% endif %}
+                    </div>
+                    <div>
+                      <p class="comment-user">{{ comment.user }}</p>
+                      <p class="comment-comment">{{ comment.comment }}</p>
+                    </div>
+                  </div>
                   <form id="comment-update-form" class="hidden comment-form">
                     {% csrf_token %}
                     {{ comment_form }}
@@ -155,8 +185,6 @@
                   <div class="date comment-bottom">
                     <div class="comment-bottom-item">
                       <p>{{ comment.created_at }}</p>
-                      {% comment %} 댓글 좋아요 {% endcomment %}
-                      {% comment %} <form class="comment-like-forms" action="{% url 'diaries:comment_like' group.pk diary.pk comment.pk %}" method="POST" data-comment-id="{{ comment.pk }}" data-group-id="{{ group.pk }}" data-diary-id="{{ diary.pk }}"> {% endcomment %}
                       <form class="comment-like-form">
                         {% csrf_token %}
                         <button type="submit" class="comment-like-btn">

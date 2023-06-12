@@ -34,15 +34,34 @@
 }
 
 .group-img {
-  width: 7.5rem;
-  height: 7.5rem;
+  width: 10rem;
+  height: 10rem;
 }
 
 .group-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 0.5rem 0;
+  flex-grow: 1;
+  gap: 1rem;
+  padding: 0.5rem 2rem 0.5rem 0;
+}
+
+.level {
+  width: 180px;
+}
+
+.character {
+  width: 8rem;
+  height: 8rem;
+}
+
+.character.image {
+  border-radius: 0;
+}
+
+.jelly-img {
+  width: 2rem;
+  height: 2rem;
 }
 
 .group-description {
@@ -172,7 +191,7 @@
 }
 
 .notice-link {
-  padding: 0.75rem 0 0.75rem 0.5rem;
+  padding: 0.5rem 0 0.5rem 0.5rem;
   border-bottom: 1px solid var(--color-gray);
   text-align: start;
 }
@@ -186,7 +205,7 @@
   border-bottom: none;
 }
 
-.notice-link:hover {
+.notice-link:hover, .notice-link button:hover {
   text-decoration: underline;
 }
 
@@ -202,7 +221,8 @@
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
-  min-height: 400px;
+  min-height: 350px;
+  width: 100%;
   color: #a9a9a9;
   font-size: 1.25rem;
 }
@@ -226,6 +246,17 @@
 
 .delete {
   color: #ff5656;
+  cursor: pointer;
+}
+
+.delete.main-btn {
+  display: inline-block;
+  background-color: #ff5656;
+  color: white;
+}
+
+.delete.main-btn:hover {
+  background-color: #e74b4b;
 }
 
 .post .user {
@@ -355,6 +386,10 @@
 
 .vote:hover {
   background-color: #c3c8ef;
+}
+
+.vote-hits {
+  flex-grow: 1;
 }
 
 .vote .meeting {

@@ -47,7 +47,7 @@ input[type=text] {
 }
 
 .post-content {
-  padding: 1.5rem 1.5rem 3rem;
+  padding: 1.5rem 1.5rem 2rem;
   border: 2px solid var(--color-main);
   border-radius: 0.75rem;
 }
@@ -61,9 +61,23 @@ input[type=text] {
 
 .title {
   flex-grow: 1;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   font-size: 1.5rem;
   font-weight: 500;
+}
+
+.scroll {
+  display: flex;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: var(--color-gray-dark);
+  font-size: 0.875rem;
+}
+
+.reaction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .diary-hr {
@@ -73,8 +87,13 @@ input[type=text] {
 }
 
 .diary-detail {
+  margin-bottom: 2rem;
   padding: 0 0.5rem;
   word-break: break-all;
+}
+
+.diary-detail img {
+  margin: 1rem 0;
 }
 
 .date {
@@ -92,7 +111,7 @@ input[type=text] {
 .top-btn {
   position: absolute;
   right: 0;
-  bottom: -2rem;
+  bottom: -1rem;
   display: inline-flex;
   align-items: center;
   gap: 0.125rem;
@@ -253,7 +272,7 @@ input[type=text] {
 }
 
 .comment-wrapper {
-  margin: 1rem 0 0.5rem;
+  margin: 1rem 0 0;
 }
 
 .comment-area {
@@ -279,7 +298,7 @@ input[type=text] {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   font-weight: 500;
 }
 
@@ -311,10 +330,11 @@ input[type=text] {
 
 /* post_detail */
 .create-user-img {
-  width: 4.7rem;
-  height: 4.7rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border: white 3px solid;
   border-radius: 50%;
+  overflow: hidden;
 }
 
 .content-img-wrapper {
@@ -339,8 +359,8 @@ input[type=text] {
 }
 
 .comment-area .create-user-img {
-  width: 2.125rem;
-  height: 2.125rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: none;
   border-radius: 50%;
   overflow: hidden;
@@ -352,4 +372,27 @@ input[type=text] {
   max-height: 100%;
   min-height: 100%;
   object-fit: cover;
+}
+
+.modal-picture {
+  /* 모달이 표시될 때 애니메이션 효과를 주기 위한 클래스 */
+  transition: opacity 0.3s ease;
+}
+.modal-content {
+  max-width: 80%;
+  max-height: 80%;
+}
+.close-picture {
+  cursor: pointer;
+  top: -10px; 
+  right: -10px; 
+}
+.modal-image {
+  max-width: 55vw; /* 전체 화면의 40% */
+  max-height: 55vh; /* 전체 화면의 40% */
+}
+
+.owl-stage-ourter {
+  display: flex;
+  justify-content: center;
 }
