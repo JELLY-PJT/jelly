@@ -107,11 +107,14 @@ def group_detail(request, group_pk):
         return redirect('groups:index')
     
     # 그룹 레벨 정보(이름, 이미지경로, 레벨업 기준)
-    group_exp = group.exp/(len(group.group_users.all())**0.5) - float(LEVEL[group.level-1]['levelup_standard'])
     level_dict = LEVEL[group.level]
+    group_exp = group.exp/(len(group.group_users.all())**0.5)
+    
     if group.level > 1:
-        levelup_percent = group_exp / (float(LEVEL[group.level]['levelup_standard'] - LEVEL[group.level-1]['levelup_standard'])) * 100
+        levelup_total = float(LEVEL[group.level]['levelup_standard']) - float(LEVEL[group.level-1]['levelup_standard'])
+        levelup_percent = group_exp / levelup_total * 100
     else:
+        levelup_total = 10
         levelup_percent = group_exp * 10
 
     
@@ -146,16 +149,17 @@ def group_detail(request, group_pk):
 
     context = {
         'group': group,
-        'group_exp': round(group_exp, 2),
         'level_dict': level_dict,
-        'levelup_percent': levelup_percent,
-        'levelup_total': float(LEVEL[group.level]['levelup_standard'] - LEVEL[group.level-1]['levelup_standard']),
+        'group_exp': round(group_exp, 2),
+        'levelup_total': round(levelup_total, 2),
+        'levelup_percent': round(levelup_percent, 2),
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
         'joined_vote': joined_vote,
         'voter_cnt': voter_cnt.items(),
     }
+    print(f'{group_exp} / {levelup_total} / {levelup_percent}')
     return render(request, 'groups/group_detail.html', context)
 
 
