@@ -154,10 +154,9 @@ def exp_up(group_pk):
     group = Group.objects.get(pk=group_pk)
     group.exp += 1
     group.save()
-    if group.exp/(group.group_users**0.5) >= LEVEL[group.level]['level_up']:
+    if group.exp/(len(group.group_users.all())**0.5) >= LEVEL[group.level]['levelup_standard']:
         group.level += 1
         group.save()
-
 
 # 개인 다이어리를 원하는 그룹에 공유
 def share(request, group_pk, diary_pk):

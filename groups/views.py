@@ -12,6 +12,7 @@ from operator import attrgetter
 from argon2 import PasswordHasher as ph
 import json
 from django.core.paginator import Paginator
+from django.db.models import Prefetch, Count
 
 
 # 사이트 인덱스 페이지
@@ -49,7 +50,7 @@ def group_create(request):
 # 그룹 레벨 이름 & 이미지
 LEVEL = {
     1: {'name': '새싹', 'img': 'img/group_level/lv1_sprout.png', 'levelup_standard': 10},
-    2: {'name': '잔디', 'img': 'img/group_level/lv2_grass.png', 'levelup_standard': 30},
+    2: {'name': '풀잎', 'img': 'img/group_level/lv2_grass.png', 'levelup_standard': 30},
     3: {'name': '나무', 'img': 'img/group_level/lv3_tree.png', 'levelup_standard': 60},
     4: {'name': '개화', 'img': 'img/group_level/lv4_flower.png', 'levelup_standard': 100},
     5: {'name': '열매', 'img': 'img/group_level/lv5_fruit.png', 'levelup_standard': 150},
@@ -66,10 +67,10 @@ def exp_up(group_pk):
     group = Group.objects.get(pk=group_pk)
     group.exp += 1
     group.save()
-    if group.exp/(group.group_users**0.5) >= LEVEL[group.level]['levelup_standard']:
+    if group.exp/(len(group.group_users.all())**0.5) >= LEVEL[group.level]['levelup_standard']:
         group.level += 1
         group.save()
-        # messages.info(request, '그룹이 레벨업했어요! 축하드립니다!')
+
 
 # 그룹 참가
 def group_join(request, group_pk):
@@ -106,6 +107,7 @@ def group_detail(request, group_pk):
         return redirect('groups:index')
     
     # 그룹 레벨 정보(이름, 이미지경로, 레벨업 기준)
+    group_exp = group.exp/(len(group.group_users.all())**0.5)
     level_dict = LEVEL[group.level]
     
     # 공지로 등록된 post, vote 조회
@@ -130,14 +132,22 @@ def group_detail(request, group_pk):
     page_objects = pagination.get_page(page)
 
     joined_vote = [selection.vote for selection in request.user.selections.all()]
+    voter_cnt = {}
+    for obj in page_objects:
+        if obj.get_model_name() == 'vote':
+            voter_cnt[obj.pk] = 0
+            for option in obj.voteselect_set.all():
+                voter_cnt[obj.pk] += option.select_users.count()
 
     context = {
         'group': group,
+        'group_exp': round(group_exp, 2),
         'level_dict': level_dict,
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
         'joined_vote': joined_vote,
+        'voter_cnt': voter_cnt.items(),
     }
     return render(request, 'groups/group_detail.html', context)
 
@@ -235,6 +245,16 @@ def member_delete(request, group_pk, username):
         return redirect('groups:group_detail', group.pk)
     
     member = get_user_model().objects.get(username=username)
+    diaries = member.diary_set.all()
+    for diary in diaries:
+        diary.share.remove(group)
+    posts = Post.objects.filter(user=member, group=group)
+    for post in posts:
+        post.delete()
+    votes = Vote.objects.filter(user=member, group=group)
+    for vote in votes:
+        vote.delete()
+        
     group.group_users.remove(member)
     return redirect('groups:group_setting', group.pk)
 
@@ -248,6 +268,16 @@ def member_withdraw(request, group_pk):
         if request.user == group.chief:
             return redirect('groups:group_detail', group.pk)
         else:
+            diaries = request.user.diary_set.all()
+            for diary in diaries:
+                diary.share.remove(group)
+            posts = Post.objects.filter(user=request.user, group=group)
+            for post in posts:
+                post.delete()
+            votes = Vote.objects.filter(user=request.user, group=group)
+            for vote in votes:
+                vote.delete()
+
             group.group_users.remove(request.user)
     return redirect('groups:index')
 
