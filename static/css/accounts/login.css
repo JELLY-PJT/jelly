@@ -14,7 +14,7 @@ button:hover {
 }
 
 /* 캐루셀 */
-.flex-row {
+/* .flex-row {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,9 +28,9 @@ button:hover {
 }
 
 .carousel-wrapper {
-  max-width: 18rem; /* 원하는 최대 너비로 설정 */
+  max-width: 18rem; 
   width: 100%;
-  height: 400px; /* 안 먹고 있는 듯원하는 높이로 설정 */
+  height: 400px; 
   margin: 0 auto;
 }
 
@@ -38,6 +38,30 @@ button:hover {
   object-fit: cover;
   width: 100%;
   height: 100%;
+} */
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+}
+
+.owl-carousel {
+  width: 200px !important;
+}
+
+.owl-stage-ourter {
+  width: 200px !important;
+}
+
+
+.carousel-img {
+  width: 200px;
+}
+
+.carousel-img img {
+  width: 200px;
 }
 
 
@@ -48,7 +72,6 @@ button:hover {
   align-items: center;
   border: 2px solid var(--color-main);
   border-radius: 8px;
-  margin: 2rem;
   padding: 2rem;
 }
 

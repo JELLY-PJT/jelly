@@ -42,15 +42,15 @@
 }
 
 .side-img-border-color{
-  width: 4.7rem;
-  height: 4.7rem;
-  border: red 3px solid;
+  width: 4.8rem;
+  height: 4.8rem;
+  border: #7B83C7 3.5px solid;
   border-radius: 50%;
   margin-bottom: 20px;
 }
 
 .side-plus {
-  margin-bottom: 200px;
+  margin-bottom: 150px;
 }
 
 .side-logo {
@@ -97,6 +97,7 @@
 .GroupCreate-ModalToggle-btn {
   background: none;
   border: none;
+  height: 76px;
   padding: 0;
   cursor: pointer;
 }
