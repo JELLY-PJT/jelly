@@ -41,12 +41,9 @@
   </div>
 </div>
 
-{% if messages %}
-  {% for message in messages %}
-    <script>alert('{{ message }}')</script>
-  {% endfor %}
-{% endif %}
-
+<div class="thumbnail-btn">
+  <span>썸네일</span>
+</div>
 {% endblock content %}
 
 {% block script %}
