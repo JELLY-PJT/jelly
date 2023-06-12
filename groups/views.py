@@ -111,6 +111,7 @@ def group_detail(request, group_pk):
     group_exp = group.exp/(len(group.group_users.all())**0.5)
     
     if group.level > 1:
+        group_exp -= float(LEVEL[group.level-1]['levelup_standard'])
         levelup_total = float(LEVEL[group.level]['levelup_standard']) - float(LEVEL[group.level-1]['levelup_standard'])
         levelup_percent = group_exp / levelup_total * 100
     else:
@@ -159,7 +160,6 @@ def group_detail(request, group_pk):
         'joined_vote': joined_vote,
         'voter_cnt': voter_cnt.items(),
     }
-    print(f'{group_exp} / {levelup_total} / {levelup_percent}')
     return render(request, 'groups/group_detail.html', context)
 
 
