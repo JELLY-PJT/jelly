@@ -1,0 +1,92 @@
+<!-- chat/templates/chat/room.html -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Group Chat</title>
+</head>
+<body>
+  <div class="">
+    <ul id="chat-log">
+      {% comment %} 기존 메시지 로드 {% endcomment %}
+      {% for message in messages %}
+        <li style="width:100%;">
+            <p>{{ message.user.nickname }}</p>
+            <p>{{ message.content }}</p>
+            {% comment %} <p>{{ message.created_at }}</p> {% endcomment %}
+            <img src="{% if message.user.image %}{{ message.user.image.url }}{% else %}{% static 'img/blank_profile_img.png' %}{% endif %}">
+        </li>
+      {% empty %}
+      {% endfor %}
+    </ul>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+  </div>
+  {{ group_pk|json_script:"group-pk" }}
+  {{ request.user.pk|json_script:"user-pk" }}
+
+  <script>
+    const roomName = JSON.parse(document.getElementById('group-pk').textContent);
+    const userPk = JSON.parse(document.getElementById('user-pk').textContent);
+    const userImg = '{{ request.user.image }}'
+
+    const chatSocket = new WebSocket(
+      'ws://'
+      + window.location.host
+      + '/ws/chat/'
+      + roomName
+      + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+      console.log('onmessage')
+      
+      const data = JSON.parse(e.data)
+      console.log(data)
+      if (data.message) {
+        let html = '<li style="width:100%;"><p>' + data.nickname + '</p>'
+            html += '<p>' + data.message + '</p>'
+            // html += '<p>' + data.created_at + '</p>'
+            if ( data.image ) {
+              html += `<img src="${ data.image }"></li>`
+            } else {
+              html += '<img src="static/img/blank_profile_img.png"></li>'
+            }
+        document.querySelector('#chat-log').innerHTML += html
+      
+      } else {
+        alert('메시지를 입력해주세요')
+      }
+    }
+
+    chatSocket.onclose = function(e) {
+      console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+      if (e.key === 'Enter') {  // enter, return
+        document.querySelector('#chat-message-submit').click();
+      }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+      const messageInputDom = document.querySelector('#chat-message-input');
+      const message = messageInputDom.value;
+      chatSocket.send(JSON.stringify({
+        'message': message,
+        'user_pk': userPk,
+        'group_pk': roomName,
+        'nickname': '{{ request.user.nickname }}',
+        'image': '{{ request.user.image.url }}',
+        //'created_at': ''
+      }));
+
+      messageInputDom.value = '';
+    };
+  </script>    
+</body>
+</html>
+
+
