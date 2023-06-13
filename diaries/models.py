@@ -76,7 +76,7 @@ class DiaryComment(models.Model):
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_diarycomments')
     
     class Meta:
-         ordering = ['-created_at']
+         ordering = ['created_at']
 
 
 class DiaryEmote(models.Model):

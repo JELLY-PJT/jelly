@@ -52,7 +52,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await sync_to_async(print)(new_message.created_at)
         message_time = new_message.created_at
         created_time = await sync_to_async(message_time.isoformat)()
-        print(created_time)
 
 
         # Send message to room group
