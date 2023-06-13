@@ -63,6 +63,15 @@
       </div>
       </section>
     {% comment %} 공유됐을 경우 감정표현, 댓글 전체조회 or 그룹별 조회 {% endcomment %}
+    {% for share in shares %}
+      <p>{{ share.group }}</p>
+      {% for emotion in share.diaryemote_set.all %}
+        <p>{{ emotion }}</p>
+      {% endfor %}
+      {% for comment in share.diarycomment_set.all %}
+        <p>{{ comment }}</p>
+      {% endfor %}
+    {% endfor %}
   </div>
 </div>
 {% endblock content %}

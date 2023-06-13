@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Diary, DiaryComment, DiaryShare, DiaryEmote
@@ -6,6 +6,7 @@ from .forms import DiaryForm, DiaryCommentForm
 from groups.models import Group
 from django.http import JsonResponse
 from bs4 import BeautifulSoup
+from django.db.models import Q
 
 EMOTIONS = [
     {'label': '좋아요', 'value': 1},
@@ -17,6 +18,7 @@ EMOTIONS = [
 ]    # 1:👍 2:🥰 3:🤣 4:😲 5:😭 6:🥳
 
 # 개인 다이어리 인덱스
+@login_required
 def index(request):
     diaries = Diary.objects.filter(user=request.user)
     context = {
@@ -26,6 +28,7 @@ def index(request):
 
 
 # 개인 다이어리 작성
+@login_required
 def create(request):
     if request.method == 'POST':
         form = DiaryForm(data=request.POST, files=request.FILES)
@@ -54,20 +57,47 @@ def create(request):
     return render(request, 'diaries/create.html', context)
 
 
-# 개인 다이어리 조회 / 공유했다면 각 그룹에 달린 감정, 댓글 표시(아직 미구현)
+# 개인 다이어리 조회 / 공유했다면 각 그룹에 달린 감정, 댓글 표시
+@login_required
 def detail(request, diary_pk):
-    diary = Diary.objects.get(pk=diary_pk)
+    diary = get_object_or_404(Diary, pk=diary_pk)
+    shares = DiaryShare.objects.filter(diary=diary).order_by('group')
+
+    group_emotions = [] # 각 그룹별 emotions(인덱스로 구분)
+    group_comments = [] # 각 그룹별 댓글(인덱스로 구분)
+
+    for share in shares:
+        emotions = []
+        for emotion in EMOTIONS:
+            label = emotion['label']
+            value = emotion['value']
+            count = DiaryEmote.objects.filter(share=share, emotion=value).count()
+            emotions.append(
+                {
+                    'label': label,
+                    'value': value,
+                    'count': count,
+                }
+            )
+        comments = share.diarycomment_set.all()
+        group_emotions.append(emotions)
+        group_comments.append(comments)
+
     if request.user == diary.user:
         context = {
-            'diary': diary
+            'diary': diary,
+            'shares': shares,
+            'group_emotions': group_emotions,
+            'group_comments': group_comments,
         }
         return render(request, 'diaries/diary.html', context)
     return redirect('diaries:index')
 
 
 # 개인 다이어리 수정
+@login_required
 def update(request, diary_pk):
-    diary = Diary.objects.get(pk=diary_pk)
+    diary = get_object_or_404(Diary, pk=diary_pk)
     if request.user == diary.user:
         if request.method == 'POST':
             form = DiaryForm(request.POST, instance=diary)
@@ -87,15 +117,16 @@ def update(request, diary_pk):
 
 
 # 개인 다이어리 삭제
+@login_required
 def delete(request, diary_pk):
-    diary = Diary.objects.get(pk=diary_pk)
+    diary = get_object_or_404(Diary, pk=diary_pk)
     if request.user == diary.user:
         diary.delete()
     return redirect('accounts:profile', request.user)
 
 
 # 그룹에 공유된 다이어리 디테일 / 감정, 댓글작성 가능
-# emotes 구현 필요
+@login_required
 def group_detail(request, group_pk, diary_pk):
     group = get_object_or_404(Group, pk=group_pk)
     diary = get_object_or_404(Diary, pk=diary_pk)
@@ -158,17 +189,25 @@ def exp_up(group_pk):
         group.level += 1
         group.save()
 
+
 # 개인 다이어리를 원하는 그룹에 공유
 def share(request, group_pk, diary_pk):
-    group = get_object_or_404(Group, pk=group_pk)
-    diary = get_object_or_404(Diary, pk=diary_pk)
-
-    if DiaryShare.objects.filter(group=group, diary=diary).exists():
-        return redirect('diaries:detail', diary_pk)
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
     
-    diary_share = DiaryShare.objects.create(group=group, diary=diary)
-    exp_up(group_pk)
-    return redirect('diaries:group_detail', group_pk, diary_pk)
+    group = get_object_or_404(Group, pk=group_pk)
+    if group.group_users.filter(pk=request.user.pk).exists():
+        diary = get_object_or_404(Diary, pk=diary_pk)
+
+        if DiaryShare.objects.filter(group=group, diary=diary).exists():
+            return redirect('diaries:detail', diary_pk)
+        
+        diary_share = DiaryShare.objects.create(group=group, diary=diary)
+        exp_up(group_pk)
+        return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
+    else:
+        messages.error(request, "올바른 접근이 아닙니다.")
+        return redirect('accounts:profile', request.user.username)
 
 
 # 공유된 다이어리의 공유 취소
@@ -182,6 +221,7 @@ def unshare(request, group_pk, diary_pk):
     return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
 
 
+@login_required
 def emotes(request, group_pk, diary_pk, emotion):
     group = get_object_or_404(Group, pk=group_pk)
     diary = get_object_or_404(Diary, pk=diary_pk)
@@ -208,6 +248,7 @@ def emotes(request, group_pk, diary_pk, emotion):
 
 
 # 공유된 다이어리에 댓글 작성
+@login_required
 def comment_create(request, group_pk, diary_pk):
     group = get_object_or_404(Group, pk=group_pk)
     diary = get_object_or_404(Diary, pk=diary_pk)
@@ -231,6 +272,7 @@ def comment_create(request, group_pk, diary_pk):
     
 
 # 공유된 다이어리 댓글 수정
+@login_required
 def comment_update(request, group_pk, diary_pk, comment_pk):
     group = get_object_or_404(Group, pk=group_pk)
     diary = get_object_or_404(Diary, pk=diary_pk)
@@ -241,7 +283,6 @@ def comment_update(request, group_pk, diary_pk, comment_pk):
         return redirect('diaries:group_detail', group_pk=group_pk, diary_pk=diary_pk)
 
     if group.group_users.filter(pk=request.user.pk).exists():
-        # 공유된 게시물인지 확인 get_object_or_404말고 다른 방법 있는지 체크
         
         diary_share = get_object_or_404(DiaryShare, group=group, diary=diary)
         if request.method == 'POST':
@@ -266,6 +307,7 @@ def comment_update(request, group_pk, diary_pk, comment_pk):
     
 
 # 공유된 다이어리 댓글 삭제
+@login_required
 def comment_delete(request, group_pk, diary_pk, comment_pk):
     group = get_object_or_404(Group, pk=group_pk)
     diary = get_object_or_404(Diary, pk=diary_pk)
@@ -282,6 +324,7 @@ def comment_delete(request, group_pk, diary_pk, comment_pk):
 
 
 # 공유된 다이어리 댓글 좋아요(비동기처리)
+@login_required
 def comment_like(request, group_pk, diary_pk, comment_pk):
     group = get_object_or_404(Group, pk=group_pk)
     comment = get_object_or_404(DiaryComment, pk=comment_pk)
