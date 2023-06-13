@@ -7,15 +7,14 @@ admin_router = DefaultRouter()
 admin_router.register(r'schedules', views.ScheduleViewSet, basename="schedule")
 admin_router.register(r'calendars', views.CalendarViewSet, basename="calendar")
 
-calendarrouter = DefaultRouter()
-calendarrouter.register(r'calendars', views.UserCalendarViewSet, basename="calendar")
+user_schedule_router = DefaultRouter()
+user_schedule_router.register(r'schedules', views.UserScheduleViewSet, basename="user_schedule")
 
-schedulerouter = DefaultRouter()
-schedulerouter.register(r'schedules', views.CalendarScheduleViewSet, basename="schedule")
+group_schedule_router = DefaultRouter()
+group_schedule_router.register(r'schedules', views.GroupScheduleViewSet, basename="group_schedule")
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
     path('api/', include(admin_router.urls)),
-    path('', include(calendarrouter.urls)),
-    path('calendars/<int:calendar_id>/', include(schedulerouter.urls)),
+    path('', include(user_schedule_router.urls)),
 ]

@@ -11,7 +11,6 @@ class CalendarSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='preview'
     )
-    color = serializers.CharField()
 
     class Meta:
         model = Calendar
@@ -21,7 +20,26 @@ class ScheduleSerializer(serializers.ModelSerializer):
     # description = serializers.CharField(
     #     style={'base_template': 'textarea.html'}
     # )
+    # start_date = serializers.DateField(source='start__date', read_only=True, required=False)
+    # start_time = serializers.TimeField(source='start__time', read_only=True, required=False)
+    # end_date = serializers.DateField(source='end__date', read_only=True, required=False)
+    # end_time = serializers.TimeField(source='end__time', read_only=True, required=False)
+    # start_time = serializers.TimeField(
+    #     time_field = 'start__time'
+    # )
+    # end_date = serializers.DateField(
+    #     date_field = 'end__date'
+    # )
+    # end_time = serializers.TimeField(
+    #     time_field = 'end__time'
+    # )
+
+    attendee = serializers.SlugRelatedField(
+        many=True,
+        slug_field="name",
+        read_only=True,
+    )
     class Meta:
         model = Schedule
-        fields = ['calendar', 'start', 'end', 'summary', 'location', 'attendee', 'description']
-        read_only_fields = ['attendee', 'calendar']
+        fields = ['id', 'calendar', 'start', 'end', 'summary', 'location', 'attendee', 'description']
+        read_only_fields = ['calendar']

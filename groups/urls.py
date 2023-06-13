@@ -1,6 +1,6 @@
-from django.urls import path
+from django.urls import path, include
+from schedules.urls import group_schedule_router
 from . import views
-
 
 app_name = 'groups'
 urlpatterns = [
@@ -36,5 +36,6 @@ urlpatterns = [
     path('<int:group_pk>/votes/<int:vote_pk>/delete/', views.vote_delete, name='vote_delete'),
     path('<int:group_pk>/votes/<int:vote_pk>/notice/', views.notice_vote, name='notice_vote'),
     path('votes/<int:vote_pk>/hits/', views.vote_hits, name='vote_hits'),
-    path('search/', views.group_search, name='group_search')
+    path('search/', views.group_search, name='group_search'),
+    path('<int:group_pk>/calendars/', include(group_schedule_router.urls)),
 ]

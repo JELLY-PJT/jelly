@@ -15,10 +15,10 @@ class Calendar(models.Model):
     owner_content_type = models.ForeignKey(ContentType, editable=False, limit_choices_to=Q(app_label='accounts', model='user') | Q(app_label='groups', model='group'), on_delete=models.DO_NOTHING)
     owner_object_id = models.PositiveIntegerField(editable=False)
     _owner = fields.GenericForeignKey('owner_content_type', 'owner_object_id')
-    color = models.CharField(
-        max_length=6, 
-        default="000000"
-    )
+    # color = models.CharField(
+    #     max_length=6, 
+    #     default="000000"
+    # )
 
     def __str__(self):
         return f'{self.owner_content_type.name} "{self.owner}"의  캘린더'
@@ -59,9 +59,7 @@ class Schedule(models.Model):
     attendee = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
     created_at = models.DateTimeField(auto_now_add=True) # 일정 생성시각
-    updated_at = models.DateTimeField(auto_now=True) # 일정 수정시각
-
-     
+    updated_at = models.DateTimeField(auto_now=True) # 일정 수정시각     
 
 
     def __str__(self):
@@ -74,6 +72,14 @@ class Schedule(models.Model):
     def preview(self):
         return f'{self.start} ~ {self.end} : {self.summary[:32]}'
     
+
+    @property
+    def start_yyyymm(self):
+        return f'{self.start.year}{self.start.month:02d}'
+    
+    @property
+    def end_yyyymm(self):
+        return f'{self.end.year}{self.end.month:02d}'
 """
 scheduleIcalString += "DTSTART;TZID=Asia/Seoul:20161116T190000\n"     # 시작 일시
 scheduleIcalString += "DTEND;TZID=Asia/Seoul:20161116T193000\n"       # 종료 일시
