@@ -7,36 +7,12 @@ from .models import Message
 from groups.models import Group
 from django.contrib.auth import get_user_model
 from asgiref.sync import sync_to_async
+import datetime
 
 
 User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
-
-    # async def fetch_messages(self, data):
-    #     group_pk = int(self.group_pk)
-    #     messages = Message.last_30_messages(self, group_pk=group_pk)
-    #     content = {
-    #         'command': 'messages',
-    #         'messages': self.messages_to_json(messages)
-    #     }
-    #     self.send_message(content)
-
-    # async def new_message(self, data):
-    #     user_pk = data['user_pk']
-    #     group_pk = data['group_pk']
-    #     user_contact = User.objects.filter(user_id=user_pk)[0]
-    #     group_contact = Group.objects.filter(group_id=group_pk)[0]
-    #     message_create = Message.objects.create(
-    #         user=user_contact,
-    #         group=group_contact,
-    #         message=data['message']
-    #     )
-    #     content = {
-    #         'command': 'new_message',
-    #         'message': self.message_to_json(message_create)
-    #     }
-    #     await self.send_chat_message(content)
     
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["group_pk"]
@@ -65,16 +41,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         group_pk = data["group_pk"]
         nickname = data["nickname"]
         image = data["image"]
-        # created_at = data["created_at"]
-        # user = User.objects.get(pk=user_pk)
-        # group = Group.objects.get(pk=group_pk)
+
+        user = await sync_to_async(User.objects.get)(pk=user_pk)
+        group = await sync_to_async(Group.objects.get)(pk=group_pk)
 
         await self.save_message(user_pk, group_pk, message)
-        # created_at = await Message.get_latest_message(user, group)
-        # if created_at:
-        #     print(created_at)
-        # else:
-        #     print("메시지를 찾을 수 없습니다.")
+
+        messages = await sync_to_async(Message.objects.filter)(user=user, group=group)
+        new_message = await sync_to_async(messages.last)()
+        await sync_to_async(print)(new_message.created_at)
+        message_time = new_message.created_at
+        created_time = await sync_to_async(message_time.isoformat)()
+        print(created_time)
+
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -86,7 +65,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "group_pk": group_pk,
                 "nickname": nickname,
                 "image": image,
-                # "created_at": created_at,
+                "created_time": created_time,
             }
         )
 
@@ -97,7 +76,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         group_pk = event["group_pk"]
         nickname = event["nickname"]
         image = event["image"]
-        # created_at = event["created_at"]
+        created_time = event["created_time"]
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
@@ -106,7 +85,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "group_pk": group_pk,
             "nickname": nickname,
             "image": image,
-            # "created_at": created_at,
+            "created_time": created_time,
         }))
     
     @sync_to_async
