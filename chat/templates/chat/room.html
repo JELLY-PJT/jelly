@@ -14,7 +14,7 @@
         <li style="width:100%;">
             <p>{{ message.user.nickname }}</p>
             <p>{{ message.content }}</p>
-            {% comment %} <p>{{ message.created_at }}</p> {% endcomment %}
+            <p>{{ message.created_at|date:"Y년 m월 d일 A g:i" }}</p>
             <img src="{% if message.user.image %}{{ message.user.image.url }}{% else %}{% static 'img/blank_profile_img.png' %}{% endif %}">
         </li>
       {% empty %}
@@ -47,7 +47,20 @@
       if (data.message) {
         let html = '<li style="width:100%;"><p>' + data.nickname + '</p>'
             html += '<p>' + data.message + '</p>'
-            // html += '<p>' + data.created_at + '</p>'
+
+            // created_time의 형식 맞추기
+            const createdTime = new Date(data.created_time)
+            const formattedTime = createdTime.toLocaleString('ko-KR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })
+            
+            html += '<p>' + formattedTime + '</p>'
+
             if ( data.image ) {
               html += `<img src="${ data.image }"></li>`
             } else {
@@ -80,7 +93,6 @@
         'group_pk': roomName,
         'nickname': '{{ request.user.nickname }}',
         'image': '{{ request.user.image.url }}',
-        //'created_at': ''
       }));
 
       messageInputDom.value = '';
