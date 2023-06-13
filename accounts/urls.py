@@ -1,5 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from schedules.urls import user_schedule_router 
 
 app_name = 'accounts'
 urlpatterns = [
@@ -12,5 +13,5 @@ urlpatterns = [
     path('profile/<username>/', views.profile, name='profile'),
     path('profile/<username>/post/', views.profile, name='profile_share'),
     path('profile/<username>/share/', views.profile, name='profile_share'),
-    path('profile/<username>/calendar/', views.profile, name='profile_calendar'),
+    path('profile/<username>/calendars/', include(user_schedule_router.urls)),
 ]

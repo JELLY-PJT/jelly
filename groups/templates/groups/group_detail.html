@@ -5,6 +5,7 @@
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/group_detail.css' %}">
+  <link rel="stylesheet" href="{% static 'css/group_calendar.css' %}">
   <link rel="stylesheet" href="{% static 'css/vote.css' %}">
 {% endblock css %}
 
@@ -621,7 +622,7 @@
       </section>
 
       <section class="post-list" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
-        <p>calendar</p>
+        {% include 'schedules/group_calendar.html' with group=group %}
       </section>
       
       <section class="post-list" id="chat" role="tabpanel" aria-labelledby="chat-tab">
@@ -716,3 +717,7 @@
 
 
 {% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/groups/group_calendar.js' %}"></script>  <!-- 그룹 캘린더-->
+{% endblock script %}
