@@ -5,7 +5,7 @@
   --index-content-height: calc(var(--content-min-height) - 160px);
   --group-area-height: calc(var(--index-content-height) - 115px);
   --calendar-width: calc(100vw - 130px);
-  --date-cell-width: calc(calc(var(--calendar-width)/2 - 20px)/7);
+  --date-cell-width: calc(calc(var(--calendar-width)/2 - 20px)/7 );
   overflow:hidden;
 }
 #calendar {
@@ -92,6 +92,7 @@
 #calendar .calendar-date {
   max-width: var(--date-cell-width);
   height: 5rem; 
+  padding-left:1px;
   cursor: pointer;
   display:flex;
   flex-direction: column;
@@ -102,9 +103,9 @@
 
 #calendar .square {
   width: 100%;
-  padding-top: 25%; /* 스케쥴 막대 시작 위치 결정 */
+  padding-top: 40%; /* 스케쥴 막대 시작 위치 결정 */
   position: relative;
-  margin: 0 auto 20% auto;
+  margin: 0 auto 0 auto;
 }
 
 #calendar .inner {
@@ -115,13 +116,12 @@
   line-height:2rem;
 }
 
-#calendar .hidden-schedule-bar {
+#calendar .schedule-grid-cell {
   min-height: 0.5rem;
-  font-size: 0.3rem;
-  margin:1px 0 1px 0;
+  margin: 1px;
 }
+
 #calendar .schedule-bar {
-  border: 0.2rem white solid;
   min-height: 0.5rem;
   font-size: 0.3rem;
   margin:1px;

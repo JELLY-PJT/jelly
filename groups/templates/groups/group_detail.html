@@ -715,9 +715,8 @@
 <script src="{% static 'js/groups/vote_perform.js' %}"></script>  <!-- 투표 수행 -->
 <script src="{% static 'js/groups/group_invite.js' %}"></script>  <!-- 그룹 초대링크 -->
 
-
 {% endblock content %}
 
 {% block script %}
-<script src="{% static 'js/groups/group_calendar.js' %}"></script>  <!-- 그룹 캘린더-->
+<script type="module" src="{% static 'js/groups/group_calendar.js' %}"></script>  <!-- 그룹 캘린더-->
 {% endblock script %}

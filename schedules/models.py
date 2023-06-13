@@ -62,24 +62,11 @@ class Schedule(models.Model):
     updated_at = models.DateTimeField(auto_now=True) # 일정 수정시각     
 
 
-    def __str__(self):
-        startdate = f'{self._MONTHNAMES[self.start.month]} {self.start.day}'
-        # time = [f'{self.start.time}' , f'{self.end.time}']
-
-        return f'({startdate}) {self.summary[:32]}'
-    
     @property
     def preview(self):
         return f'{self.start} ~ {self.end} : {self.summary[:32]}'
-    
 
-    @property
-    def start_yyyymm(self):
-        return f'{self.start.year}{self.start.month:02d}'
-    
-    @property
-    def end_yyyymm(self):
-        return f'{self.end.year}{self.end.month:02d}'
+
 """
 scheduleIcalString += "DTSTART;TZID=Asia/Seoul:20161116T190000\n"     # 시작 일시
 scheduleIcalString += "DTEND;TZID=Asia/Seoul:20161116T193000\n"       # 종료 일시
