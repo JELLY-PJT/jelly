@@ -84,10 +84,15 @@
 }
 
 .create-form {
+  padding: .5rem .75rem;
   border: 1px solid darkgray;
   border-radius: 10px;
   margin-bottom: 0.3rem; 
   width: 21rem;
+}
+
+.create-form[type=file] {
+  padding: 0;
 }
 
 .create-form:hover {

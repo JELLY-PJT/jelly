@@ -45,7 +45,7 @@
                   <div class="px-3 py-2 user-list space-y-4">
                     {% for user in group.group_users.all %}
                       <div class="flex items-center space-x-4">
-                        <div class="w-8 h-8 rounded-full">
+                        <div class="w-8 h-8 rounded-full overflow-hidden">
                           {% if user.image %}
                             <img src="{{ user.image.url }}" alt="">
                           {% else %}
@@ -117,7 +117,7 @@
           <button id="calendar-tab" data-tabs-target="#calendar" role="tab" aria-controls="calendar" aria-selected="false">캘린더</button>
         </li>
         <li class="tab-btn" role="presentation">
-          <button id="chat-tab" data-tabs-target="#chat" role="tab" aria-controls="chat" aria-selected="false">채팅</button>
+          <a href="{% url 'group_chat' group.pk %}" id="chat-tab">채팅</a>
         </li>
         <li class="tab-btn" role="presentation">
           <button id="album-tab" data-tabs-target="#album" role="tab" aria-controls="album" aria-selected="false">앨범</button>
@@ -298,10 +298,10 @@
                       <div id="vote-modal-{{ writing.pk }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                         <div class="relative w-full max-w-md max-h-full">
                           <!-- Modal content -->
-                          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                          <div class="relative bg-white rounded-lg shadow">
                             <!-- Modal header -->
-                            <div class="flex items-center justify-between p-5 mb-6 border-b rounded-t dark:border-gray-600">
-                              <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+                            <div class="flex items-center justify-between p-5 mb-6 border-b rounded-t">
+                              <h3 class="text-xl font-medium text-gray-900">
                                 <p style='color: #7B83C7'>{{ writing.title }}</p>
                                 <div class='header-container'>
                                   <p class='hits'>조회수: <span id="{{ writing.pk }}-hits-count">{{ writing.hits.all|length }}</span></p>
@@ -314,7 +314,7 @@
                                   <p>{{ writing.deadline }} </p>                 
                                 </div>
                               </h3>
-                              <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="vote-modal-{{ writing.pk }}">
+                              <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="vote-modal-{{ writing.pk }}">
                                   <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                                   <span class="sr-only">Close modal</span>
                               </button>
@@ -346,7 +346,7 @@
         
                                     {% if user in option.select_users.all %}
                                     <div class='flex justify-center'>
-                                      <div class="mb-3 w-10/12 bg-gray-200 rounded-full dark:bg-gray-700">
+                                      <div class="mb-3 w-10/12 bg-gray-200 rounded-full">
                                         <div id="calculationResult-{{ option.pk }}" class="bg-[var(--color-main)] text-xs font-medium text-white text-center p-0.5 leading-none rounded-full" style="width: 45%"
                                             data-select-users-count="{% if option.select_users.all.count == 0 %}0{% else %}{{ option.select_users.all.count }}{% endif %}"
                                             data-voteselect-count="{% if voters == 0 %}1{% else %}{{ voters }}{% endif %}"></div>
@@ -354,7 +354,7 @@
                                     </div>
                                     {% else %}
                                     <div class='flex justify-center'>
-                                      <div class="mb-3 w-10/12 bg-gray-200 rounded-full dark:bg-gray-700">
+                                      <div class="mb-3 w-10/12 bg-gray-200 rounded-full">
                                         <div id="calculationResult-{{ option.pk }}" class="bg-gray-400 text-xs font-medium text-white text-center p-0.5 leading-none rounded-full" style="width: 45%"
                                             data-select-users-count="{% if option.select_users.all.count == 0 %}0{% else %}{{ option.select_users.all.count }}{% endif %}"
                                             data-voteselect-count="{% if voters == 0 %}1{% else %}{{ voters }}{% endif %}"></div>
@@ -411,7 +411,7 @@
       
                                   {% if user in option.select_users.all %}
                                   <div class='flex justify-center'>
-                                    <div class="mb-3 w-10/12 bg-gray-200 rounded-full dark:bg-gray-700">
+                                    <div class="mb-3 w-10/12 bg-gray-200 rounded-full">
                                       <div id="calculationResult-{{ option.pk }}" class="bg-[var(--color-main)] text-xs font-medium text-white text-center p-0.5 leading-none rounded-full" style="width: 45%"
                                           data-select-users-count="{% if option.select_users.all.count == 0 %}0{% else %}{{ option.select_users.all.count }}{% endif %}"
                                           data-voteselect-count="{% if voters == 0 %}1{% else %}{{ voters }}{% endif %}"></div>
@@ -419,7 +419,7 @@
                                   </div>
                                   {% else %}
                                   <div class='flex justify-center'>
-                                    <div class="mb-3 w-10/12 bg-gray-200 rounded-full dark:bg-gray-700">
+                                    <div class="mb-3 w-10/12 bg-gray-200 rounded-full">
                                       <div id="calculationResult-{{ option.pk }}" class="bg-gray-400 text-xs font-medium text-white text-center p-0.5 leading-none rounded-full" style="width: 45%"
                                           data-select-users-count="{% if option.select_users.all.count == 0 %}0{% else %}{{ option.select_users.all.count }}{% endif %}"
                                           data-voteselect-count="{% if voters == 0 %}1{% else %}{{ voters }}{% endif %}"></div>
@@ -464,7 +464,7 @@
                                       </div>
                                       <div class='w-full me-5'>                            
                                         <div class='flex justify-between mt-2 mx-3'>
-                                          <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                          <div class="text-base leading-relaxed text-gray-500">
                                             {{ option.content }}
                                           </div>
                                           <!-- 투표한 사람 -->
@@ -472,7 +472,7 @@
                                           <div>{{ option.select_users.all|length }}명</div>
                                         </div>
                                         <div class='flex justify-center'>
-                                          <div class="mb-3 w-full bg-gray-200 rounded-full dark:bg-gray-700">
+                                          <div class="mb-3 w-full bg-gray-200 rounded-full">
                                             <div id="calculationResult-{{ option.pk }}" class="bg-gray-400 text-xs font-medium text-white text-center p-0.5 leading-none rounded-full" style="width: 45%"
                                                 data-select-users-count="{% if option.select_users.all.count == 0 %}0{% else %}{{ option.select_users.all.count }}{% endif %}"
                                                 data-voteselect-count="{% if voters == 0 %}1{% else %}{{ voters }}{% endif %}"></div>
@@ -552,13 +552,13 @@
                         <div id="vote-update-modal-{{ writing.pk }}" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                           <div class="relative w-full max-w-md max-h-full">
                             <!-- Modal content -->
-                            <div class="relative vote-modal-content bg-white rounded-lg shadow dark:bg-gray-700">
-                              <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="vote-update-modal-{{ writing.pk }}">
+                            <div class="relative vote-modal-content bg-white rounded-lg shadow">
+                              <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="vote-update-modal-{{ writing.pk }}">
                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                                 <span class="sr-only">Close modal</span>
                               </button>
                               <div class="vote-modal-content px-6 py-6 lg:px-8">
-                                <h3 class="VoteCreate-txt mb-4 text-xl font-medium text-gray-900 dark:text-white">투표 수정</h3>
+                                <h3 class="VoteCreate-txt mb-4 text-xl font-medium text-gray-900">투표 수정</h3>
                                 <form class="vote-modal-content" id="vote-update-form-{{ writing.pk }}" action="{% url 'groups:vote_update' group.pk writing.pk %}" method="POST">
                                   {% csrf_token %}
                                   <p>{{ vote_form.title.label }}</p>
@@ -684,13 +684,9 @@
       <section class="post-list" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
         {% include 'schedules/group_calendar.html' with group=group %}
       </section>
-      
-      <section class="post-list" id="chat" role="tabpanel" aria-labelledby="chat-tab">
-        <p>chat</p>
-      </section>
 
       <section class="album-list" id="album" role="tabpanel" aria-labelledby="album-tab">
-        {% for writing in writings %}
+        {% for writing in writings_img %}
           {% if writing.get_model_name == 'post' %}
             {% if writing.postimage_set.all %}
               <div class="imgae album-img">
@@ -721,13 +717,13 @@
 <div id="vote-create-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
   <div class="relative w-full max-w-md max-h-full">
     <!-- Modal content -->
-    <div class="relative vote-modal-content bg-white rounded-lg shadow dark:bg-gray-700">
-      <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="vote-create-modal">
+    <div class="relative vote-modal-content bg-white rounded-lg shadow">
+      <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="vote-create-modal">
         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
         <span class="sr-only">Close modal</span>
       </button>
       <div class="vote-modal-content px-6 py-6 lg:px-8">
-        <h3 class="VoteCreate-txt mb-4 text-xl font-medium dark:text-white">투표 작성</h3>
+        <h3 class="VoteCreate-txt mb-4 text-xl font-medium">투표 작성</h3>
         <form class="vote-modal-content" action="{% url 'groups:vote_create' group.pk %}" method="POST">
             {% csrf_token %}
             <p>{{ vote_form.title.label }}</p>

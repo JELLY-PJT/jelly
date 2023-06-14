@@ -18,7 +18,7 @@
 
   /* size */
   /* content 최소 높이 */
-  --content-min-height: calc(100vh - 118px); 
+  --content-min-height: calc(100vh - 127px); 
 }
 
 body {

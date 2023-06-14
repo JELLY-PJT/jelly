@@ -157,6 +157,7 @@ def group_detail(request, group_pk):
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
+        'writings_img': writings,
         'joined_vote': joined_vote,
         'voter_cnt': voter_cnt.items(),
     }
