@@ -1,33 +1,33 @@
 
-#calendar,
-#calendar::before,
-#calendar::after {
+.calendar,
+.calendar::before,
+.calendar::after {
   --index-content-height: calc(var(--content-min-height) - 160px);
   --group-area-height: calc(var(--index-content-height) - 115px);
   --calendar-width: calc(100vw - 130px);
   --date-cell-width: calc(calc(var(--calendar-width)/2 - 20px)/7);
   overflow:hidden;
 }
-#calendar {
+.calendar {
   display: flex;
   flex-direction: row;
   height: var(--index-content-height);
   width: var(--calendar-width);
 }
 
-#calendar > div {
+.calendar > div {
   flex-basis : 50%;   /* width: 0.5 * var(--calendar-width) */
   padding: 5% 10px 5% 10px;
 }
 
-#calendar .calendar-area {
+.calendar .calendar-area {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   margin: 0 auto;
 }
 
-#calendar .calendar-header {
+.calendar .calendar-header {
   width: 100%; /* 0.5 * var(--calendar-width) -20px */
   height: fit-content;
   max-height: 100%;
@@ -36,7 +36,7 @@
   margin-bottom: 1rem;
 }
 
-#calendar .btn-prev {
+.calendar .btn-prev {
   flex: initial;
   border: 1px solid transparent;
   text-decoration: none;
@@ -44,7 +44,7 @@
   text-align: center;
 }
 
-#calendar .btn-next {
+.calendar .btn-next {
   flex: initial;
   border: 1px solid transparent;
   text-decoration: none;
@@ -52,7 +52,7 @@
   text-align: center;
 }
 
-#calendar .calendar-title {
+.calendar .calendar-title {
   flex: auto;
   text-align: center;
   font-weight: bold;
@@ -63,7 +63,7 @@
   padding: 0;
 }
 
-#calendar .date-container{
+.calendar .date-container{
   width: 100%; 
   max-height: 100%;
   display: grid;
@@ -72,7 +72,7 @@
   grid-template-columns: repeat(7, 1fr);
 } 
 
-#calendar .day-row{
+.calendar .day-row{
   width: 100%;
   height: fit-content;
   max-height: 100%;
@@ -82,14 +82,14 @@
   grid-template-columns: repeat(7, 1fr);
 } 
 
-#calendar .calendar-day {
+.calendar .calendar-day {
   max-width: var(--date-cell-width);
   text-align: center; 
   font-weight: bold;
   padding: 5px;
 }
 
-#calendar .calendar-date {
+.calendar .calendar-date {
   max-width: var(--date-cell-width);
   height: 5rem; 
   cursor: pointer;
@@ -100,14 +100,14 @@
   
 }
 
-#calendar .square {
+.calendar .square {
   width: 100%;
   padding-top: 25%; /* 스케쥴 막대 시작 위치 결정 */
   position: relative;
   margin: 0 auto 20% auto;
 }
 
-#calendar .inner {
+.calendar .inner {
   position: absolute; top: 0; left: 0;
   width: 100%;
   height: 100%;
@@ -115,12 +115,12 @@
   line-height:2rem;
 }
 
-#calendar .hidden-schedule-bar {
+.calendar .hidden-schedule-bar {
   min-height: 0.5rem;
   font-size: 0.3rem;
   margin:1px 0 1px 0;
 }
-#calendar .schedule-bar {
+.calendar .schedule-bar {
   border: 0.2rem white solid;
   min-height: 0.5rem;
   font-size: 0.3rem;
@@ -129,14 +129,14 @@
   z-index:9999;
 }
 
-#calendar .other-month {
+.calendar .other-month {
   color: var(--color-main);
 }
-#calendar .calendar-date .inner:hover {
+.calendar .calendar-date .inner:hover {
   background-color: var(--color-main-light);
 }
 
-#calendar .calendar-months {
+.calendar .calendar-months {
   display: flex;
   width: 100%;
   text-align: center;
@@ -144,7 +144,7 @@
   margin-top: 10px;
 }
 
-#calendar .calendar-month {
+.calendar .calendar-month {
   flex: auto;
   width: calc(100% / 5);
   text-align: center;
@@ -152,16 +152,16 @@
   cursor: pointer;
 }
 
-#calendar .note-header  {
+.calendar .note-header  {
   display: flex;
   flex-direction: column;
   padding: 5% 0 5% 0;
 }
 
-#calendar .note-header > * {
+.calendar .note-header > * {
   margin: 1rem;
 }
-#calendar .note-header-date {
+.calendar .note-header-date {
   width: var(--date-cell-width);
   font-size: 4rem;
 }
@@ -191,12 +191,12 @@
   width: 70%;
   height: 70%;
 }
-/* #calendar-create-button .icon path {
+/* .calendar-create-button .icon path {
   fill: var(--color-main);
 } */
 
 
-#calendar .note-area {
+.calendar .note-area {
   margin: 20px auto;
   padding: 10px;
   background-color: var(--color-main-light);
