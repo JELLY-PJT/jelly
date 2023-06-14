@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserCreationForm, UserChangeForm
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
+from django.forms.widgets import ClearableFileInput
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -88,6 +89,10 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'password1', 'password2', 'nickname', 'email', 'image',)
 
 
+class CustomClearableFileInput(ClearableFileInput):
+    template_name = 'accounts/custom_clearable_file_input.html'
+
+
 class CustomUserChangeForm(UserChangeForm):
     nickname = forms.CharField(
         label='닉네임',
@@ -109,7 +114,7 @@ class CustomUserChangeForm(UserChangeForm):
     )
     image = forms.ImageField(
         label='프로필 이미지',
-        widget=forms.ClearableFileInput(
+        widget= CustomClearableFileInput(
             attrs={
                 'class': 'signup-form-control',
                 'placeholder' : '프로필 이미지',

@@ -33,6 +33,20 @@
   background-color: #7B83C7;
 }
 
+
+.side-logout {
+  display: flex;
+  position: fixed;
+  bottom: 15px;
+  left: 20px;
+}
+
+.side-logout input {
+  color: rgb(84, 82, 82);
+  font-size: 14px;
+  margin-left: 3px
+}
+
 .side-img {
   width: 4.7rem;
   height: 4.7rem;

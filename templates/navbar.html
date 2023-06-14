@@ -4,17 +4,20 @@
     <img src="{% static 'img/index_logo.png' %}" alt="로고" class="logo">
     {% if user.is_authenticated %}
       <div class="row nav--tab">
-        <a href="{% url 'accounts:profile' user.username %}"><p>프로필</p></a>
+        <a href="{% url 'accounts:profile' user.username %}">
+          <p>프로필</p>
+        </a>
         <form action="{% url 'accounts:logout' %}" method='POST'>
           {% csrf_token %}
-          <input type="submit" value='로그아웃'>
+          <div class='nav-link'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="rgb(84, 82, 82)" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+            </svg>
+            <input type="submit" value='로그아웃'>
+          </div>
         </form> 
       </div>
-    {% else %}
-    <div class="row nav--tab">
-      <a href="{% url 'accounts:signup' %}"><p>회원가입</p></a>
-      <a href="{% url 'accounts:login' %}"><p>로그인</p></a>
-    </div>      
+    {% else %}     
     {% endif %}
   </div>
   <div class="nav--line"></div> 
