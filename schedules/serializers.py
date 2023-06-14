@@ -3,8 +3,6 @@ from .models import Calendar, Schedule
 from django.utils.translation import gettext_lazy as _
 
 
-
-
 class CalendarSerializer(serializers.ModelSerializer):
     schedules = serializers.SlugRelatedField(
         many=True,
