@@ -84,10 +84,10 @@ chatSocket.onmessage = function(e) {
 
     if (data.nickname != '{{ user.nickname }}') {
       console.log('me')
-      if ( data.image ) {
-        html += `<img src="${ data.image }"></div>`
+      if ( data.image != '' ) {
+        html += `<img src="/media/${ data.image }"></div>`
       } else {
-        html += '<img src="static/img/blank_profile_img.png"></div>'
+        html += '<img src="/static/img/blank_profile_img.png"></div>'
       }
     }
 
@@ -139,7 +139,7 @@ document.querySelector('#chat-message-submit').onclick = function(e) {
     'user_pk': userPk,
     'group_pk': roomName,
     'nickname': '{{ request.user.nickname }}',
-    'image': '{{ request.user.image.url }}',
+    'image': '{{ request.user.image }}',
   }));
 
   messageInputDom.value = '';
