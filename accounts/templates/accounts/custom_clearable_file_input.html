@@ -1,0 +1,12 @@
+<span class="clearable-file-input">
+  {% if widget.value.url %}
+  <div class='flex mt-4'>
+    <p style='color: rgb(84, 82, 82);'>기존 이미지를 삭제하시겠습니까?</p>
+    <input style='border-radius: 3px; margin-left: 15px; margin-top: 3px; margin-right: 2px' type="checkbox" name="{{ widget.name }}_clear" id="id_{{ widget.name }}_clear">
+    <label style='color: rgb(84, 82, 82);' for="id_{{ widget.name }}_clear">삭제</label>
+  </div>
+  {% else %}
+  {% endif %}
+  <p class='mt-3' style='color: rgb(84, 82, 82);'>새로운 프로필 이미지를 선택해 주세요</p>
+  <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+</span>

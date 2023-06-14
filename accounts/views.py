@@ -70,6 +70,9 @@ def update(request):
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
+            if 'image_clear' in request.POST:
+                if request.user.image:
+                    request.user.image.delete()
             form.save()
             return redirect('accounts:profile', request.user)
     else:

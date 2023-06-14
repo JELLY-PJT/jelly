@@ -47,3 +47,14 @@ nav .index.logo-line {
   width: 70%;
   height: 0;
 } */
+
+.nav-link {
+  display: flex;
+  
+}
+
+.nav-link input {
+  color: rgb(84, 82, 82);
+  font-size: 16px;
+  margin-left: 3px
+}
