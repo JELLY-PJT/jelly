@@ -6,15 +6,17 @@
 
 {% block content %}
 
-<div class='flex-row'>
+<div class='update-container '>
   <div class='signup-box'>
-    <div class='signup-logo'><img src="{% static 'img/index_logo.png' %}" alt=""></div>
+    <div class='signup-logo'>
+      <a href="{% url 'accounts:login' %}"><img src="{% static 'img/index_logo.png' %}" alt=""></a>
+    </div>
     <form class='signup-form' action="{% url 'accounts:update' %}" method="POST" enctype = 'multipart/form-data'>
       {% csrf_token %}
-      {% for field in form %}
-      <div>
-        {{ field }}
-      </div> 
+     {% for field in form %}
+        <div>
+          {{ field }}
+        </div>
       {% endfor %}
       <button class='update-btn'>정보수정</button> 
       <a class='change-password-btn' href="{% url 'accounts:change_password' %}">비밀번호 변경</a>
