@@ -26,7 +26,7 @@
 /* 스크롤바 커스텀 */
 #chat-log::-webkit-scrollbar {
   background-color: #fff;
-  width: 1rem;
+  width: 0.875rem;
 }
 
 #chat-log::-webkit-scrollbar-track {

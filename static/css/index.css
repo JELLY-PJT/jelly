@@ -1,12 +1,13 @@
 html {
   box-sizing: border-box;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: inherit;
-  --thumbnail-border-radius: 15%;
+  --thumbnail-border-radius: 1rem;
   --index-content-height: calc(var(--content-min-height) - 160px);
   --group-area-height: calc(var(--index-content-height) - 115px);
 }
@@ -53,21 +54,23 @@ html {
   margin: 3% 0 3% 0;
 }
 #group-area .menu {
-  /* width: 100%; */
+  width: 390px;
   display: flex;
+  margin: 4% auto;
   height: fit-content;
   flex-direction: row;
   justify-content: center;
   align-items:center;
 }
 #group-search-bar {
-  flex-basis: 50%;
+  flex-grow: 1;
   display:flex;
   flex-direction: row;
   justify-content: center;
 }
 #group-search-bar form{
-  margin-left: auto;
+  flex-grow: 1;
+  margin-right: 1rem;
 }
 #group-search-bar input[type='search'] {
   width: 100%;
@@ -113,10 +116,7 @@ html {
   width: 70%;
   height: 70%;
 }
-#group-create-button.menu-item .icon {
-  width: 50%;
-  height: 50%;
-}
+
 #group-create-button .icon path {
   fill: var(--color-main);
 }
@@ -141,8 +141,13 @@ html {
 #group-buttons-grid .item.button {
   width: 100%;
   color: white;
-  font-size: 1.2vw;
+  font-size: 1.125rem;
+  font-weight: 500;
   letter-spacing: 0.2vw; /* 글자 간격 */
+}
+
+#group-buttons-grid .item.button:hover .inner {
+  background-color: var(--color-main-dark);
 }
 
 #group-buttons-grid .square {
@@ -166,16 +171,17 @@ html {
   position: absolute; top: 0; left: 0;
   width: 90%; height: calc(100% * 0.9 / 1.2); 
   margin: 5%;
-  padding: 5%;
+  padding: 2%;
   background-color: white;
-  border-radius: inherit;
+  border-radius: 0.75rem;
   display: flex;
   justify-content: center; align-items: center;
 }
 
 #group-buttons-grid .group-button-thumbnail img {
-  width: 100%; height: auto;
-  border-radius: inherit;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
 }
 
 #group-buttons-grid .group-button-no-thumbnail {
@@ -203,7 +209,7 @@ html {
 }
 
 .row.group-button::-webkit-scrollbar-thumb:hover {
-  background-color: #7B83C7;
+  background-color: var(--color-main-dark);
 }
 
 /* .container {
