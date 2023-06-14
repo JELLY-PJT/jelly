@@ -63,15 +63,97 @@
       </div>
       </section>
     {% comment %} 공유됐을 경우 감정표현, 댓글 전체조회 or 그룹별 조회 {% endcomment %}
-    {% for share in shares %}
-      <p>{{ share.group }}</p>
-      {% for emotion in share.diaryemote_set.all %}
-        <p>{{ emotion }}</p>
+    {% if shares %}
+      <div class="mb-4 border-b border-gray-200">
+        <ul class="flex flex-wrap -mb-px text-base font-medium text-center" id="reactionTab" data-tabs-toggle="#reactionTabContent" role="tablist">
+        {% for reaction in reactions %}
+          <li class="mr-2" role="presentation">
+            <button class="inline-block p-4 pt-6 border-b-2 rounded-t-lg" id="{{ reaction.0 }}-tab" data-tabs-target="#{{ reaction.0 }}" type="button" role="tab" aria-controls="{{ reaction.0 }}" aria-selected="false">{{ reaction.0 }}</button>
+        {% endfor %}
+        </ul>
+      </div>
+      {% for reaction in reactions %}
+        <div class="hidden" id="{{ reaction.0 }}" role="tabpanel" aria-labelledby="{{ reaction.0 }}-tab">
+          <section class="reaction">
+            <div>
+              <button id="dropdownRightButton" data-dropdown-toggle="dropdownRight-{{ reaction.0 }}" data-dropdown-placement="right" class="diary reaction-count" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#FACA1590" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+                </svg>            
+                <p class="emotion-total-count">{{ reaction.1 }}</p>
+              </button>
+              {% comment %} 감정표현 드랍다운 메뉴 {% endcomment %}
+              <div id="dropdownRight-{{ reaction.0 }}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow">
+                <ul class="emotion-group" aria-labelledby="dropdownDefaultButton">
+                  {% for emotion in reaction.2 %}
+                    <li class="emotion {% if emotion.exist %}selected-emotion{% endif %}">
+                      <div class="emotion-btn">
+                        {% if emotion.value == 1 %}
+                          <span class="emotion-emoji">👍</span>
+                        {% elif emotion.value == 2 %}
+                          <span class="emotion-emoji">🥰</span>
+                        {% elif emotion.value == 3 %}
+                          <span class="emotion-emoji">🤣</span>
+                        {% elif emotion.value == 4 %}
+                          <span class="emotion-emoji">😲</span>
+                        {% elif emotion.value == 5 %}
+                          <span class="emotion-emoji">😭</span>
+                        {% else %}
+                          <span class="emotion-emoji">🥳</span>
+                        {% endif %}
+                        <span>{{emotion.label}}</span>
+                        <p class="emotion-count">{{ emotion.count }}</p>
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            <div class="reaction-count">
+              <span>댓글</span>
+              <span>{{ reaction.3|length }}</span>
+            </div>
+          </section>
+          <div class="post-content bottom">
+            <section>
+              {% comment %} 댓글 리스트 {% endcomment %}
+              {% if reaction.3 %}
+                {% for comment in reaction.3 %}
+                  <div class="comment-area" data-comment-id="{{ comment.pk }}" data-group-id="{{ group.pk }}" data-diary-id="{{ diary.pk }}">
+                    <div class="user-img image">
+                    </div>
+                    <div class="comment-content">
+                      <div class="flex gap-3">
+                        <div class="create-user-img">
+                          {% if comment.user.image %}
+                            <img src="{{ comment.user.image.url }}" alt="">
+                          {% else %}
+                            <img src="{% static 'img/blank_profile_img.png' %}" alt="">
+                          {% endif %}
+                        </div>
+                        <div>
+                          <p class="comment-user">{{ comment.user }}</p>
+                          <p class="comment-comment">{{ comment.comment }}</p>
+                          <p class="date comment-bottom">{{ comment.created_at }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr class="comment-hr">
+                {% endfor %}
+              {% else %}
+                <div class="no-comment">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-12 h-12">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                  </svg>                
+                  <h3>작성된 댓글이 없습니다.</h3>
+                </div>
+              {% endif %}
+            </section>
+          </div>
+        </div>
       {% endfor %}
-      {% for comment in share.diarycomment_set.all %}
-        <p>{{ comment }}</p>
-      {% endfor %}
-    {% endfor %}
+    {% endif %}
   </div>
 </div>
 {% endblock content %}

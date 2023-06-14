@@ -63,6 +63,7 @@ def detail(request, diary_pk):
     diary = get_object_or_404(Diary, pk=diary_pk)
     shares = DiaryShare.objects.filter(diary=diary).order_by('group')
 
+    reactions = []
     group_emotions = [] # 각 그룹별 emotions(인덱스로 구분)
     group_comments = [] # 각 그룹별 댓글(인덱스로 구분)
 
@@ -80,8 +81,10 @@ def detail(request, diary_pk):
                 }
             )
         comments = share.diarycomment_set.all()
-        group_emotions.append(emotions)
-        group_comments.append(comments)
+        emote_count = share.diaryemote_set.all().count()
+        group_emotions = emotions
+        group_comments = comments
+        reactions.append([share.group, emote_count, group_emotions, group_comments])
 
     if request.user == diary.user:
         context = {
@@ -89,6 +92,7 @@ def detail(request, diary_pk):
             'shares': shares,
             'group_emotions': group_emotions,
             'group_comments': group_comments,
+            'reactions': reactions,
         }
         return render(request, 'diaries/diary.html', context)
     return redirect('diaries:index')
