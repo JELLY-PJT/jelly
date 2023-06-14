@@ -10,7 +10,7 @@
 
 {% block content %}
 <div>
-  <div class='container'>
+  <div class='login-container'>
     <div class="owl-carousel owl-theme">
       <div><img src="{% static 'img/calendar_sample.png' %}" alt=""></div>
       <div><img src="{% static 'img/blank_profile_img.png' %}" alt=""></div>
@@ -35,10 +35,13 @@
       {% comment %} 소셜로그인 {% endcomment %}
       {% load socialaccount %}
       <a href="{% provider_login_url 'kakao' method='oauth2' %}" class="social--login">
-        카카오로그인
+        <img style='width: 13rem; height: 2.5rem' src="{% static 'img/kakao_login.png' %}" alt="">
       </a>
       <a href="{% provider_login_url 'google' method='oauth2' %}" class="social--login">
-        구글로그인
+        <div class='social-box'>
+          <img style='width: 2rem; margin: 10px' src="{% static 'img/google_logo.jpg' %}" alt="">
+          <p style='margin-left: 20px'>구글 로그인</p>
+        </div>
       </a> 
     </div>
   </div>
