@@ -91,5 +91,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def save_message(self, user_pk, group_pk, message):
         user = User.objects.get(pk=user_pk)
         group = Group.objects.get(pk=group_pk)
-
-        return Message.objects.create(user=user, group=group, content=message)
+        if message != '':
+            return Message.objects.create(user=user, group=group, content=message)

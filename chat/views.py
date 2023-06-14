@@ -14,7 +14,7 @@ def group_chat(request, group_pk):
     user = request.user
     group = get_object_or_404(Group, pk=group_pk)
     if group.group_users.filter(pk=request.user.pk).exists():
-        messages = Message.objects.filter(group=group)[:30]
+        messages = Message.objects.filter(group=group).order_by('-pk')[:30][::-1]
 
         context = {
             'group': group,
