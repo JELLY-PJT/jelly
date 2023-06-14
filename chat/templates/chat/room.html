@@ -1,104 +1,149 @@
-<!-- chat/templates/chat/room.html -->
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>Group Chat</title>
-</head>
-<body>
-  <div class="">
+
+{% block title %}JELLY | {{ group }} 채팅{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock css %}
+
+{% block side %}
+{% include 'sidebar.html' with current_group=group %}
+{% endblock side %}
+
+{% block content %}
+<div class="content-wrapper">
+  <div class="content">
     <ul id="chat-log">
       {% comment %} 기존 메시지 로드 {% endcomment %}
       {% for message in messages %}
-        <li style="width:100%;">
+        <li class="message{% if message.user == user %} me{% endif %}">
+          {% if message.user != user %}
+            <div class="user-img image">
+              <img src="{% if message.user.image %}{{ message.user.image.url }}{% else %}{% static 'img/blank_profile_img.png' %}{% endif %}">
+            </div>
+          {% endif %}
+          <div class="text">
             <p>{{ message.user.nickname }}</p>
-            <p>{{ message.content }}</p>
-            <p>{{ message.created_at|date:"Y년 m월 d일 A g:i" }}</p>
-            <img src="{% if message.user.image %}{{ message.user.image.url }}{% else %}{% static 'img/blank_profile_img.png' %}{% endif %}">
+            <div class="flex items-end gap-2">
+              <p class="message-content">{{ message.content }}</p>
+              <p class="message-date">{{ message.created_at|date:"Y년 m월 d일 A g:i" }}</p>
+            </div>
+          </div>
         </li>
       {% empty %}
       {% endfor %}
     </ul>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+    <div class="chat-input">
+      <input id="chat-message-input" type="text">
+      <input id="chat-message-submit" type="button" value="Send" class="main-btn bg-[var(--color-main)]">
+    </div>
   </div>
-  {{ group_pk|json_script:"group-pk" }}
-  {{ request.user.pk|json_script:"user-pk" }}
+</div>
+{{ group_pk|json_script:"group-pk" }}
+{{ request.user.pk|json_script:"user-pk" }}
+{% endblock content %}
 
-  <script>
-    const roomName = JSON.parse(document.getElementById('group-pk').textContent);
-    const userPk = JSON.parse(document.getElementById('user-pk').textContent);
-    const userImg = '{{ request.user.image }}'
 
-    const chatSocket = new WebSocket(
-      'ws://'
-      + window.location.host
-      + '/ws/chat/'
-      + roomName
-      + '/'
-    );
+{% block script %}
+<script>
+// chat-log의 스크롤 최하단에 고정
+const chatContent = document.getElementById('chat-log')
+chatContent.scrollTop = chatContent.scrollHeight
+// 현재의 최하단 구하기
+const bottom = chatContent.clientHeight + chatContent.scrollTop;
+// 요소가 추가되어 길이가 길어지기 전에 비교
+const isScroll = chatContent.scrollHeight <= bottom;
 
-    chatSocket.onmessage = function(e) {
-      console.log('onmessage')
-      
-      const data = JSON.parse(e.data)
-      console.log(data)
-      if (data.message) {
-        let html = '<li style="width:100%;"><p>' + data.nickname + '</p>'
-            html += '<p>' + data.message + '</p>'
+const roomName = JSON.parse(document.getElementById('group-pk').textContent);
+const userPk = JSON.parse(document.getElementById('user-pk').textContent);
+const userImg = '{{ request.user.image }}'
 
-            // created_time의 형식 맞추기
-            const createdTime = new Date(data.created_time)
-            const formattedTime = createdTime.toLocaleString('ko-KR', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true
-            })
-            
-            html += '<p>' + formattedTime + '</p>'
+const chatSocket = new WebSocket(
+  'ws://'
+  + window.location.host
+  + '/ws/chat/'
+  + roomName
+  + '/'
+);
 
-            if ( data.image ) {
-              html += `<img src="${ data.image }"></li>`
-            } else {
-              html += '<img src="static/img/blank_profile_img.png"></li>'
-            }
-        document.querySelector('#chat-log').innerHTML += html
-      
+chatSocket.onmessage = function(e) {
+  console.log('onmessage')
+  
+  const data = JSON.parse(e.data)
+
+  if (data.message) {
+    let html
+    // 내가 보낸 채팅과 남이 보낸 채팅을 구분하기 위한 클래스 추가
+    if (data.nickname == '{{ user.nickname }}') {
+      html = '<li class="message me">'
+    } else {
+      html = '<li class="message"><div class="user-img image">'
+      console.log(html)
+    }
+
+    if (data.nickname != '{{ user.nickname }}') {
+      console.log('me')
+      if ( data.image ) {
+        html += `<img src="${ data.image }"></div>`
       } else {
-        alert('메시지를 입력해주세요')
+        html += '<img src="static/img/blank_profile_img.png"></div>'
       }
     }
 
-    chatSocket.onclose = function(e) {
-      console.error('Chat socket closed unexpectedly');
-    };
+    html += '<div class="text"><p>' + data.nickname + '</p><div class="flex items-end gap-2">'
+    html += '<p class="message-content">' + data.message + '</p>'
 
-    document.querySelector('#chat-message-input').focus();
-    document.querySelector('#chat-message-input').onkeyup = function(e) {
-      if (e.key === 'Enter') {  // enter, return
-        document.querySelector('#chat-message-submit').click();
-      }
-    };
+    // created_time의 형식 맞추기
+    const createdTime = new Date(data.created_time)
+    const formattedTime = createdTime.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })
+    
+    html += '<p class="message-date">' + formattedTime + '</p></div></div></li>'
 
-    document.querySelector('#chat-message-submit').onclick = function(e) {
-      const messageInputDom = document.querySelector('#chat-message-input');
-      const message = messageInputDom.value;
-      chatSocket.send(JSON.stringify({
-        'message': message,
-        'user_pk': userPk,
-        'group_pk': roomName,
-        'nickname': '{{ request.user.nickname }}',
-        'image': '{{ request.user.image.url }}',
-      }));
+    document.querySelector('#chat-log').innerHTML += html
 
-      messageInputDom.value = '';
-    };
-  </script>    
-</body>
-</html>
+    // 스크롤이 최하단 일때만 고정
+    if (isScroll) {
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }
+  
+  } else {
+    alert('메시지를 입력해주세요')
+  }
+}
 
+chatSocket.onclose = function(e) {
+  console.error('Chat socket closed unexpectedly');
+};
+
+document.querySelector('#chat-message-input').focus();
+document.querySelector('#chat-message-input').onkeyup = function(e) {
+  if (e.key === 'Enter') {  // enter, return
+    document.querySelector('#chat-message-submit').click();
+  }
+};
+
+document.querySelector('#chat-message-submit').onclick = function(e) {
+  const messageInputDom = document.querySelector('#chat-message-input');
+  const message = messageInputDom.value;
+
+  chatSocket.send(JSON.stringify({
+    'message': message,
+    'user_pk': userPk,
+    'group_pk': roomName,
+    'nickname': '{{ request.user.nickname }}',
+    'image': '{{ request.user.image.url }}',
+  }));
+
+  messageInputDom.value = '';
+};
+</script>    
+{% endblock script %}
 
