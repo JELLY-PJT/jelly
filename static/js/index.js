@@ -2,7 +2,7 @@
 const searchInput = document.getElementById('search-input')
 const GroupButtonGrid = document.getElementById('group-buttons-grid')
 
-searchInput.addEventListener('keydown input', async (event) => {
+searchInput.addEventListener('keydown', async (event) => {
   const query = searchInput.value
   if (query) {
     try {
@@ -21,14 +21,66 @@ searchInput.addEventListener('keydown input', async (event) => {
       console.error(error)
     }
   } else {
-    // searchResults.innerHTML = '';
+    try {
+      axios({
+        method: 'get',
+        url: `./search?q= `,
+        responseType: 'json',
+      })
+      .then(function (response) {
+        GroupButtonGrid.innerHTML=""
+        response.data.forEach(item => {
+          GroupButtonGrid.appendChild(drawButton(item.id, item.name, item.thumbnail));
+        });
+      });
+    } catch (error) {
+      console.error(error)
+    }
   }
 })
+
+searchInput.addEventListener('input', async (event) => {
+  const query = searchInput.value
+  if (query) {
+    try {
+      axios({
+        method: 'get',
+        url: `./search?q=${query}`,
+        responseType: 'json',
+      })
+      .then(function (response) {
+        GroupButtonGrid.innerHTML=""
+        response.data.forEach(item => {
+          GroupButtonGrid.appendChild(drawButton(item.id, item.name, item.thumbnail));
+        });
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  } else {
+    try {
+      axios({
+        method: 'get',
+        url: `./search?q= `,
+        responseType: 'json',
+      })
+      .then(function (response) {
+        GroupButtonGrid.innerHTML=""
+        response.data.forEach(item => {
+          GroupButtonGrid.appendChild(drawButton(item.id, item.name, item.thumbnail));
+        });
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  })
+
 // 버튼 그리기
 function drawButton(id, name, thumbnail){
   const btnTag = document.createElement('button');
   btnTag.classList.add('item', 'button');
-  btnTag.innerHTML=`<a href="groups/${id}"><div class="square"><div class="inner"><div class="group-button-thumbnail"><img src="${thumbnail}" alt=""></div><div class="group-button-name"><span>${name}</span></div></div></div></a>`;
+  btnTag.innerHTML=`<a href="${id}"><div class="square"><div class="inner"><div class="group-button-thumbnail"><img src="${thumbnail}" alt=""></div><div class="group-button-name"><span>${name}</span></div></div></div></a>`;
   return btnTag;
 }
 
