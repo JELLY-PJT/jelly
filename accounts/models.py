@@ -19,7 +19,7 @@ class User(AbstractUser):
     image = ProcessedImageField(upload_to='users',
                                 null=True,
                                 blank=True,
-                                processors=[Thumbnail(100,100)],
+                                processors=[Thumbnail(300,300)],
                                 format='JPEG',
                                 options={'quality': 80})
     """

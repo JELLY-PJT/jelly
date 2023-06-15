@@ -11,9 +11,7 @@ const inviteBtn = document.getElementById('invite-btn');
 const groupId = inviteBtn.dataset.groupId;
 
 function copyLink() {
-  const url = `http://127.0.0.1:8000/groups/${groupId}/join/`;
+  const url = `http://ec2-3-106-87-11.ap-southeast-2.compute.amazonaws.com:8000/groups/${groupId}/join`;
   copyToClipboard(url);
   alert("초대링크가 복사되었습니다.");
 }
-
-inviteBtn.addEventListener('click', copyLink);
