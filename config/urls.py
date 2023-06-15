@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 from . import views
 import custom_ckeditor.views
 
+from schedules.urls import user_schedule_router 
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +34,8 @@ urlpatterns = [
     path("ckeditor5/image_upload/", custom_ckeditor.views.upload_file, name="ck_editor_5_upload_file"),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('accounts/', include('allauth.urls')),
+    path('schedules/', include(user_schedule_router.urls)),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

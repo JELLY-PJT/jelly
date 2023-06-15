@@ -48,7 +48,7 @@ class GroupScheduleViewSet(viewsets.ModelViewSet):
         calendar_id = Calendar.objects.get(owner_group__pk=self.kwargs['group_pk']).pk
         serializer.save(calendar_id=calendar_id)
 
-#'accounts/calendars/schedules'
+#'accounts/profile//<username>/calendar/schedules'
 class UserScheduleViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ScheduleSerializer
@@ -60,7 +60,12 @@ class UserScheduleViewSet(viewsets.ModelViewSet):
         year = int(self.request.GET.get('year', timezone.now().year))
         month = int(self.request.GET.get("month", timezone.now().month))
 
-        self.queryset = Calendar.objects.filter(pk__in=user.permitted_calendar_id).schedules.filter(Q(start__year__lte=year) & Q(start__month__lte=month)).filter(Q(end__year__gte=year) & Q(end__month__gte=month))
+        calendars = Calendar.objects.filter(pk__in=user.permitted_calendar_id)
+        print("**********************")
+        print(calendars)
+        queryset = Calendar.objects.filter(pk__in=user.permitted_calendar_id).select_related('schedules').values_list('schedules', flat=False)
+        self.queryset = Schedule.objects.filter(id__in=queryset).filter(Q(start__year__lte=year) & Q(start__month__lte=month)).filter(Q(end__year__gte=year) & Q(end__month__gte=month))
+        print(self.queryset)
         return super().get_queryset()
 
     def perform_create(self, serializer):

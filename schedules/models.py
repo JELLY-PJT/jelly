@@ -49,7 +49,7 @@ class Schedule(models.Model):
     description = models.CharField(max_length=255, blank=True, default="") # 일정 상세 내용
     location = models.CharField(max_length=255, blank=True, default="") # 장소
 
-    calendar = models.ForeignKey('schedules.Calendar', on_delete=models.CASCADE, related_name='schedules') # 일정 소속 캘린더
+    calendar = models.ForeignKey('schedules.Calendar', on_delete=models.CASCADE, related_name='schedules', related_query_name='schedules') # 일정 소속 캘린더
     # attendee = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
     created_at = models.DateTimeField(auto_now_add=True) # 일정 생성시각

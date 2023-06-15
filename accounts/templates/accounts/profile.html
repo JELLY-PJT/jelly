@@ -2,7 +2,10 @@
 {% load static %}
 
 {% block title %}JELLY | {{ person }}{% endblock title %}
-{% block css %}<link rel="stylesheet" href="{% static 'css/profile.css' %}">{% endblock css %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/user_calendar.css' %}">
+{% endblock css %}
 
 {% block side %}
   {% include 'sidebar.html' %}
@@ -68,7 +71,10 @@
         </li>
         <li class="tab-btn" role="presentation">
           <button id="calendar-tab" role="tab" data-tab="calendar" data-user="{{ person }}" aria-selected="false">캘린더</button>
-        </li>
+        </li> 
+        {% comment %} <li class="tab-btn" role="presentation">
+          <button id="calendar-tab" data-tabs-target="#calendar" role="tab" data-user="{{ person }}" aria-controls="calendar" aria-selected="false">캘린더</button>
+        </li> {% endcomment %}
       </ul>
     </section>
 
@@ -305,11 +311,11 @@
         </nav>
 
       </section>
-
-      <section class="post-list hidden" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
-        <p>calendar</p>
-      </section>
       
+      <!-- 공유한 캘린더 탭 -->
+      <section class="post-list hidden" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
+        {% include 'schedules/user_calendar.html' %}
+      </section>
     </div>
   </div>
 </div>
@@ -318,5 +324,6 @@
 
 {% block script %}
 <script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'js/user_calendar.js' %}"></script>  <!-- 그룹 캘린더-->
 {% comment %} <script src="{% static 'js/group_detail.js' %}"></script> {% endcomment %}
 {% endblock script %}

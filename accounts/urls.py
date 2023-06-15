@@ -13,5 +13,6 @@ urlpatterns = [
     path('profile/<username>/', views.profile, name='profile'),
     path('profile/<username>/post/', views.profile, name='profile_share'),
     path('profile/<username>/share/', views.profile, name='profile_share'),
-    path('profile/<username>/calendars/', include(user_schedule_router.urls)),
+    path('profile/<username>/calendar/', views.profile, name='profile_share'),
+    path('profile/<username>/calendar/schedules/', include(user_schedule_router.urls)),
 ]
