@@ -6,10 +6,10 @@
 {% url 'diaries:update' diary.pk %}
 {% endblock url %}
 
-{% block content %}
+{% block error %}
 {% if messages %}
   {% for message in messages %}
     <script>alert('{{ message }}')</script>
   {% endfor %}
 {% endif %}
-{% endblock content %}
+{% endblock error %}

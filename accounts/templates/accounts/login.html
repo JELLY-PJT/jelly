@@ -35,7 +35,7 @@
       {% comment %} 소셜로그인 {% endcomment %}
       {% load socialaccount %}
       <a href="{% provider_login_url 'kakao' method='oauth2' %}" class="social--login">
-        <img style='width: 13rem; height: 2.5rem' src="{% static 'img/kakao_login.png' %}" alt="">
+        <img src="{% static 'img/kakao_login.png' %}" alt="">
       </a>
       <a href="{% provider_login_url 'google' method='oauth2' %}" class="social--login">
         <div class='social-box'>

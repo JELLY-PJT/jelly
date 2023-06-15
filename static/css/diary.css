@@ -28,15 +28,15 @@ input[type=text] {
 }
 
 .diary.main-btn {
-  border: 1px solid #bbbbbb;
+  /* border: 1px solid #bbbbbb; */
   background-color: transparent;
   font-weight: normal;
   font-size: 0.875rem;
 }
-
+/* 
 .diary.main-btn:hover {
   background-color: #f5f5f5;
-}
+} */
 
 .delete {
   color: #ff5656;
@@ -276,7 +276,6 @@ div[role=tabpanel] .emotion {
 .comment-form {
   display: flex;
   gap: 1rem;
-  margin: 1rem 0;
 }
 
 .comment.main-btn {

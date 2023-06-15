@@ -18,7 +18,7 @@
 
 #chat-log {
   height: 698px;
-  padding: 0 1rem;
+  padding: 1rem 1rem 0 1rem;
   overflow-y: scroll;
   background-color: #d1d8ff50;
 }
@@ -60,7 +60,7 @@
   margin-top: 0;
 }
 
-.user-img {
+.chat-user-img {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
