@@ -201,7 +201,7 @@ def group_update(request, group_pk):
     if request.user != group.chief:
         return redirect('groups:group_detail', group.pk)
     
-    form = GroupForm(request.POST, instance=group)
+    form = GroupForm(request.POST, files=request.FILES, instance=group)
     if form.is_valid():
         form.save()
         return redirect('groups:group_detail', group.pk)
