@@ -97,7 +97,7 @@
                   <div class="post-content">
                     <h3 class="post-title">{{ diary.title }}</h3>
                     <div class="meeting">
-                      <p class="meeting-name">모임 이름</p>
+                      {% comment %} <p class="meeting-name">모임 이름</p> {% endcomment %}
                       <p class="meeting-date">2023.05.29</p>
                     </div>
                     <p class="post-detail">{{ diary.content|striptags }}</p>
@@ -205,7 +205,7 @@
                     <h3 class="post-title">{{ shared_diary.diary.title }}</h3>
                     <div class="meeting">
                       <p class="meeting-name">{{ shared_diary.group.name }}</p>
-                      <p class="meeting-date">{{ shared_diary.created_string }}</p>
+                      <p class="meeting-date">{{ shared_diary.created_string }} 공유</p>
                     </div>
                     <p class="post-detail">{{ shared_diary.diary.content|striptags }}</p>
                     <div class="reaction" {% if shared_diary.diary.thumbnail %}style="max-width: 800px;"{% endif %}>

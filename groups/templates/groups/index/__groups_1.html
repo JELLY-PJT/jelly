@@ -1,11 +1,15 @@
 {% load static %}
 {# id=group-area#}
   <div class="row menu">
-    <div id="group-search-bar" class="menu-item">
-      <form action"#" method="get">
-        <input id="search-input" type="search" placeholder="{{ user }} : {{ groups|length }}개의 그룹">
-      </form>
-    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="var(--color-main-dark)" class="w-7 h-7">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    </svg>
+    <div class="flex grow">
+      <div id="group-search-bar" class="menu-item">
+        <form action"#" method="get">
+          <input id="search-input" type="search" placeholder="{{ user }} : {{ groups|length }}개의 그룹">
+        </form>
+      </div>
       <button id="group-create-button"
               class="menu-item"
               data-modal-target="GroupCreate-modal" 
@@ -19,6 +23,7 @@
         </div>
         </div>
       </button>
+    </div>
   </div>
   <div class="row group-button">
     <div id="group-buttons-grid">

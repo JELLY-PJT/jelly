@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
 {% load static %}
-
-{% block title %}JELLY | {{ group }} 채팅{% endblock title %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/chat.css' %}">
@@ -12,14 +9,13 @@
 {% endblock side %}
 
 {% block content %}
-<div class="content-wrapper">
   <div class="content">
     <ul id="chat-log">
       {% comment %} 기존 메시지 로드 {% endcomment %}
-      {% for message in messages %}
+      {% for message in chats %}
         <li class="message{% if message.user == user %} me{% endif %}">
           {% if message.user != user %}
-            <div class="user-img image">
+            <div class="chat-user-img image">
               <img src="{% if message.user.image %}{{ message.user.image.url }}{% else %}{% static 'img/blank_profile_img.png' %}{% endif %}">
             </div>
           {% endif %}
@@ -39,14 +35,13 @@
       <input id="chat-message-submit" type="button" value="Send" class="main-btn bg-[var(--color-main)]">
     </div>
   </div>
-</div>
 {{ group_pk|json_script:"group-pk" }}
 {{ request.user.pk|json_script:"user-pk" }}
 {% endblock content %}
 
 
 {% block script %}
-<script>
+{% comment %} <script>
 // chat-log의 스크롤 최하단에 고정
 const chatContent = document.getElementById('chat-log')
 chatContent.scrollTop = chatContent.scrollHeight
@@ -59,6 +54,7 @@ const roomName = JSON.parse(document.getElementById('group-pk').textContent);
 const userPk = JSON.parse(document.getElementById('user-pk').textContent);
 const userImg = '{{ request.user.image }}'
 
+console.log(roomName)
 const chatSocket = new WebSocket(
   'ws://'
   + window.location.host
@@ -144,6 +140,6 @@ document.querySelector('#chat-message-submit').onclick = function(e) {
 
   messageInputDom.value = '';
 };
-</script>    
+</script>     {% endcomment %}
 {% endblock script %}
 

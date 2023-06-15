@@ -14,9 +14,13 @@
   <div class="content">
     <section class="header justify-between">
       <div class="flex gap-2">
-        <a href="{% url 'accounts:profile' user %}" class="diary main-btn">목록</a>
-        <a href="{% url 'diaries:index' %}" class="diary main-btn">이전글</a>
-        <a href="{% url 'diaries:index' %}" class="diary main-btn">다음글</a>
+        <a href="{% url 'accounts:profile' user %}" class="diary main-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>          
+        </a>
+        {% comment %} <a href="{% url 'diaries:index' %}" class="diary main-btn">이전글</a>
+        <a href="{% url 'diaries:index' %}" class="diary main-btn">다음글</a> {% endcomment %}
       </div>
     </section>
 

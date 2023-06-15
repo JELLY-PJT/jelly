@@ -39,23 +39,25 @@ window.addEventListener('scroll', function() {
 //     }
 // })
 
-// // 모달 열기
-// $('.img').on('click', function() {
-//   var imageUrl = $(this).find('img').attr('src');
-//   $('.modal-picture').removeClass('hidden');
-//   $('.modal-image').attr('src', imageUrl);
-// });
-// // 모달 닫기
-// $('.modal-picture').on('click', function(event) {
-//   // 모달 내부를 클릭한 경우에는 모달이 닫히지 않도록 이벤트 전파 중단
-//   if ($(event.target).hasClass('modal-content')) {
-//     return;
-//   }
-//   $('.modal-picture').addClass('hidden');
-//   $('.modal-image').attr('src', '');
-// });
-// // 모달 닫기 버튼 클릭 이벤트
-// $('.close-picture').on('click', function() {
-//   $('.modal-picture').addClass('hidden');
-//   $('.modal-image').attr('src', '');
-// });
+// 해당 사진이 포함된 게시글로 이동
+const albumImages = document.querySelectorAll('.album-img')
+const prevBtn = document.querySelector('.album-left')
+
+if (albumImages) {
+  albumImages.forEach(function(img, index) {
+    img.addEventListener('click', function() {
+      addImage(img)
+    })
+    prevBtn.addEventListener('click', function() {
+      console.log(albumImages[index-1])
+      addImage(albumImages[index-1])
+    })
+  })
+}
+
+function addImage(img) {
+  let imageUrl = img.children[0].getAttribute('src')
+  let postId = img.getAttribute('data-post-id')
+  document.querySelector('.modal-link').setAttribute('href', `./posts/${postId}`)
+  document.querySelector('.modal-image').setAttribute('src', `${imageUrl}`)
+}

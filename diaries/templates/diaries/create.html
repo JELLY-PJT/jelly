@@ -9,7 +9,7 @@
 {% endblock css %}
 
 {% block side %}
-  {% include 'sidebar.html' %}
+  {% include 'sidebar.html' with current_group=group %}
 {% endblock side %}
 
 
@@ -34,7 +34,7 @@
         <div id="select-thumbnail-btn" class="main-btn select">썸네일 선택하기</div>
         <div class="flex gap-4">
           <input type="submit" value="작성" class="main-btn bg-[var(--color-main)]">
-          <a href="{% url 'diaries:index' %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
+          <a href="{% url 'accounts:profile' user.username %}" class="main-btn back" onclick="return confirm('글쓰기를 종료하시겠습니까?\n작성 중인 글은 저장되지 않습니다. ')">취소</a>
         </div>
       </div>
     </form>
@@ -45,6 +45,9 @@
   <span>썸네일</span>
 </div>
 {% endblock content %}
+
+{% block error %}
+{% endblock error %}
 
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

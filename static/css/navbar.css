@@ -20,6 +20,7 @@ nav .nav--tab {
   right: 5%;
   position: absolute;
   align-items: center;
+  color: rgb(84, 82, 82);
 }
 
 nav .nav--tab p {

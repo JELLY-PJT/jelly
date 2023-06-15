@@ -403,7 +403,7 @@
 
 /* album 컨텐츠 관련 css */
 .album-list {
-  width: 900px;
+  max-width: 900px;
   margin: 2rem auto;
   display: flex;
   flex-wrap: wrap;
@@ -424,4 +424,29 @@
 
 .album-img:hover img {
   transform: scale(1.025);
+}
+
+.modal-image-wrapper {
+  position: relative;
+  width: 40rem;
+  height: 40rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.modal-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album-control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
 }

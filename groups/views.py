@@ -13,6 +13,7 @@ from argon2 import PasswordHasher as ph
 import json
 from django.core.paginator import Paginator
 from django.db.models import Prefetch, Count
+from chat.models import Message
 
 
 # 사이트 인덱스 페이지
@@ -153,6 +154,8 @@ def group_detail(request, group_pk):
             for option in obj.voteselect_set.all():
                 voter_cnt[obj.pk] += option.select_users.count()
 
+    messages = Message.objects.filter(group=group).order_by('-pk')[:30][::-1]
+
     context = {
         'group': group,
         'level_dict': level_dict,
@@ -162,9 +165,10 @@ def group_detail(request, group_pk):
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
-        'writings_img': post_images,
+        'writings_img': reversed(post_images),
         'joined_vote': joined_vote,
         'voter_cnt': voter_cnt.items(),
+        'chats': messages,
     }
     return render(request, 'groups/group_detail.html', context)
 
@@ -482,8 +486,14 @@ def emote(request, group_pk, post_pk, emotion):
         if post_emotion.emotion != emotion:
             post_emotion.emotion = emotion
             post_emotion.save()
+            delete = False
         else:
             post_emotion.delete()
+            delete = True
+        context = {
+            'delete': delete,
+        }
+        return JsonResponse(context)
     except PostEmote.DoesNotExist:
         PostEmote.objects.create(post=post, user=request.user, emotion=emotion)
     return redirect('groups:post_detail', group.pk, post.pk)
