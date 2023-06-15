@@ -31,13 +31,14 @@ class ScheduleSerializer(serializers.ModelSerializer):
     # end_time = serializers.TimeField(
     #     time_field = 'end__time'
     # )
-
-    attendee = serializers.SlugRelatedField(
-        many=True,
-        slug_field="name",
-        read_only=True,
-    )
+# 'start', 'end', 'summary', 'location', 'description'
+    # attendee = serializers.SlugRelatedField(
+    #     many=True,
+    #     slug_field="name",
+    #     read_only=True,
+    # )
     class Meta:
         model = Schedule
-        fields = ['id', 'calendar', 'start', 'end', 'summary', 'location', 'attendee', 'description']
+        # fields = ['id', 'calendar', 'start', 'end', 'summary', 'location', 'attendee', 'description']
+        fields = ['id', 'calendar', 'start', 'end', 'summary', 'location', 'description']
         read_only_fields = ['calendar']

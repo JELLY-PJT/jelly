@@ -27,7 +27,6 @@
     {% comment %} 그룹 생성 모달 {% endcomment %}
     {% include 'groups/index/__group_create_modal.html' %}
     
-<script src="{% static 'js/index.js' %}"></script>
 
 <!-- 그룹 생성 실패 시 alert -->
 {% if messages %}
@@ -38,3 +37,8 @@
 
 
 {% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock script %}
+

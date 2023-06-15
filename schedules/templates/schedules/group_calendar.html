@@ -1,8 +1,7 @@
 {% load static %}
-
-<div class="calendar">
-  <div id="calendar-area"></div>
-  <div id="note-area" class="note-area"></div>
+<div id="CSRFToken">{% csrf_token %}</div>
+<div id="calendar-container">
+  <div id="calendar-area" class="calendar-area"></div>
+  <div id="note-area" class="note-area">
+  </div>
 </div>
-
-{% include 'schedules/__schedule_create_modal.html' with group=group %}
