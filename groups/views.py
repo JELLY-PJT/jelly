@@ -14,7 +14,7 @@ import json
 from django.core.paginator import Paginator
 from django.db.models import Prefetch, Count
 from chat.models import Message
-
+from schedules.serializers import ScheduleSerializer
 
 # 사이트 인덱스 페이지
 @login_required
@@ -169,6 +169,7 @@ def group_detail(request, group_pk):
         'joined_vote': joined_vote,
         'voter_cnt': voter_cnt.items(),
         'chats': messages,
+        'schedule_serializer': ScheduleSerializer(),
     }
     return render(request, 'groups/group_detail.html', context)
 

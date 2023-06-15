@@ -280,16 +280,31 @@ class CalendarDate {
     const form = document.createElement("form");
     form.setAttribute('id', `create-schedule-form`);
     form.setAttribute('action', "#");
-    form.setAttribute('data-calendar-id', `${this.id}`);
 
     const formInputArea = document.createElement("div");
     formInputArea.classList = "create-form-input-area";
+
+    var index = 1
+    var html = `<select name="calendar" required=""><option value="" selected="">---------</option>`
+    for (var key in CalendarDict) {
+      if (CalendarDict.hasOwnProperty(key)) {
+        var value = CalendarDict[key]['name'];
+        html += `<option value="${index}">${value}의  캘린더</option>`;
+        index += 1
+      }
+    }
+    html += `</select></div></div>`
+    console.log(html); 
+
+
     formInputArea.innerHTML = `
   <div class="form-group"><label>Start</label><div><input name="start" type="datetime-local" value="" ></div></div>
   <div class="form-group"><label>End</label><div ><input name="end" type="datetime-local" value="" ></div></div>
   <div class="form-group"><label>Summary</label><div ><input name="summary" type="text" value="" ></div></div>
   <div class="form-group"><label>Location</label><div ><input name="location" type="text" value="" ></div></div>
-  <div class="form-group"><label>Description</label><div ><input name="description" type="text" value="" ></div></div>`;
+  <div class="form-group"><label>Description</label><div ><input name="description" type="text" value="" ></div></div>
+  <div class="form-group"><label>Calendar</label><div>${html}`;
+
 
     const formSCButtonArea = document.createElement("div");
     formSCButtonArea.classList = "create-form-button-area";
@@ -665,6 +680,7 @@ function fetchAndDisplaySchedules() {
       calendar.schedules.forEach(schedule => {
         schedule.createScheduleBars(calendar);
       })
+      calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
     });
   } catch (error) {
     console.error(error);
@@ -674,14 +690,14 @@ function createSchedule(form) {
   try {
     axios({
       method: 'post',
-      url: `calendars/schedules/`,
+      url: `schedules/`,
       data: {
         'start': form.querySelector('input[name="start"]').value,
         'end': form.querySelector('input[name="end"]').value,
         'location': form.querySelector('input[name="location"]').value,
         'summary': form.querySelector('input[name="summary"]').value,
         'description': form.querySelector('input[name="description"]').value,
-        'calendar': form.dataset.CalendarId
+        'calendar': form.querySelector('select[name="calendar"]').value,
       },
     }).then(response => {
       calendar.cleanCalendar();
@@ -720,7 +736,7 @@ function updateSchedule(form) {
         'location': form.querySelector('input[name="location"]').value,
         'summary': form.querySelector('input[name="summary"]').value,
         'description': form.querySelector('input[name="description"]').value,
-        'calendar': form.dataset.CalendarId
+        'calendar': form.dataset.calendarId
       },
     }).then(response => {
       calendar.cleanCalendar();
