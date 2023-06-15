@@ -38,17 +38,11 @@ class Schedule(models.Model):
 
     start = DateTimeField(
         default=timezone.now, 
-        # format=DATETIME_FORMAT, 
-        # input_format=DATETIME_FORMAT, 
-        # output_format=DATETIME_FORMAT
     ) # 시작 일시
 
     end = DateTimeField(
         blank=True,
         null=True,
-        # format=DATETIME_FORMAT, 
-        # input_format=DATETIME_FORMAT, 
-        # output_format=DATETIME_FORMAT
     ) # 종료 일시
 
     summary = models.CharField(max_length=150, blank=True, default="") # 일정 제목
@@ -56,7 +50,7 @@ class Schedule(models.Model):
     location = models.CharField(max_length=255, blank=True, default="") # 장소
 
     calendar = models.ForeignKey('schedules.Calendar', on_delete=models.CASCADE, related_name='schedules') # 일정 소속 캘린더
-    attendee = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    # attendee = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
     created_at = models.DateTimeField(auto_now_add=True) # 일정 생성시각
     updated_at = models.DateTimeField(auto_now=True) # 일정 수정시각     

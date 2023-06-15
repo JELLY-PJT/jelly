@@ -5,6 +5,9 @@ class DateTimeField(BaseDateTimeField):
     input_formats = [
         "%Y-%m-%d %H:%M",  # '2006-10-25 14:30:59'
     ]
+    output_formats = [
+        "%Y-%m-%d %H:%M",  # '2006-10-25 14:30:59'
+    ]
     def to_python(self, value):
         """
         Validate that the input can be converted to a datetime. Return a

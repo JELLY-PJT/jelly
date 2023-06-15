@@ -13,8 +13,12 @@ export class CalendarDate {
   }
 
   drawDateCell(container, classList, noteArea) {
-    this.dateCell = document.createElement("div");
-    this.dateCell.className = classList;
+    if (this.dateCell) {
+          this.dateCell.innerHTML="";
+    } else {
+      this.dateCell = document.createElement("div");
+      this.dateCell.className = classList
+    }
     const square = document.createElement("div");
     square.className = "square";
     const inner = document.createElement("div");
@@ -50,25 +54,72 @@ export class CalendarDate {
     const noteHeader = document.createElement("div");
     noteHeader.className = "note-header";
 
+    const headerDateArea = document.createElement("div");
+    headerDateArea.classList = "header-date-area";
+    const headerCreateButtonArea = document.createElement("div");
+    headerCreateButtonArea.classList = "header-button-area";
+    const headerFormArea = document.createElement("div");
+    headerFormArea.classList = "header-form-area";
+
     const noteHeaderDate = document.createElement("div");
     noteHeaderDate.className = "note-header-date";
-    noteHeaderDate.innerHTML = `<div class="square"><div class="inner">${this.date}</div></div>`;
+    noteHeaderDate.textContent = `${this.date}`;
 
     const scheduleCreateButton = document.createElement("button");
-
-    noteHeader.appendChild(noteHeaderDate);
-    noteHeader.appendChild(scheduleCreateButton);
-
-    scheduleCreateButton.outerHTML = `
-    <button id="schedule-create-button" class="" data-modal-target="ScheduleCreate-modal" data-modal-toggle="ScheduleCreate-modal">
+    scheduleCreateButton.setAttribute('id', "create-schedule-button");
+    scheduleCreateButton.setAttribute('name', "create-schedule-button");
+    scheduleCreateButton.setAttribute('form', "create-schedule-form");
+    scheduleCreateButton.innerHTML = `
     <div class="square"><div class="inner">
       <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C12.5523 4 13 4.44772 13 5V19C13 19.5523 12.5523 20 12 20C11.4477 20 11 19.5523 11 19V5C11 4.44772 11.4477 4 12 4Z"></path>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M4 12C4 11.4477 4.44772 11 5 11H19C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13H5C4.44772 13 4 12.5523 4 12Z"></path>
       </svg>
-    </div></div>
-    </button>
-  `;
+    </div></div>`;
+
+    const form = document.createElement("form");
+    form.setAttribute('id', `create-schedule-form`);
+    form.setAttribute('action', "#");
+    form.setAttribute('data-calendar-id', `${this.id}`);
+
+    const formInputArea = document.createElement("div");
+    formInputArea.classList = "create-form-input-area";
+    formInputArea.innerHTML = `
+  <div class="form-group"><label>Start</label><div><input name="start" type="datetime-local" value="" ></div></div>
+  <div class="form-group"><label>End</label><div ><input name="end" type="datetime-local" value="" ></div></div>
+  <div class="form-group"><label>Summary</label><div ><input name="summary" type="text" value="" ></div></div>
+  <div class="form-group"><label>Location</label><div ><input name="location" type="text" value="" ></div></div>
+  <div class="form-group"><label>Description</label><div ><input name="description" type="text" value="" ></div></div>`;
+    
+    const formSCButtonArea = document.createElement("div");
+    formSCButtonArea.classList = "create-form-button-area";
+    
+    const saveButton = document.createElement("button");
+    saveButton.setAttribute('name', `post-schedule-button`);
+    saveButton.setAttribute('form', `create-schedule-form`);
+    saveButton.setAttribute('type', 'button');
+    saveButton.textContent = '저장';
+    
+    const cancelButton = document.createElement("button");
+    cancelButton.setAttribute('name', `cancel-create-schedule-button`);
+    cancelButton.setAttribute('form', `create-schedule-form`);
+    cancelButton.setAttribute('type', 'button');
+    cancelButton.textContent = '취소';
+
+    formSCButtonArea.appendChild(saveButton);
+    formSCButtonArea.appendChild(cancelButton);
+
+    form.appendChild(formInputArea);
+    form.appendChild(formSCButtonArea);
+
+    headerDateArea.appendChild(noteHeaderDate);
+    headerCreateButtonArea.appendChild(scheduleCreateButton);
+    headerFormArea.appendChild(form);
+    
+    noteHeader.appendChild(headerDateArea);
+    noteHeader.appendChild(headerCreateButtonArea);
+    noteHeader.appendChild(headerFormArea);
+    
     noteArea.appendChild(noteHeader);
 
     // note content
@@ -76,11 +127,102 @@ export class CalendarDate {
     noteContent.className = "note-content";
     if (this.schedules) {
       this.schedules.forEach(schedule => {
-        noteContent.appendChild(schedule.note());
+        const ScheduleNote = schedule.note();
+        noteContent.appendChild(ScheduleNote);
       });
     }
 
     noteArea.appendChild(noteContent);
+    this.createEventListeners(noteArea);
+  }
+
+  createEventListeners(noteArea) {
+
+    //create form 표시
+    noteArea.querySelector('#create-schedule-button').addEventListener('click', function (event) {
+      event.preventDefault();
+      document.querySelector(".header-button-area").style.display = 'none';
+      document.querySelector(".header-form-area").style.display = 'block';
+    });
+
+    noteArea.querySelector('#create-schedule-form').querySelectorAll('button').forEach(button => {
+      switch (button.getAttribute('name')) {
+        //create
+        case 'post-schedule-button':
+
+          button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const formId = button.getAttribute('form');
+            createSchedule(formId);
+          });
+
+          break;
+        // cancel create
+        case 'cancel-create-schedule-button':
+          button.addEventListener('click', function (event) {
+            event.preventDefault();
+            document.querySelector(".header-button-area").style.display = 'block';
+            document.querySelector(".header-form-area").style.display = 'none';
+          });
+          break;
+        default:
+          // 기본 동작 없음;
+          break;
+      }
+  })
+    
+    noteArea.querySelectorAll('.schedule-note').forEach(scheduleNote => {
+      scheduleNote.querySelectorAll("button").forEach(button => {
+      switch (button.getAttribute('name')) {
+        //update form 표시
+        case 'update-schedule-button':
+          button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const form = document.getElementById(button.getAttribute('form'));
+            form.querySelector(".form-readonly-area").style.display = 'none';
+            form.querySelector(".form-readonly-button-area").style.display = 'none';
+            form.querySelector(".form-input-area").style.display = 'block';
+            form.querySelector(".form-input-button-area").style.display = 'block';
+          });
+          break;
+        //delete
+        case 'delete-schedule-button':
+          // button.addEventListener('click', deleteSchedule(calendar));
+          button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const formId = button.getAttribute('form');
+            deleteSchedule(formId)
+          });
+          break;
+          
+        //update
+        case 'post-update-schedule-button':
+          // button.addEventListener('click', updateSchedule(calendar));
+          button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const formId = button.getAttribute('form');
+            updateSchedule(formId)
+          });
+          break;
+
+        //update 취소
+        case 'cancel-update-schedule-button':
+          button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const form = button.getAttribute('form');
+            form.querySelector(".form-readonly-area").style.display = 'block';
+            form.querySelector(".form-readonly-button-area").style.display = 'block';
+            form.querySelector(".form-input-area").style.display = 'none';
+            form.querySelector(".form-input-button-area").style.display = 'none';
+          });
+          break;
+
+        default:
+          // 기본 동작 없음;
+          break;
+      }
+      })
+    })
   }
 }
 
@@ -123,7 +265,7 @@ export class MonthCalendar {
   checkGridStatus(schedule) {
     var r = [0, 0, 0]
     for (var i = schedule.startDate.getDate() - 1; i < schedule.scheduleBarWidth + schedule.startDate.getDate() - 1; i++) {
-      for (var j=0; j < r.length; j++){
+      for (var j = 0; j < r.length; j++) {
         r[j] = r[j] + this.gridStatus[i][j];
       }
     }
