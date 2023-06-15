@@ -61,18 +61,19 @@ class UserScheduleViewSet(viewsets.ModelViewSet):
         month = int(self.request.GET.get("month", timezone.now().month))
 
         calendars = Calendar.objects.filter(pk__in=user.permitted_calendar_id)
-        print("**********************")
-        print(calendars)
         queryset = Calendar.objects.filter(pk__in=user.permitted_calendar_id).select_related('schedules').values_list('schedules', flat=False)
         self.queryset = Schedule.objects.filter(id__in=queryset).filter(Q(start__year__lte=year) & Q(start__month__lte=month)).filter(Q(end__year__gte=year) & Q(end__month__gte=month))
-        print(self.queryset)
         return super().get_queryset()
 
     def perform_create(self, serializer):
-        serializer.save(calendar_id=self.kwargs['calendar_id'])
+        print(self.request)
+        print("**********************")
+        print(self.request.data)
+        print("**********************")
+        serializer.save()
 
     def perform_update(self, serializer):
-        serializer.save(calendar_id=self.kwargs['calendar_id'])
+        serializer.save()
 
 # superuser only
 class ScheduleViewSet(viewsets.ModelViewSet):

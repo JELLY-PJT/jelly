@@ -25,7 +25,9 @@
 
     {% comment %} 그룹 생성 모달 {% endcomment %}
     {% include 'groups/index/__group_create_modal.html' %}
-    <form id="dataset" data-user-calendar-id="{{ user.calendar.id }}" hidden> 숨겨진 dataset</div>
+    {% if user.calendar %}
+    <form id="dataset" data-user-calendar-id="{{ user.calendar.id }}" hidden> 숨겨진 dataset</form>
+    {% endif %}
 
 <!-- 그룹 생성 실패 시 alert -->
 {% if messages %}
