@@ -14,7 +14,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    nickname = models.CharField(max_length=20, default="젤리곰")
+    nickname = models.CharField(max_length=20)
     #프로필 이미지 원본을 저장할지 논의
     image = ProcessedImageField(upload_to='users',
                                 null=True,
