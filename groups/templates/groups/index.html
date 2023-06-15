@@ -2,6 +2,7 @@
 {% load static %}
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index_calendar.css' %}" />
     {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/__calendar.css' %}" /> {% endcomment %}
     {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/index/testing.css' %}" />   {% endcomment %}
 {% endblock css %}
@@ -11,14 +12,12 @@
 
     <div id="group-index">
         <div class="content-container">
-            <div class="content-item">
-                {% comment %} calendar 표시 {% endcomment %}
-                <div id="calendar-area" class="item-wrapper">
-                    {% include 'groups/index/__calendar.html' with groups=groups %}
+            <div id="calendar-container" class="content-item">
+                <div id="calendar-area" class="calendar-area item-wrapper">
+                    <div id="filter-area" class="filter-area"></div>
                 </div>
             </div>
             <div class="content-item">
-                {% comment %} 가입한 group 표시 {% endcomment %}
                 <div id="group-area" class="item-wrapper">{% include "groups/index/__groups.html" with groups=groups %}</div>
             </div>
         </div>
@@ -26,7 +25,7 @@
 
     {% comment %} 그룹 생성 모달 {% endcomment %}
     {% include 'groups/index/__group_create_modal.html' %}
-    
+    <form id="dataset" data-user-calendar-id="{{ user.calendar.id }}" hidden> 숨겨진 dataset</div>
 
 <!-- 그룹 생성 실패 시 alert -->
 {% if messages %}
@@ -40,5 +39,6 @@
 
 {% block script %}
 <script src="{% static 'js/index.js' %}"></script>
+<script src="{% static 'js/index_calendar.js' %}"></script>
 {% endblock script %}
 

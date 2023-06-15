@@ -37,6 +37,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
     #     slug_field="name",
     #     read_only=True,
     # )
+    calendar = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Schedule
         # fields = ['id', 'calendar', 'start', 'end', 'summary', 'location', 'attendee', 'description']

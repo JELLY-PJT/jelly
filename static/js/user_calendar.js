@@ -14,7 +14,8 @@ class Schedule {
     this.endDate_Date = new Date(this.endDate.toDateString())
   }
   createScheduleBars(calendar) {
-    console.log("create schedule bar");
+    console.log(this.calendarId);
+    // console.log("create schedule bar");
     // create ScheduleBars
     this.scheduleBars = [];
     const monthStart = new Date(calendar.year, calendar.month, 1)
@@ -32,7 +33,7 @@ class Schedule {
     this.scheduleBarWidth = 1 + barEndDate - barStartDate;
 
     if (this.startDate.getMonth() == calendar.month) {
-      for(var i=barStartDate; i < barEndDate + 1; i++){
+      for (var i = barStartDate; i < barEndDate + 1; i++) {
         if (!calendar.Dates[i - 1].schedules) {
           calendar.Dates[i - 1].schedules = [];
         }
@@ -47,7 +48,7 @@ class Schedule {
     // console.log(`start: ${barStartDate}, end: ${barEndDate}`)
     var i = barStartDate
     while (i <= barEndDate) {
-
+      // console.log("new schedule bar")
       if (i == barStartDate) {
         const scheduleBar = { body: scheduleBarBody.cloneNode(true) }
         // if (barStartDate == 1) {
@@ -55,29 +56,37 @@ class Schedule {
         // } else {
         //   scheduleBar['width'] = Math.min(this.scheduleBarWidth, 7-this.startDate.getDay())
         // }
-        scheduleBar['width'] = Math.min(this.scheduleBarWidth, 7-this.barStart.getDay())
+        scheduleBar['width'] = Math.min(this.scheduleBarWidth, 7 - this.barStart.getDay())
+        console.log(`userCalendarId: ${userCalendarId}`)
+        console.log(`this.calendarId: ${this.calendarId}` )
         scheduleBar['body'].setAttribute(
-          "style", 
-          `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
-          max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);`);
+            "style",
+            `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
+            max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);
+            background-color:var(--color-id-${CalendarDict[this.calendarId]['color']});`
+          );
         // console.log(`start: ${i}, width:${scheduleBar['width']}`)
         i += scheduleBar['width']
         this.scheduleBars.push(scheduleBar);
       } else if (i + 7 < barEndDate) {
         const scheduleBar = { body: scheduleBarBody.cloneNode(true), width: 7, }
         scheduleBar['body'].setAttribute(
-          "style", 
+          "style",
           `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
-          max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);`);
+          max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);
+          background-color:var(--color-id-${CalendarDict[this.calendarId]['color']});`
+        );
         // console.log(`start: ${i}, width:${scheduleBar['width']}`)
         i += scheduleBar['width']
         this.scheduleBars.push(scheduleBar);
       } else {
         const scheduleBar = { body: scheduleBarBody.cloneNode(true), width: 1 + barEndDate - i }
         scheduleBar['body'].setAttribute(
-          "style", 
+          "style",
           `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
-          max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);`);
+          max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);
+          background-color:var(--color-id-${CalendarDict[this.calendarId]['color']});`
+        );
         // console.log(`start: ${i}, width:${scheduleBar['width']}`)
         i += scheduleBar['width']
         this.scheduleBars.push(scheduleBar);
@@ -93,13 +102,13 @@ class Schedule {
     this.displayScheduleBars(calendar);
   }
   displayScheduleBars(calendar) {
-    console.log("displayScheduleBars");
+    // console.log("displayScheduleBars");
     var r = calendar.checkGridStatus(this);
     if (r) {
       var i = this.barStart.getDate();
       this.scheduleBars.forEach(scheduleBar => {
-        if ( i < parseInt(this.barEnd.getDate()) + 1){
-          console.log(i-1)
+        if (i < parseInt(this.barEnd.getDate()) + 1) {
+          // console.log(i-1)
           // console.log(r)
           calendar.getGridCell(i, r).appendChild(scheduleBar['body']);
           i += scheduleBar['width'];
@@ -114,12 +123,11 @@ class Schedule {
     const form = document.createElement("form");
     form.classList = "schedule-form";
     form.setAttribute('id', `schedule-form-${this.id}`);
-    form.setAttribute('action',"#" );
+    form.setAttribute('action', "#");
     form.setAttribute('data-schedule-id', `${this.id}`);
     const formReadonlyArea = document.createElement("div");
     formReadonlyArea.classList = "form-readonly-area";
     formReadonlyArea.innerHTML = `
-    <input type="hidden" name="csrfmiddlewaretoken" value="">
     <div class="form-group"><label>Start</label><div><input name="_start" type="datetime-local" value="${this.start.toString().slice(0, 16)}" readonly></div></div>
     <div class="form-group"><label>End</label><div ><input name="_end" type="datetime-local" value="${this.end.toString().slice(0, 16)}" readonly></div></div>
     <div class="form-group"><label>Summary</label><div ><input name="_summary" type="text" value="${this.summary}" readonly></div></div>
@@ -140,8 +148,7 @@ class Schedule {
 
     const formInputArea = document.createElement("div");
     formInputArea.classList = "form-input-area";
-    formInputArea.innerHTML=`
-    <input type="hidden" name="csrfmiddlewaretoken" value="">
+    formInputArea.innerHTML = `
     <div class="form-group"><label>Start</label><div><input name="start" type="datetime-local" value="${this.start.toString().slice(0, 16)}" ></div></div>
     <div class="form-group"><label>End</label><div ><input name="end" type="datetime-local" value="${this.end.toString().slice(0, 16)}" ></div></div>
     <div class="form-group"><label>Summary</label><div ><input name="summary" type="text" value="${this.summary}" ></div></div>
@@ -159,7 +166,7 @@ class Schedule {
     cancelButton.setAttribute('form', `schedule-form-${this.id}`);
     cancelButton.setAttribute('type', 'button');
     cancelButton.textContent = '취소';
-    
+
     formUDButtonArea.appendChild(updateButton);
     formUDButtonArea.appendChild(deleteButton);
     formSCButtonArea.appendChild(saveButton);
@@ -185,9 +192,9 @@ class CalendarDate {
     return new Date(this.year, this.month, this.date)
   }
 
-  drawDateCell(container, classList, noteArea) {
+  drawDateCell(container, classList) {
     if (this.dateCell) {
-          this.dateCell.innerHTML="";
+      this.dateCell.innerHTML = "";
     } else {
       this.dateCell = document.createElement("div");
       this.dateCell.className = classList
@@ -215,11 +222,11 @@ class CalendarDate {
 
     this.dateCell.children[0].addEventListener('click', (event) => {
       event.preventDefault()
-      this.showNoteForDate(noteArea);
+      this.showNoteForDate();
     });
   }
 
-  cleanDateCell(){
+  cleanDateCell() {
     const gridCell = document.createElement("div");
     gridCell.className = "schedule-grid-cell"
     const gridColumn = this.dateCell.children[1];
@@ -230,19 +237,19 @@ class CalendarDate {
     gridColumn.appendChild(gridCell.cloneNode(true));
     gridColumn.appendChild(gridCell.cloneNode(true));
 
-    if (this.schedules){
+    if (this.schedules) {
       this.schedules = new Array();
     }
 
   }
   // 노트 표시 함수
   showNoteForDate() {
-    console.log("showNoteForDate is running!");
+    // console.log("showNoteForDate is running!");
 
     // note Area 초기화
     const noteArea = document.getElementById('note-area');
-    noteArea.innerHTML="";
-    
+    noteArea.innerHTML = "";
+
     // note Header
     const noteHeader = document.createElement("div");
     noteHeader.className = "note-header";
@@ -278,22 +285,21 @@ class CalendarDate {
     const formInputArea = document.createElement("div");
     formInputArea.classList = "create-form-input-area";
     formInputArea.innerHTML = `
-  <input type="hidden" name="csrfmiddlewaretoken" value="">
   <div class="form-group"><label>Start</label><div><input name="start" type="datetime-local" value="" ></div></div>
   <div class="form-group"><label>End</label><div ><input name="end" type="datetime-local" value="" ></div></div>
   <div class="form-group"><label>Summary</label><div ><input name="summary" type="text" value="" ></div></div>
   <div class="form-group"><label>Location</label><div ><input name="location" type="text" value="" ></div></div>
   <div class="form-group"><label>Description</label><div ><input name="description" type="text" value="" ></div></div>`;
-    
+
     const formSCButtonArea = document.createElement("div");
     formSCButtonArea.classList = "create-form-button-area";
-    
+
     const saveButton = document.createElement("button");
     saveButton.setAttribute('name', `post-schedule-button`);
     saveButton.setAttribute('form', `create-schedule-form`);
     saveButton.setAttribute('type', 'button');
     saveButton.textContent = '저장';
-    
+
     const cancelButton = document.createElement("button");
     cancelButton.setAttribute('name', `cancel-create-schedule-button`);
     cancelButton.setAttribute('form', `create-schedule-form`);
@@ -309,11 +315,11 @@ class CalendarDate {
     headerDateArea.appendChild(noteHeaderDate);
     headerCreateButtonArea.appendChild(scheduleCreateButton);
     headerFormArea.appendChild(form);
-    
+
     noteHeader.appendChild(headerDateArea);
     noteHeader.appendChild(headerCreateButtonArea);
     noteHeader.appendChild(headerFormArea);
-    
+
     noteArea.appendChild(noteHeader);
 
     // note content
@@ -327,10 +333,10 @@ class CalendarDate {
     }
 
     noteArea.appendChild(noteContent);
-    this.createEventListeners(noteArea);
+    this.createEventListeners();
   }
 
-  createEventListeners(noteArea) {
+  createEventListeners() {
     //create form 표시
     noteArea.querySelector('#create-schedule-button').addEventListener('click', function (event) {
       event.preventDefault();
@@ -359,58 +365,58 @@ class CalendarDate {
           // 기본 동작 없음;
           break;
       }
-  })
-    
+    })
+
     noteArea.querySelectorAll('.schedule-note').forEach(scheduleNote => {
       scheduleNote.querySelectorAll("button").forEach(button => {
-      switch (button.getAttribute('name')) {
-        //update form 표시
-        case 'update-schedule-button':
-          button.addEventListener('click', function (event) {
-            event.preventDefault();
-            const form = document.getElementById(button.getAttribute('form'));
-            form.querySelector(".form-readonly-area").style.display = 'none';
-            form.querySelector(".form-readonly-button-area").style.display = 'none';
-            form.querySelector(".form-input-area").style.display = 'block';
-            form.querySelector(".form-input-button-area").style.display = 'block';
-          });
-          break;
-        //delete
-        case 'delete-schedule-button':
-          // button.addEventListener('click', deleteSchedule(calendar));
-          button.addEventListener('click', function (event) {
-            event.preventDefault();
-            const form = document.getElementById(button.getAttribute('form'));
-            deleteSchedule(form)
-          });
-          break;
-          
-        //update
-        case 'post-update-schedule-button':
-          // button.addEventListener('click', updateSchedule(calendar));
-          button.addEventListener('click', function (event) {
-            event.preventDefault();
-            const form = document.getElementById(button.getAttribute('form'));
-            updateSchedule(form)
-          });
-          break;
+        switch (button.getAttribute('name')) {
+          //update form 표시
+          case 'update-schedule-button':
+            button.addEventListener('click', function (event) {
+              event.preventDefault();
+              const form = document.getElementById(button.getAttribute('form'));
+              form.querySelector(".form-readonly-area").style.display = 'none';
+              form.querySelector(".form-readonly-button-area").style.display = 'none';
+              form.querySelector(".form-input-area").style.display = 'block';
+              form.querySelector(".form-input-button-area").style.display = 'block';
+            });
+            break;
+          //delete
+          case 'delete-schedule-button':
+            // button.addEventListener('click', deleteSchedule(calendar));
+            button.addEventListener('click', function (event) {
+              event.preventDefault();
+              const form = document.getElementById(button.getAttribute('form'));
+              deleteSchedule(form)
+            });
+            break;
 
-        //update 취소
-        case 'cancel-update-schedule-button':
-          button.addEventListener('click', function (event) {
-            event.preventDefault();
-            const form = document.getElementById(button.getAttribute('form'));
-            form.querySelector(".form-readonly-area").style.display = 'block';
-            form.querySelector(".form-readonly-button-area").style.display = 'block';
-            form.querySelector(".form-input-area").style.display = 'none';
-            form.querySelector(".form-input-button-area").style.display = 'none';
-          });
-          break;
+          //update
+          case 'post-update-schedule-button':
+            // button.addEventListener('click', updateSchedule(calendar));
+            button.addEventListener('click', function (event) {
+              event.preventDefault();
+              const form = document.getElementById(button.getAttribute('form'));
+              updateSchedule(form)
+            });
+            break;
 
-        default:
-          // 기본 동작 없음;
-          break;
-      }
+          //update 취소
+          case 'cancel-update-schedule-button':
+            button.addEventListener('click', function (event) {
+              event.preventDefault();
+              const form = document.getElementById(button.getAttribute('form'));
+              form.querySelector(".form-readonly-area").style.display = 'block';
+              form.querySelector(".form-readonly-button-area").style.display = 'block';
+              form.querySelector(".form-input-area").style.display = 'none';
+              form.querySelector(".form-input-button-area").style.display = 'none';
+            });
+            break;
+
+          default:
+            // 기본 동작 없음;
+            break;
+        }
       })
     })
   }
@@ -447,29 +453,29 @@ class MonthCalendar {
     }
     this.calendarEndDate = new Date(year, month + 1, this.afterMonthDates.length);
   }
-  cleanCalendar(){
+  cleanCalendar() {
     // clean date cell
     this.Dates.forEach(Date => {
       Date.cleanDateCell()
     })
     // clean grid status
     this.gridStatus = [];
-    for(var i=0; i < this.monthEndDate; i++){
-      this.gridStatus.push([0,0,0]);
+    for (var i = 0; i < this.monthEndDate; i++) {
+      this.gridStatus.push([0, 0, 0]);
     }
   }
   getGridCell(date, row) {
-    console.log(this.Dates[date].dateCell.children[1])
-    return this.Dates[date-1].dateCell.children[1].children[row - 1];
+    // console.log(this.Dates[date].dateCell.children[1])
+    return this.Dates[date - 1].dateCell.children[1].children[row - 1];
   }
   checkGridStatus(schedule) {
     if (!this.gridStatus) {
       this.gridStatus = [];
-      for(var i=0; i < this.monthEndDate; i++){
-        this.gridStatus.push([0,0,0]);
+      for (var i = 0; i < this.monthEndDate; i++) {
+        this.gridStatus.push([0, 0, 0]);
       }
     }
-    
+
     var r = [0, 0, 0]
     for (var i = schedule.startDate.getDate() - 1; i < Math.min(schedule.scheduleBarWidth + schedule.startDate.getDate() - 1, this.monthEndDate); i++) {
       for (var j = 0; j < r.length; j++) {
@@ -488,15 +494,16 @@ class MonthCalendar {
   }
 }
 // 달력 생성 함수
-function generateCalendar(calendarArea, noteArea, year, month = null) {
+function generateCalendar(year, month = null) {
   if (calendar) {
     calendar = null;
-    calendarArea.innerHTML = "";
+    // 이전 달력 삭제
+    while (calendarArea.childElementCount > 1) {
+      calendarArea.children[1].remove();
+    }
     noteArea.innerHTML = "";
   }
-
-  console.log("Calendar is running!");
-  console.log(year, month + 1)
+  console.log(`Calendar is running! ${year} ${month + 1}`);
 
   // 이전 달/연도 버튼
   const prevButton = document.createElement("a");
@@ -506,23 +513,24 @@ function generateCalendar(calendarArea, noteArea, year, month = null) {
   prevButton.addEventListener("click", function () {
     if (month === null) {
       const prevYear = new Date(year, month);
-      calendar = generateCalendar(calendarArea, noteArea, prevYear.getFullYear() - 1);
+      calendar = generateCalendar( prevYear.getFullYear() - 1);
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
-        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
-      } else { 
-        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+      } else {
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate();
       }
 
     } else {
       const prevMonth = new Date(year, month - 1);
-      calendar = generateCalendar(calendarArea, noteArea, prevMonth.getFullYear(), prevMonth.getMonth());
+      calendar = generateCalendar( prevMonth.getFullYear(), prevMonth.getMonth());
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
-        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
-      } else { 
-        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
-      }    }
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+      } else {
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate();
+      }
+    }
   });
 
   // 다음 달/연도 버튼
@@ -533,20 +541,21 @@ function generateCalendar(calendarArea, noteArea, year, month = null) {
   nextButton.addEventListener("click", function () {
     if (month === null) {
       const nextYear = new Date(year, month);
-      calendar = generateCalendar(calendarArea, noteArea, nextYear.getFullYear() + 1);
+      calendar = generateCalendar( nextYear.getFullYear() + 1);
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
-        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
-      } else { 
-        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
-      }    } else {
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+      } else {
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate();
+      }
+    } else {
       const nextMonth = new Date(year, month + 1);
-      calendar = generateCalendar(calendarArea, noteArea, nextMonth.getFullYear(), nextMonth.getMonth());
+      calendar = generateCalendar( nextMonth.getFullYear(), nextMonth.getMonth());
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
-        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
-      } else { 
-        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+      } else {
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate();
       }
     }
   });
@@ -556,14 +565,13 @@ function generateCalendar(calendarArea, noteArea, year, month = null) {
   headerTitle.innerHTML = month === null ? year + "년 " : year + "년 " + (month + 1) + "월";
   headerTitle.className = "calendar-title";
   headerTitle.addEventListener("click", function () {
-    generateCalendar(calendarArea, noteArea, year);
+    generateCalendar( year);
   });
 
   // 이전 달력 삭제
-  while (calendarArea.firstChild) {
-    calendarArea.firstChild.remove();
+  while (calendarArea.childElementCount > 1) {
+    calendarArea.children[1].remove();
   }
-
   // 달력에 추가
   const calendarHeader = document.createElement("div");
   calendarHeader.classList = "calendar-header"
@@ -574,14 +582,14 @@ function generateCalendar(calendarArea, noteArea, year, month = null) {
 
   if (month === null) {
     // 연도 달력
-    generateYearCalendar(calendarArea, noteArea, year);
+    generateYearCalendar(year);
   } else {
     // 월 달력
-    return generateMonthCalendar(calendarArea, noteArea, year, month);
+    return generateMonthCalendar(year, month);
   }
 }
 // 연도별 달력
-function generateYearCalendar(calendarArea, noteArea, year) {
+function generateYearCalendar(year) {
   const monthContainer = document.createElement("div");
   monthContainer.className = "calendar-months";
   for (let i = 0; i < 12; i++) {
@@ -589,14 +597,14 @@ function generateYearCalendar(calendarArea, noteArea, year) {
     monthCell.innerHTML = i + 1 + "월";
     monthCell.className = "calendar-month";
     monthCell.addEventListener("click", function () {
-      generateCalendar(calendarArea, noteArea, year, i);
+      generateCalendar( year, i);
     });
     monthContainer.appendChild(monthCell);
   }
   calendarArea.appendChild(monthContainer);
 }
 // 월별 달력
-function generateMonthCalendar(calendarArea, noteArea, year, month) {
+function generateMonthCalendar(year, month) {
   const calendar = new MonthCalendar(year, month);
 
   // 요일 헤더 생성
@@ -613,13 +621,13 @@ function generateMonthCalendar(calendarArea, noteArea, year, month) {
   dateContainer.className = "date-container"; // grid-row repeat(7, 1fr)
 
   calendar.beforeMonthDates.forEach(date => {
-    date.drawDateCell(dateContainer, 'calendar-date other-month', noteArea);
+    date.drawDateCell(dateContainer, 'calendar-date other-month' );
   });
   calendar.Dates.forEach(date => {
-    date.drawDateCell(dateContainer, 'calendar-date', noteArea);
+    date.drawDateCell(dateContainer, 'calendar-date' );
   });
   calendar.afterMonthDates.forEach(date => {
-    date.drawDateCell(dateContainer, 'calendar-date other-month', noteArea);
+    date.drawDateCell(dateContainer, 'calendar-date other-month');
   });
 
   calendarArea.appendChild(daysRow);
@@ -634,7 +642,7 @@ function fetchAndDisplaySchedules() {
     // const response = await axios({
     axios({
       method: 'get',
-      url: `calendars/schedules/?year=${calendar.year}&month=${calendar.month + 1}`,
+      url: `schedules/?year=${calendar.year}&month=${calendar.month + 1}`,
       responseType: 'json',
     }).then(response => {
       // 스케쥴 초기화
@@ -647,7 +655,7 @@ function fetchAndDisplaySchedules() {
           item.end,
           item.summary,
           item.location,
-          item.description,
+          item.description
         );
         calendar.schedules.push(schedule);
       });
@@ -673,13 +681,14 @@ function createSchedule(form) {
         'location': form.querySelector('input[name="location"]').value,
         'summary': form.querySelector('input[name="summary"]').value,
         'description': form.querySelector('input[name="description"]').value,
+        'calendar': form.dataset.CalendarId
       },
     }).then(response => {
       calendar.cleanCalendar();
-    }).then( function () {
+    }).then(function () {
       fetchAndDisplaySchedules();
       const scheduleDate = new Date(form.querySelector('input[name="start"]').value)
-      calendar.Dates[scheduleDate.getDate() - 1].showNoteForDate(noteArea);
+      calendar.Dates[scheduleDate.getDate() - 1].showNoteForDate();
     });
   } catch (error) {
     console.error(error);
@@ -689,12 +698,12 @@ function deleteSchedule(form) {
   try {
     axios({
       method: 'delete',
-      url: `calendars/schedules/${form.dataset.scheduleId}/`,
+      url: `schedules/${form.dataset.scheduleId}/`,
     }).then(response => {
       calendar.cleanCalendar();
-    }).then( function () {
+    }).then(function () {
       fetchAndDisplaySchedules();
-      calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
+      calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
     });
   } catch (error) {
     console.error(error);
@@ -704,36 +713,84 @@ function updateSchedule(form) {
   try {
     axios({
       method: 'put',
-      url: `calendars/schedules/${form.dataset.scheduleId}/`,
+      url: `schedules/${form.dataset.scheduleId}/`,
       data: {
         'start': form.querySelector('input[name="start"]').value,
         'end': form.querySelector('input[name="end"]').value,
         'location': form.querySelector('input[name="location"]').value,
         'summary': form.querySelector('input[name="summary"]').value,
         'description': form.querySelector('input[name="description"]').value,
+        'calendar': form.dataset.CalendarId
       },
     }).then(response => {
       calendar.cleanCalendar();
-    }).then( function () {
+    }).then(function () {
       fetchAndDisplaySchedules();
       const scheduleDate = new Date(form.querySelector('input[name="start"]').value)
-      calendar.Dates[scheduleDate.getDate() - 1].showNoteForDate(noteArea);
+      calendar.Dates[scheduleDate.getDate() - 1].showNoteForDate();
     });
   } catch (error) {
     console.error(error);
   }
 }
+function fetchGroupsAndCreateFilters() {
+  try {
+    axios({
+      method: 'get',
+      url: `../../../../groups/search?q= `,
+      responseType: 'json',
+    })
+      .then(function (response) {
+        // console.log('fetch user_groups')
+        GroupDict = {};
+        CalendarDict = {};
+        var colorIndex = 0
+        GroupDict['user']={'name':'user', 'calendar':userCalendarId, 'color':0, 'thumbnail':'#'}
+        CalendarDict[userCalendarId]={'name':'user', 'group':'user', 'color':0}
+        const groupButton = document.createElement("button")
+        groupButton.classList = "filter-button"
+        const square = document.createElement("div");
+        square.className = "square";
+        const inner = document.createElement("div");
+        inner.className = "inner";
+        inner.setAttribute("style", `background-color:var(--color-id-${colorIndex});`);
+        square.appendChild(inner)
+        groupButton.appendChild(square)
+        filterArea.appendChild(groupButton)
+        response.data.forEach(item => {
+          colorIndex += 1;
+          GroupDict[item.id] = {'name':item.name, 'calendar':item.calendar, 'color': colorIndex, 'thumbnail': item.thumbnail};
+          CalendarDict[item.calendar] = {'name':item.name, 'group':item.id, 'color': colorIndex};
+
+          const groupButtonClone = groupButton.cloneNode(true)
+          groupButtonClone.firstChild.firstChild.setAttribute("style", `background-color:var(--color-id-${colorIndex});`);
+          filterArea.appendChild(groupButtonClone)
+          colorIndex = colorIndex%8;
+        })
+      }).then(function() {
+        fetchAndDisplaySchedules();
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+      });
+  } catch (error) {
+    console.error(error)
+  }
+}
 //import axios from 'axios';
 const csrftoken = Cookies.get('csrftoken');
 axios.defaults.headers.common['X-CSRFToken'] = csrftoken;
+// Group과 Calendar
+var GroupDict = {};
+var CalendarDict = {};
 // 현재 날짜로 달력 생성
 const currentDate = new Date();
 const calendarArea = document.getElementById('calendar-area');
 const noteArea = document.getElementById('note-area');
+const filterArea = document.getElementById('filter-area');
 const days = ["일", "월", "화", "수", "목", "금", "토"];
-// 스케쥴 가져오기
-var calendar = generateCalendar(calendarArea, noteArea, currentDate.getFullYear(), currentDate.getMonth());
-fetchAndDisplaySchedules();
-// 현재 날짜의 노트 표시
-calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
+const userCalendarId = document.getElementById('dataset').dataset.userCalendarId;
 
+// 스케쥴 가져오기
+var calendar = generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+fetchGroupsAndCreateFilters();
+// 현재 날짜의 노트 표시
+const COLORS = ['#9DC8C8', '#D1B6E1', '#82C0E4', '#FEEE7D', '#F7AA97', '#F1BBBA', '#88DBA3'];

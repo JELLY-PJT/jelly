@@ -8,16 +8,24 @@
   --calendar-width: calc(100vw - 146px - 3rem);
   --date-cell-width: calc(calc(var(--calendar-width)/2 - 1rem)/7 );
   --date-cell-max-width: calc(calc(var(--calendar-max-width)/2 - 1rem)/7 );
+  --color-id-0: var(--color-main);
+  --color-id-1:#9DC8C8; 
+  --color-id-2:#D1B6E1; 
+  --color-id-3:#82C0E4; 
+  --color-id-4:#FEEE7D; 
+  --color-id-5:#F7AA97; 
+  --color-id-6:#F1BBBA;
+  --color-id-7:#88DBA3;
+  --color-main-pale: #d1d8ff50;
 }
 #calendar-container {
-  display: grid;
-  grid-template-columns: 50% 50%;
   height: var(--index-content-height);
-  width: var(--calendar-width);
+  width: var(--calendar-width)/2;
   max-width: var(--calendar-max-width);
-
 }
-
+.filter-area {
+  display:none;
+}
 #calendar-container > div {
   margin: 5% 0 5% 0;
   display: flex;
@@ -28,12 +36,40 @@
 
 #calendar-container .calendar-area {
   grid-column: 1;
+  display:flex;
+  flex-direction:column;
+}
+#calendar-container .filter-area {
+  width:100%;
+  height: 3rem;
+  margin:0 1rem 0 1rem;
+  grid-template-columns: repeat(7, 1fr);
+}
+#calendar-container .filter-button {
+  max-width: var(--date-cell-max-width);
+  width: calc(var(--date-cell-width)/2);
+  text-align: center; 
+  font-weight: bold;
+  padding: 0.5rem;
 }
 
+#calendar-container .filter-button .square {
+  width: 100%;
+  padding-top: 100%;
+  position: relative;
+  margin: 0 auto 0 auto;
+}
+#calendar-container .filter-button .inner {
+  border-radius: 50%;
+  position: absolute; top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  text-align:center;
+  line-height:2rem;
+}
 #calendar-container .calendar-header {
   width: 100%; /* 0.5 * var(--calendar-width) -20px */
   height: fit-content;
-  max-height: 100%;
   display:flex;
   flex-direction: row;
   margin-bottom: 1rem;
@@ -76,7 +112,6 @@
 
 #calendar-container .date-container{
   width: 100%; 
-  max-height: 100%;
   display: grid;
   padding: 1% 0 1% 0;
   grid-template-columns: repeat(7, 1fr);
@@ -150,7 +185,8 @@
 }
 #calendar-container .note-area {
     grid-column: 2;
-    background-color: #d1d8ff50;
+    border-radius: 0.5rem;
+    background-color: var(--color-main-light);
 }
 #calendar-container .header-date-area {
   font-size:4rem;

@@ -1,0 +1,13 @@
+{% load static %}
+
+<div id="CSRFToken">{% csrf_token %}</div>
+<div id="calendar-container">
+  <div id="calendar-area" class="calendar-area">
+    <div id="filter-area" class="filter-area"></div>
+  </div>
+  <div id="note-area" class="note-area">
+  </div>
+</div>
+
+
+<form id="dataset" data-user-calendar-id="{{ user.calendar.id }}" hidden> 숨겨진 dataset</div>
