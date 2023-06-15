@@ -67,7 +67,7 @@
               {% endif %}
             </div>
             <div class="flex-grow">
-              <p>{{ diary.user }}</p>
+              <p>{{ diary.user.nickname }}</p>
               <div class="flex gap-2">
                 <p class="date">{{ diary.created_at }}</p>
                 <p class="date">조회 {{ diary.hit.all|length }}</p>
@@ -178,7 +178,7 @@
                         {% endif %}
                       </div>
                       <div class="grow">
-                        <p class="comment-user">{{ comment.user }}</p>
+                        <p class="comment-user">{{ comment.user.nickname }}</p>
                         <p class="comment-comment">{{ comment.comment }}</p>
                         <form id="comment-update-form" class="hidden comment-form">
                           {% csrf_token %}

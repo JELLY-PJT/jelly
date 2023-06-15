@@ -73,6 +73,7 @@
         {% for reaction in reactions %}
           <li class="mr-2" role="presentation">
             <button class="inline-block p-4 pt-6 border-b-2 rounded-t-lg" id="{{ reaction.0 }}-tab" data-tabs-target="#{{ reaction.0 }}" type="button" role="tab" aria-controls="{{ reaction.0 }}" aria-selected="false">{{ reaction.0 }}</button>
+          </li>
         {% endfor %}
         </ul>
       </div>
@@ -136,7 +137,7 @@
                           {% endif %}
                         </div>
                         <div>
-                          <p class="comment-user">{{ comment.user }}</p>
+                          <p class="comment-user">{{ comment.user.nickname }}</p>
                           <p class="comment-comment">{{ comment.comment }}</p>
                           <p class="date comment-bottom">{{ comment.created_at }}</p>
                         </div>

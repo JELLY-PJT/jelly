@@ -57,10 +57,10 @@ LEVEL = {
     5: {'name': '열매', 'img': 'img/group_level/lv5_fruit.png', 'levelup_standard': 150},
     6: {'name': '반달곰', 'img': 'img/group_level/lv6_bear.png', 'levelup_standard': 210},
     7: {'name': '판다', 'img': 'img/group_level/lv7_panda.png', 'levelup_standard': 280},
-    8: {'name': '레서판다', 'img': 'img/group_level/lv8_lesser_panda.png', 'levelup_standard': 360},
-    9: {'name': '유니콘', 'img': 'img/group_level/lv9_unicorn.png', 'levelup_standard': 450},
-    10: {'name': '뿔 달린 유니콘', 'img': 'img/group_level/lv10_horn_unicorn.png', 'levelup_standard': 550},
-    11: {'name': '날개 달린 유니콘', 'img': 'img/group_level/lv11_wing_unicorn.png', 'levelup_standard': 660},
+    # 8: {'name': '레서판다', 'img': 'img/group_level/lv8_lesser_panda.png', 'levelup_standard': 360},
+    # 9: {'name': '유니콘', 'img': 'img/group_level/lv9_unicorn.png', 'levelup_standard': 450},
+    # 10: {'name': '뿔 달린 유니콘', 'img': 'img/group_level/lv10_horn_unicorn.png', 'levelup_standard': 550},
+    # 11: {'name': '날개 달린 유니콘', 'img': 'img/group_level/lv11_wing_unicorn.png', 'levelup_standard': 660},
 }
 
 # 그룹 경험치 추가 & 레벨업 관리
@@ -68,7 +68,7 @@ def exp_up(group_pk):
     group = Group.objects.get(pk=group_pk)
     group.exp += 1
     group.save()
-    if group.exp/(len(group.group_users.all())**0.5) >= LEVEL[group.level]['levelup_standard']:
+    if group.exp/(len(group.group_users.all())**0.5) >= LEVEL[group.level]['levelup_standard'] and group.level < 7:
         group.level += 1
         group.save()
 
@@ -201,7 +201,7 @@ def group_update(request, group_pk):
     if request.user != group.chief:
         return redirect('groups:group_detail', group.pk)
     
-    form = GroupForm(request.POST, instance=group)
+    form = GroupForm(request.POST, files=request.FILES, instance=group)
     if form.is_valid():
         form.save()
         return redirect('groups:group_detail', group.pk)
@@ -368,7 +368,7 @@ def post_detail(request, group_pk, post_pk):
         return redirect('groups:index')
     
     post = Post.objects.get(pk=post_pk)
-    comments = post.postcomment_set.all().order_by('-created_at')
+    comments = post.postcomment_set.all()
     comment_form = PostCommentForm()
     # 조회수
     if not post.hits.filter(pk=request.user.pk).exists():

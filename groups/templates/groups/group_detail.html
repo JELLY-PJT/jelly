@@ -75,7 +75,7 @@
               </div>
             </div>
             <div class="group-intro">
-              <p>{{ group.intro }}</p>
+              <p>{{ group.intro | linebreaksbr }}</p>
             </div>
           </div>
           <!-- 그룹 레벨 & 경험치 이미지 -->
@@ -379,7 +379,7 @@
                                               {% else %}
                                               <span><img src="{% static 'img/blank_profile_img.png' %}" alt=""> </span>
                                               {% endif %}
-                                              <span style='font-size: 4px'>{{ option_selecter }} </span>
+                                              <span style='font-size: 4px'>{{ option_selecter.nickname }} </span>
                                             </div>
                                           {% endfor %}                         
                                         </div>
@@ -444,7 +444,7 @@
                                             {% else %}
                                             <span><img src="{% static 'img/blank_profile_img.png' %}" alt=""> </span>
                                             {% endif %}
-                                            <span style='font-size: 4px'>{{ option_selecter }} </span>
+                                            <span style='font-size: 4px'>{{ option_selecter.nickname }} </span>
                                           </div>
                                         {% endfor %}                         
                                       </div>
@@ -842,7 +842,7 @@
       if (data.nickname == '{{ user.nickname }}') {
         html = '<li class="message me">'
       } else {
-        html = '<li class="message"><div class="user-img image">'
+        html = '<li class="message"><div class="chat-user-img image">'
         console.log(html)
       }
   
@@ -911,3 +911,4 @@
 </script>
 
 {% endblock script %}
+

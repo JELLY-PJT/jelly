@@ -1,15 +1,17 @@
-const inviteBtn = document.getElementById('invite-btn')
-groupId = inviteBtn.dataset.groupId
+function copyToClipboard(text) {
+  const textField = document.createElement('textarea');
+  textField.value = text;
+  document.body.appendChild(textField);
+  textField.select();
+  document.execCommand('copy');
+  document.body.removeChild(textField);
+}
+
+const inviteBtn = document.getElementById('invite-btn');
+const groupId = inviteBtn.dataset.groupId;
 
 function copyLink() {
-  const url = `http://127.0.0.1:8000/groups/${groupId}/join/`
-  navigator.clipboard.writeText(url)
-  .then(function() {
-    alert("초대링크가 복사되었습니다.")
-  })
-  .catch(function(error) {
-    /* 복사 실패 시 에러 메시지를 표시합니다. */
-    alert("주소 복사에 실패했습니다.");
-    console.error(error);
-  });
+  const url = `http://ec2-3-106-87-11.ap-southeast-2.compute.amazonaws.com:8000/groups/${groupId}/join`;
+  copyToClipboard(url);
+  alert("초대링크가 복사되었습니다.");
 }

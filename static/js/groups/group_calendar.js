@@ -47,7 +47,7 @@ class Schedule {
     // console.log(`start: ${barStartDate}, end: ${barEndDate}`)
     var i = barStartDate
     while (i <= barEndDate) {
-      // console.log("new schedule bar")
+
       if (i == barStartDate) {
         const scheduleBar = { body: scheduleBarBody.cloneNode(true) }
         // if (barStartDate == 1) {
