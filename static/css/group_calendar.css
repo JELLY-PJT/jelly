@@ -4,7 +4,7 @@
 #calendar-container ::after {
   --index-content-height: calc(var(--content-min-height) - 160px);
   --group-area-height: calc(var(--index-content-height) - 115px);
-  --calendar-max-width: 950px;
+  --calendar-max-width: 1200px;
   --calendar-width: calc(100vw - 146px - 3rem);
   --date-cell-width: calc(calc(var(--calendar-width)/2 - 1rem)/7 );
   --date-cell-max-width: calc(calc(var(--calendar-max-width)/2 - 1rem)/7 );

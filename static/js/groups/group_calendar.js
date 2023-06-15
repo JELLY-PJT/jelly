@@ -1,12 +1,11 @@
 class Schedule {
-  constructor(id, calendar, start, end, summary, location, attendee, description) {
+  constructor(id, calendar, start, end, summary, location, description) {
     this.id = id;
     this.start = start;
     this.end = end;
     this.calendarId = calendar // 일정 소속 캘린더
     this.summary = summary  // 일정 제목
     this.location = location // 장소
-    this.attendee = attendee // 참석자
     this.description = description  // 일정 상세 내용
 
     this.startDate = new Date(this.start);
@@ -14,78 +13,97 @@ class Schedule {
     this.endDate = new Date(this.end);
     this.endDate_Date = new Date(this.endDate.toDateString())
   }
-
   createScheduleBars(calendar) {
     console.log("create schedule bar");
     // create ScheduleBars
     this.scheduleBars = [];
+    const monthStart = new Date(calendar.year, calendar.month, 1)
     const monthEnd = new Date(calendar.year, calendar.month + 1, 0)
-    if (monthEnd < this.endDate) {
-      this.scheduleBarWidth = 1+Math.floor((monthEnd -this.startDate_Date)/(1000*60*60*24));
-    } else {
-      this.scheduleBarWidth = 1+Math.floor((this.endDate_Date-this.startDate_Date)/(1000*60*60*24));
+    this.barStart = this.startDate
+    this.barEnd = this.endDate
+    if (this.startDate < monthStart) {
+      this.barStart = calendar.monthStart
     }
-    // console.log(this.start)
-    // console.log(this.end)
-    // console.log(this.scheduleBarWidth)
-    if (this.startDate.getMonth() == calendar.month) {
+    if (monthEnd < this.endDate) {
+      this.barEnd = monthEnd
+    }
+    const barStartDate = parseInt(this.barStart.getDate());
+    const barEndDate = parseInt(this.barEnd.getDate());
+    this.scheduleBarWidth = 1 + barEndDate - barStartDate;
 
-      for( var i=this.startDate.getDate(); i < this.startDate.getDate() + this.scheduleBarWidth; i++){
+    if (this.startDate.getMonth() == calendar.month) {
+      for(var i=barStartDate; i < barEndDate + 1; i++){
         if (!calendar.Dates[i - 1].schedules) {
           calendar.Dates[i - 1].schedules = [];
         }
         calendar.Dates[i - 1].schedules.push(this);
       }
     }
-    
     const scheduleBarBody = document.createElement("div");
-    for (var i = 0; i < this.scheduleBarWidth; i += 7) {
-      if (i == 0) {
-        const scheduleBar = { body: scheduleBarBody.cloneNode(true), width: Math.min(this.scheduleBarWidth, 7 - this.startDate.getDay()), }
-        scheduleBar['body'].className = "schedule-bar";
-        scheduleBar['body'].innerHTML = `<p>${this.summary}</p>`;
+    scheduleBarBody.className = "schedule-bar";
+    scheduleBarBody.innerHTML = `<p>${this.summary}</p>`;
+
+    console.log(this)
+    console.log(`start: ${barStartDate}, end: ${barEndDate}`)
+    var i = barStartDate
+    while (i < barEndDate) {
+      console.log("new schedule bar")
+      if (i == barStartDate) {
+        const scheduleBar = { body: scheduleBarBody.cloneNode(true) }
+        if (barStartDate == 1) {
+          scheduleBar['width'] = Math.min(this.scheduleBarWidth, 7-calendar.monthStartDay)
+        } else {
+          scheduleBar['width'] = Math.min(this.scheduleBarWidth, 7-this.startDate.getDay())
+        }
         scheduleBar['body'].setAttribute(
           "style", 
           `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
           max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);`);
+        console.log(`start: ${i}, width:${scheduleBar['width']}`)
         i += scheduleBar['width']
         this.scheduleBars.push(scheduleBar);
-      } else if (i + 7 < this.scheduleBarWidth) {
+      } else if (i + 7 < barEndDate) {
         const scheduleBar = { body: scheduleBarBody.cloneNode(true), width: 7, }
-        scheduleBar['body'].className = "schedule-bar";
-        scheduleBar['body'].innerHTML = `<p>${this.summary}</p>`;
-        scheduleBar['body'].setAttribute("style", `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);`);
+        scheduleBar['body'].setAttribute(
+          "style", 
+          `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
+          max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);`);
+        console.log(`start: ${i}, width:${scheduleBar['width']}`)
         i += scheduleBar['width']
         this.scheduleBars.push(scheduleBar);
-
       } else {
-        const scheduleBar = { body: scheduleBarBody.cloneNode(true), width: (this.scheduleBarWidth - Math.min(this.scheduleBarWidth, 7 - this.startDate.getDay()))%7}
-        scheduleBar['body'].className = "schedule-bar";
-        scheduleBar['body'].innerHTML = `<p>${this.summary}</p>`;
-        scheduleBar['body'].setAttribute("style", `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);`);
+        const scheduleBar = { body: scheduleBarBody.cloneNode(true), width: 1 + barEndDate - i }
+        scheduleBar['body'].setAttribute(
+          "style", 
+          `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
+          max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);`);
+        console.log(`start: ${i}, width:${scheduleBar['width']}`)
         i += scheduleBar['width']
         this.scheduleBars.push(scheduleBar);
       }
     }
+    console.log(this)
+    console.log(this.barStart)
+    console.log(this.barEnd)
+    console.log(this.scheduleBarWidth)
+    console.log(this.scheduleBars)
     this.displayScheduleBars(calendar);
   }
-
   displayScheduleBars(calendar) {
     console.log("displayScheduleBars");
     var r = calendar.checkGridStatus(this);
     if (r) {
-      var i = parseInt(this.start.toString().slice(8, 10))
+      var i = parseInt(this.barStart.getDate());
       this.scheduleBars.forEach(scheduleBar => {
-        if ( i-1 < calendar.monthEndDate){
-          // console.log(i-1)
+        if ( i < parseInt(this.barEnd.getDate()) + 1){
+          console.log(i-1)
           // console.log(r)
-          calendar.getGridCell(i-1, r).appendChild(scheduleBar['body']);
-          i += parseInt(scheduleBar['width']);
+          calendar.getGridCell(i, r).appendChild(scheduleBar['body']);
+          i += scheduleBar['width'];
         }
       });
     }
   }
-
   // TODO :  make scheduleBar dragable, add drag EventListner, add doubleclick EnvetListner -> modal..
   note() {
     const ScheduleNote = document.createElement("div");
@@ -160,7 +178,6 @@ class CalendarDate {
     this.month = new Date(year, month, date).getMonth();
     this.date = new Date(year, month, date).getDate();
   }
-
   Date() {
     return new Date(this.year, this.month, this.date)
   }
@@ -209,11 +226,17 @@ class CalendarDate {
     gridColumn.appendChild(gridCell.cloneNode(true));
     gridColumn.appendChild(gridCell.cloneNode(true));
     gridColumn.appendChild(gridCell.cloneNode(true));
+
+    if (this.schedules){
+      this.schedules = new Array();
+    }
+
   }
   // 노트 표시 함수
   showNoteForDate() {
     console.log("showNoteForDate is running!");
 
+    // note Area 초기화
     const noteArea = document.getElementById('note-area');
     noteArea.innerHTML="";
     
@@ -303,6 +326,7 @@ class CalendarDate {
     noteArea.appendChild(noteContent);
     this.createEventListeners(noteArea);
   }
+
   createEventListeners(noteArea) {
     //create form 표시
     noteArea.querySelector('#create-schedule-button').addEventListener('click', function (event) {
@@ -398,6 +422,8 @@ class MonthCalendar {
     this.days = ["일", "월", "화", "수", "목", "금", "토"];
 
     // 시작 요일, 종료일
+    this.monthStart = new Date(year, month, 1);
+    this.monthEnd = new Date(year, month + 1, 0);
     this.monthStartDay = new Date(year, month, 1).getDay(); // Sun Mon Tue Wed Thu Fri Sat : 0 ~ 6
     this.monthEndDate = new Date(year, month + 1, 0).getDate();
     this.nextMonthFirstDay = new Date(year, month + 1, 1).getDay(); // Sun Mon Tue Wed Thu Fri Sat : 0 ~ 6
@@ -428,16 +454,11 @@ class MonthCalendar {
     for(var i=0; i < this.monthEndDate; i++){
       this.gridStatus.push([0,0,0]);
     }
-    // clean noteArea
-    console.log(noteArea);
-    noteArea.innerHTML = ""
-    console.log(noteArea);
   }
   getGridCell(date, row) {
-    // console.log(this.Dates[date].dateCell.children[1])
-    return this.Dates[date].dateCell.children[1].children[row - 1];
+    console.log(this.Dates[date].dateCell.children[1])
+    return this.Dates[date-1].dateCell.children[1].children[row - 1];
   }
-
   checkGridStatus(schedule) {
     if (!this.gridStatus) {
       this.gridStatus = [];
@@ -465,6 +486,12 @@ class MonthCalendar {
 }
 // 달력 생성 함수
 function generateCalendar(calendarArea, noteArea, year, month = null) {
+  if (calendar) {
+    calendar = null;
+    calendarArea.innerHTML = "";
+    noteArea.innerHTML = "";
+  }
+
   console.log("Calendar is running!");
   console.log(year, month + 1)
 
@@ -476,11 +503,24 @@ function generateCalendar(calendarArea, noteArea, year, month = null) {
   prevButton.addEventListener("click", function () {
     if (month === null) {
       const prevYear = new Date(year, month);
-      generateCalendar(calendarArea, noteArea, prevYear.getFullYear() - 1);
+      calendar = generateCalendar(calendarArea, noteArea, prevYear.getFullYear() - 1);
+      fetchAndDisplaySchedules();
+      if (calendar.month == currentDate.getMonth()) {
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
+      } else { 
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
+      }
+
+
     } else {
       const prevMonth = new Date(year, month - 1);
-      generateCalendar(calendarArea, noteArea, prevMonth.getFullYear(), prevMonth.getMonth());
-    }
+      calendar = generateCalendar(calendarArea, noteArea, prevMonth.getFullYear(), prevMonth.getMonth());
+      fetchAndDisplaySchedules();
+      if (calendar.month == currentDate.getMonth()) {
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
+      } else { 
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
+      }    }
   });
 
   // 다음 달/연도 버튼
@@ -490,11 +530,22 @@ function generateCalendar(calendarArea, noteArea, year, month = null) {
   nextButton.className = "btn-next";
   nextButton.addEventListener("click", function () {
     if (month === null) {
-      const prevYear = new Date(year, month);
-      generateCalendar(calendarArea, noteArea, prevYear.getFullYear() + 1);
-    } else {
+      const nextYear = new Date(year, month);
+      calendar = generateCalendar(calendarArea, noteArea, nextYear.getFullYear() + 1);
+      fetchAndDisplaySchedules();
+      if (calendar.month == currentDate.getMonth()) {
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
+      } else { 
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
+      }    } else {
       const nextMonth = new Date(year, month + 1);
-      generateCalendar(calendarArea, noteArea, nextMonth.getFullYear(), nextMonth.getMonth());
+      calendar = generateCalendar(calendarArea, noteArea, nextMonth.getFullYear(), nextMonth.getMonth());
+      fetchAndDisplaySchedules();
+      if (calendar.month == currentDate.getMonth()) {
+        calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
+      } else { 
+        calendar.Dates[calendar.monthStart.getDate() - 1].showNoteForDate(noteArea);
+      }
     }
   });
 
@@ -594,21 +645,16 @@ function fetchAndDisplaySchedules() {
           item.end,
           item.summary,
           item.location,
-          item.attendee,
           item.description
         );
         calendar.schedules.push(schedule);
       });
       return calendar
-
     }).then(calendar => {
       // 스케쥴 바 표시
       calendar.schedules.forEach(schedule => {
         schedule.createScheduleBars(calendar);
       })
-      // 현재 날짜의 노트 표시
-      calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
-      
     });
   } catch (error) {
     console.error(error);
@@ -630,6 +676,8 @@ function createSchedule(form) {
       calendar.cleanCalendar();
     }).then( function () {
       fetchAndDisplaySchedules();
+      const scheduleDate = new Date(form.querySelector('input[name="start"]').value)
+      calendar.Dates[scheduleDate.getDate() - 1].showNoteForDate(noteArea);
     });
   } catch (error) {
     console.error(error);
@@ -644,6 +692,7 @@ function deleteSchedule(form) {
       calendar.cleanCalendar();
     }).then( function () {
       fetchAndDisplaySchedules();
+      calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
     });
   } catch (error) {
     console.error(error);
@@ -665,14 +714,14 @@ function updateSchedule(form) {
       calendar.cleanCalendar();
     }).then( function () {
       fetchAndDisplaySchedules();
-      calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
+      const scheduleDate = new Date(form.querySelector('input[name="start"]').value)
+      calendar.Dates[scheduleDate.getDate() - 1].showNoteForDate(noteArea);
     });
   } catch (error) {
     console.error(error);
   }
 }
 //import axios from 'axios';
-
 const csrftoken = Cookies.get('csrftoken');
 axios.defaults.headers.common['X-CSRFToken'] = csrftoken;
 // 현재 날짜로 달력 생성
@@ -680,8 +729,9 @@ const currentDate = new Date();
 const calendarArea = document.getElementById('calendar-area');
 const noteArea = document.getElementById('note-area');
 const days = ["일", "월", "화", "수", "목", "금", "토"];
-
 // 스케쥴 가져오기
-const calendar = generateCalendar(calendarArea, noteArea, currentDate.getFullYear(), currentDate.getMonth());
+var calendar = generateCalendar(calendarArea, noteArea, currentDate.getFullYear(), currentDate.getMonth());
 fetchAndDisplaySchedules();
+// 현재 날짜의 노트 표시
+calendar.Dates[currentDate.getDate() - 1].showNoteForDate(noteArea);
 

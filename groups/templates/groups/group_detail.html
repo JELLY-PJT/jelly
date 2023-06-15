@@ -689,7 +689,7 @@
       </section>
 
       <section class="post-list" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
-        {% comment %} {% include 'schedules/group_calendar.html' with group=group %} {% endcomment %}
+        {% include 'schedules/group_calendar.html' with group=group %}
       </section>
 
       <section class="post-list" id="chat" role="tabpanel" aria-labelledby="chat-tab">
@@ -805,10 +805,11 @@
 <script src="{% static 'js/groups/group_invite.js' %}"></script>  <!-- 그룹 초대링크 -->
 
 {% endblock content %}
-
 {% block script %}
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-<script type="module" src="{% static 'js/groups/group_calendar.js' %}"></script>  <!-- 그룹 캘린더-->
+
+<script src="{% static 'js/groups/group_calendar.js' %}"></script>  <!-- 그룹 캘린더-->
+
+{% comment %} 
 <script>
   // chat-log의 스크롤 최하단에 고정
   const chatContent = document.getElementById('chat-log')
@@ -818,7 +819,7 @@
   // 요소가 추가되어 길이가 길어지기 전에 비교
   const isScroll = chatContent.scrollHeight <= bottom;
   
-  {% comment %} const roomName = JSON.parse(document.getElementById('group-pk').textContent); {% endcomment %}
+  // const roomName = JSON.parse(document.getElementById('group-pk').textContent); 
   const roomName = {{ group.pk }};
   const userPk = JSON.parse(document.getElementById('user-pk').textContent);
   const userImg = '{{ request.user.image }}'
@@ -908,5 +909,5 @@
   
     messageInputDom.value = '';
   };
-  </script>
-{% endblock script %}
+  </script>{% endcomment %}
+{% endblock script %} 
