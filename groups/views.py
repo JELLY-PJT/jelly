@@ -140,6 +140,11 @@ def group_detail(request, group_pk):
     pagination = Paginator(writings, per_page)
     page_objects = pagination.get_page(page)
 
+    post_images = []
+    for post in posts:
+        images = post.postimage_set.all()
+        post_images.append(images)
+
     joined_vote = [selection.vote for selection in request.user.selections.all()]
     voter_cnt = {}
     for obj in page_objects:
@@ -157,7 +162,7 @@ def group_detail(request, group_pk):
         'notices': notices,
         'vote_form': vote_form,
         'writings': page_objects,
-        'writings_img': writings,
+        'writings_img': post_images,
         'joined_vote': joined_vote,
         'voter_cnt': voter_cnt.items(),
     }
