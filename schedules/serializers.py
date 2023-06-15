@@ -41,3 +41,4 @@ class ScheduleSerializer(serializers.ModelSerializer):
         model = Schedule
         # fields = ['id', 'calendar', 'start', 'end', 'summary', 'location', 'attendee', 'description']
         fields = ['id', 'calendar', 'start', 'end', 'summary', 'location', 'description']
+        read_only_fields = ['calendar']
