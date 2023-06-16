@@ -1,4 +1,4 @@
-class Schedule {
+class Schedule {'click'
   constructor(id, calendar, start, end, summary, location, description) {
     this.id = id;
     this.start = start;
@@ -58,13 +58,13 @@ class Schedule {
         // }
         scheduleBar['width'] = Math.min(this.scheduleBarWidth, 7 - this.barStart.getDay())
         console.log(`userCalendarId: ${userCalendarId}`)
-        console.log(`this.calendarId: ${this.calendarId}` )
+        console.log(`this.calendarId: ${this.calendarId}`)
         scheduleBar['body'].setAttribute(
-            "style",
-            `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
+          "style",
+          `width:calc(var(--date-cell-width) * ${scheduleBar['width']} - 1px);
             max-width:calc(var(--date-cell-max-width) * ${scheduleBar['width']} - 1px);
             background-color:var(--color-id-${CalendarDict[this.calendarId]['color']});`
-          );
+        );
         // console.log(`start: ${i}, width:${scheduleBar['width']}`)
         i += scheduleBar['width']
         this.scheduleBars.push(scheduleBar);
@@ -294,7 +294,7 @@ class CalendarDate {
       }
     }
     html += `</select></div></div>`
-    console.log(html); 
+    console.log(html);
 
 
     formInputArea.innerHTML = `
@@ -342,15 +342,15 @@ class CalendarDate {
     noteContent.className = "note-content";
     if (this.schedules) {
       this.schedules.forEach(schedule => {
-        const ScheduleNote = schedule.note();
-        noteContent.appendChild(ScheduleNote);
-      });
-    }
-
+        if (!hiddenCalendar[schedule.calendarId]) {
+          const ScheduleNote = schedule.note();
+          noteContent.appendChild(ScheduleNote);
+        };
+    })
     noteArea.appendChild(noteContent);
     this.createEventListeners();
   }
-
+}
   createEventListeners() {
     //create form 표시
     noteArea.querySelector('#create-schedule-button').addEventListener('click', function (event) {
@@ -528,7 +528,7 @@ function generateCalendar(year, month = null) {
   prevButton.addEventListener("click", function () {
     if (month === null) {
       const prevYear = new Date(year, month);
-      calendar = generateCalendar( prevYear.getFullYear() - 1);
+      calendar = generateCalendar(prevYear.getFullYear() - 1);
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
         calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
@@ -538,7 +538,7 @@ function generateCalendar(year, month = null) {
 
     } else {
       const prevMonth = new Date(year, month - 1);
-      calendar = generateCalendar( prevMonth.getFullYear(), prevMonth.getMonth());
+      calendar = generateCalendar(prevMonth.getFullYear(), prevMonth.getMonth());
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
         calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
@@ -556,7 +556,7 @@ function generateCalendar(year, month = null) {
   nextButton.addEventListener("click", function () {
     if (month === null) {
       const nextYear = new Date(year, month);
-      calendar = generateCalendar( nextYear.getFullYear() + 1);
+      calendar = generateCalendar(nextYear.getFullYear() + 1);
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
         calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
@@ -565,7 +565,7 @@ function generateCalendar(year, month = null) {
       }
     } else {
       const nextMonth = new Date(year, month + 1);
-      calendar = generateCalendar( nextMonth.getFullYear(), nextMonth.getMonth());
+      calendar = generateCalendar(nextMonth.getFullYear(), nextMonth.getMonth());
       fetchAndDisplaySchedules();
       if (calendar.month == currentDate.getMonth()) {
         calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
@@ -580,7 +580,7 @@ function generateCalendar(year, month = null) {
   headerTitle.innerHTML = month === null ? year + "년 " : year + "년 " + (month + 1) + "월";
   headerTitle.className = "calendar-title";
   headerTitle.addEventListener("click", function () {
-    generateCalendar( year);
+    generateCalendar(year);
   });
 
   // 이전 달력 삭제
@@ -612,7 +612,7 @@ function generateYearCalendar(year) {
     monthCell.innerHTML = i + 1 + "월";
     monthCell.className = "calendar-month";
     monthCell.addEventListener("click", function () {
-      generateCalendar( year, i);
+      generateCalendar(year, i);
     });
     monthContainer.appendChild(monthCell);
   }
@@ -636,10 +636,10 @@ function generateMonthCalendar(year, month) {
   dateContainer.className = "date-container"; // grid-row repeat(7, 1fr)
 
   calendar.beforeMonthDates.forEach(date => {
-    date.drawDateCell(dateContainer, 'calendar-date other-month' );
+    date.drawDateCell(dateContainer, 'calendar-date other-month');
   });
   calendar.Dates.forEach(date => {
-    date.drawDateCell(dateContainer, 'calendar-date' );
+    date.drawDateCell(dateContainer, 'calendar-date');
   });
   calendar.afterMonthDates.forEach(date => {
     date.drawDateCell(dateContainer, 'calendar-date other-month');
@@ -678,7 +678,9 @@ function fetchAndDisplaySchedules() {
     }).then(calendar => {
       // 스케쥴 바 표시
       calendar.schedules.forEach(schedule => {
-        schedule.createScheduleBars(calendar);
+        if (!hiddenCalendar[schedule.calendarId]) {
+          schedule.createScheduleBars(calendar);
+        }
       })
       calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
     });
@@ -755,48 +757,68 @@ function fetchGroupsAndCreateFilters() {
       method: 'get',
       url: `../../../../groups/search?q= `,
       responseType: 'json',
-    })
-      .then(function (response) {
-        // console.log('fetch user_groups')
-        GroupDict = {};
-        CalendarDict = {};
-        var colorIndex = 0
-        GroupDict['user']={'name':'user', 'calendar':userCalendarId, 'color':0, 'thumbnail':'#'}
-        CalendarDict[userCalendarId]={'name':'user', 'group':'user', 'color':0}
-        const groupButton = document.createElement("button")
-        groupButton.classList = "filter-button"
-        const square = document.createElement("div");
-        square.className = "square";
-        const inner = document.createElement("div");
-        inner.className = "inner";
-        inner.setAttribute("style", `background-color:var(--color-id-${colorIndex});`);
-        square.appendChild(inner)
-        groupButton.appendChild(square)
-        filterArea.appendChild(groupButton)
-        response.data.forEach(item => {
-          colorIndex += 1;
-          GroupDict[item.id] = {'name':item.name, 'calendar':item.calendar, 'color': colorIndex, 'thumbnail': item.thumbnail};
-          CalendarDict[item.calendar] = {'name':item.name, 'group':item.id, 'color': colorIndex};
+    }).then(function (response) {
+      // console.log('fetch user_groups')
+      GroupDict = {};
+      CalendarDict = {};
 
-          const groupButtonClone = groupButton.cloneNode(true)
-          groupButtonClone.firstChild.firstChild.setAttribute("style", `background-color:var(--color-id-${colorIndex});`);
-          filterArea.appendChild(groupButtonClone)
-          colorIndex = colorIndex%8;
-        })
-      }).then(function() {
-        fetchAndDisplaySchedules();
-        calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+      var colorIndex = 0
+      GroupDict['user'] = { 'name': 'user', 'calendar': userCalendarId, 'color': 0, 'thumbnail': '#' }
+      CalendarDict[userCalendarId] = { 'name': 'user', 'group': 'user', 'color': 0 }
+
+      const groupButton = document.createElement("button")
+      groupButton.classList = "filter-button"
+      groupButton.setAttribute('id', `filter-0`)
+
+      const square = document.createElement("div");
+      square.className = "square";
+
+      const inner = document.createElement("div");
+      inner.className = "inner";
+      inner.setAttribute("style", `background-color:var(--color-id-${colorIndex});`);
+      square.appendChild(inner)
+      groupButton.appendChild(square)
+      filterArea.appendChild(groupButton)
+      response.data.forEach(item => {
+        colorIndex += 1;
+        GroupDict[item.id] = { 'name': item.name, 'calendar': item.calendar, 'color': colorIndex, 'thumbnail': item.thumbnail };
+        CalendarDict[item.calendar] = { 'name': item.name, 'group': item.id, 'color': colorIndex };
+        
+        const groupButtonClone = groupButton.cloneNode(true)
+        groupButtonClone.setAttribute('id', `filter-${item.calendar}`)
+        groupButtonClone.firstChild.firstChild.setAttribute("style", `background-color:var(--color-id-${colorIndex});`);
+        filterArea.appendChild(groupButtonClone)
+        colorIndex = colorIndex % 8;
+      })
+    }).then(function () {
+      fetchAndDisplaySchedules();
+      calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+      filterArea.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function (event) {
+          event.preventDefault();
+          const cId = parseInt(button.getAttribute('id').match(/\d+$/)[0]);
+          if (cId in hiddenCalendar) {
+            hiddenCalendar.pop(cId);
+          } else {
+            hiddenCalendar.push(cId);
+          }
+          calendar.cleanCalendar();
+          fetchAndDisplaySchedules();
+          calendar.Dates[currentDate.getDate() - 1].showNoteForDate();
+        });
       });
+    });
   } catch (error) {
     console.error(error)
   }
 }
-//import axios from 'axios';
+//import axios from 'axios'
 const csrftoken = Cookies.get('csrftoken');
 axios.defaults.headers.common['X-CSRFToken'] = csrftoken;
 // Group과 Calendar
 var GroupDict = {};
 var CalendarDict = {};
+var hiddenCalendar = new Array();
 // 현재 날짜로 달력 생성
 const currentDate = new Date();
 const calendarArea = document.getElementById('calendar-area');
